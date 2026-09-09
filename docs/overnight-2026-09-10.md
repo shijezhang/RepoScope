@@ -58,3 +58,5 @@
 - 同轮固定流程分别6.98/6.73秒完成测试。不能宣称Agent更快或正式质量收益。
 - 71项全量pytest通过、ruff check/format与diff-check通过；新实验不覆盖旧失败。
 - 下一轮：处理已耗尽的工具预算与重复schema开销（run_tests执行后不应仍向模型提供可再次执行的schema）；研究明确的结构化短决策输出配置，保持模型名称、输出/总预算和数据范围不变，保留本次负面结果。不要盲目增加max_tokens或重复请求。
+
+- 本轮核心提交：1f9af01；已推送，[CI通过](https://github.com/shijezhang/RepoScope/actions/runs/34391095267)。原始失败文件SHA256仍为699c9f0a6cd9f82099a7d4324a28dbb60e7f77009d9cc8f5d848028a931ccdff。
