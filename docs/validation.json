@@ -7,7 +7,11 @@
     "passed": 66,
     "failed": 0,
     "warnings": 2,
-    "warning_scope": "Starlette/httpx TestClient deprecation"
+    "warning_scope": "Starlette/httpx TestClient deprecation",
+    "entrypoints_verified": [
+      "python -m pytest",
+      "pytest console entrypoint"
+    ]
   },
   "lint": {
     "ruff_check": "passed",
@@ -107,7 +111,16 @@
     "gold_labels": false,
     "max_rss_mb_approx": 837
   },
-  "agent_comparison": "paused: exact fixture data export awaiting explicit scope confirmation after automatic approval rejection",
+  "agent_comparison": {
+    "status": "executed_negative",
+    "cases": 2,
+    "agent_validations_completed": 0,
+    "requests": 4,
+    "input_tokens": 8658,
+    "output_tokens": 1497,
+    "automatic_retries": 0,
+    "scope": "explicitly approved fixture-01 and fixture-04 only"
+  },
   "production_claim": false,
   "packaging": {
     "sdist": "passed",
@@ -132,5 +145,6 @@
     "source_matches_current": true,
     "model_called": false,
     "target_pytest_called": false
-  }
+  },
+  "ci_import_fix": "explicit repository pythonpath for benchmark test imports"
 }

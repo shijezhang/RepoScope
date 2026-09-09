@@ -1,6 +1,6 @@
 {
   "run_id": "run-68deaa06d5cd4072892470a1d8740b3d",
-  "state": "fixed-completed-agent-awaiting-authorization",
+  "state": "completed",
   "scope": "Two unreviewed development fixtures; not a gold evaluation or causal quality claim",
   "budget": {
     "job_seconds": 180,
@@ -345,6 +345,95 @@
       "quality_metrics": null
     },
     {
+      "case_id": "fixture-01",
+      "arm": "agent",
+      "run_id": "8cf5826e4da34fa6b6990f98a29db263",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 13.590539875032846,
+      "time_measurement": "worker wall clock",
+      "model": "deepseek-v4-pro",
+      "usage": {
+        "input_tokens": 4281,
+        "output_tokens": 464,
+        "requests": 2,
+        "failed_requests": 0,
+        "unknown_token_usage": 0
+      },
+      "agent_metadata": {
+        "model": "deepseek-v4-pro",
+        "usage": {
+          "input_tokens": 4281,
+          "output_tokens": 464,
+          "requests": 2,
+          "failed_requests": 0,
+          "unknown_token_usage": 0
+        },
+        "seconds": 11.513125374971423,
+        "prompt_version": "lookup-v1",
+        "mode": "bounded investigation and validation",
+        "test_validation_submitted": false
+      },
+      "tool_calls": [
+        {
+          "id": "fb8256ae8cb75b3dfd3b84938f0bd61d3652ab859f990199c2291ae4944ef593",
+          "tool": "read_evidence",
+          "arguments": {
+            "evidence_id": "f724ff6c701caf7ae1743f215ab48476c06a1021d0d31915fe10c62b313c2fb7"
+          },
+          "summary": "Read base calc.total evidence to compare with head.",
+          "result": {
+            "snapshot_id": "8897d6188d6def7220f801a91a753412ec67ddfdf0f3514f4fe66f98902ffcf0",
+            "path": "calc.py",
+            "start": 1,
+            "end": 2,
+            "source": "def total(amount):\n    return amount if amount >= 0 else 0",
+            "content_hash": "d56c85de1db9f641fe280a162dc8216cf92a10f8bc5fd45a14fdc39439953b1c"
+          }
+        },
+        {
+          "id": "1274382bd4328898122d81e85509ee785c2fe93a5f25dcedcf45a5a34396e00e",
+          "tool": "read_evidence",
+          "arguments": {
+            "evidence_id": "9b96407e2e6fff8ad1a8ffe3d407ae6ff9875758074b6db18062f03025ff4062"
+          },
+          "summary": "Read head calc.total evidence to compare with base.",
+          "result": {
+            "snapshot_id": "330f644557fcff6502b20cc5f820fc7f639dd543da0d81b8444b6613acfa9b20",
+            "path": "calc.py",
+            "start": 1,
+            "end": 2,
+            "source": "def total(amount):\n    return amount + 1 if amount >= 0 else 0",
+            "content_hash": "433281bf3c997fd31171df84ed58f9ca42b64ca0f77034b9ae6b57bd39fc3e6a"
+          }
+        }
+      ],
+      "validation_count": 0,
+      "comparisons": [],
+      "test_status": "collection_required",
+      "selected_nodeids": [],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "Tests have not been collected or executed for this plan",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Agent context exceeds remaining input budget"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
+    },
+    {
       "case_id": "fixture-04",
       "arm": "fixed",
       "run_id": "259d8f5ef0d54eab95a954dc1392c931",
@@ -662,8 +751,98 @@
       "job_error": null,
       "annotation_status": "unreviewed",
       "quality_metrics": null
+    },
+    {
+      "case_id": "fixture-04",
+      "arm": "agent",
+      "run_id": "8732a1da328c409c9f3c4a33e530ff91",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 23.454828249989077,
+      "time_measurement": "worker wall clock",
+      "model": "deepseek-v4-pro",
+      "usage": {
+        "input_tokens": 4377,
+        "output_tokens": 1033,
+        "requests": 2,
+        "failed_requests": 1,
+        "unknown_token_usage": 0
+      },
+      "agent_metadata": {
+        "model": "deepseek-v4-pro",
+        "usage": {
+          "input_tokens": 4377,
+          "output_tokens": 1033,
+          "requests": 2,
+          "failed_requests": 1,
+          "unknown_token_usage": 0
+        },
+        "seconds": 21.986924582975917,
+        "prompt_version": "lookup-v1",
+        "mode": "bounded investigation and validation",
+        "test_validation_submitted": false
+      },
+      "tool_calls": [
+        {
+          "id": "86a60a1d790ddcbbdef9a5010ceb72526a4ac9318306fa58e7bfe072afe1e00e",
+          "tool": "read_evidence",
+          "arguments": {
+            "evidence_id": "5f9a819d7fc3a9efbd155bef398c99ab5fd1ef5d4da1a98047a6a44c8f9a3f3b"
+          },
+          "summary": "Read base api.py plugin evidence to begin comparing the changed implementation.",
+          "result": {
+            "snapshot_id": "0ccca7e7caaf159f70740bcff92c004dbfd826a1f479f019b9c583b669a6e9ab",
+            "path": "api.py",
+            "start": 12,
+            "end": 15,
+            "source": "def plugin(value):\n    import calc\n\n    return getattr(calc, \"total\")(value)",
+            "content_hash": "fbcc5bec1838729e6e9ab0752259d41147f7756adf651601b048bb46f762bb59"
+          }
+        }
+      ],
+      "validation_count": 0,
+      "comparisons": [],
+      "test_status": "collection_required",
+      "selected_nodeids": [],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "Tests have not been collected or executed for this plan",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Model decision failed (ValidationError); deterministic report retained"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
     }
   ],
-  "case_comparisons": [],
+  "case_comparisons": [
+    {
+      "case_id": "fixture-01",
+      "both_executed_validation": false,
+      "same_selected_test_pool": false,
+      "agent_extra_wall_seconds": 2.2517647080821916,
+      "agent_model_requests": 2,
+      "outcome": "No formal benefit conclusion; inspect preserved execution findings, errors and limitations"
+    },
+    {
+      "case_id": "fixture-04",
+      "both_executed_validation": false,
+      "same_selected_test_pool": false,
+      "agent_extra_wall_seconds": 17.519466374942567,
+      "agent_model_requests": 2,
+      "outcome": "No formal benefit conclusion; inspect preserved execution findings, errors and limitations"
+    }
+  ],
   "fairness": "Same base/head, profile, task, and maximum budget; independent Store and no preloaded coverage per arm"
 }
