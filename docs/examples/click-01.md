@@ -6,8 +6,8 @@ Head: `0ccf529f8dfa7b4c938a6f858840960661ee830d`
 
 ## Potential impact
 
-- [base] `src/click/types.py:449` `_NumberRangeBase.convert` · distance 0 · evidence `39084fb4b5f1de36f5b8a4baf55f98f0dac5201869c41e0862ceaf4a3b61bafc`
-- [head] `src/click/types.py:449` `_NumberRangeBase.convert` · distance 0 · evidence `c63ff6c081b695812aeeee8964d7cb862eae9ff4070d7901cea34bd077da1e04`
+- [base] `src/click/types.py:449` `_NumberRangeBase.convert` · distance 0 · evidence `adde7c63b3203ae4af87fc28d615776698875976193f7be253aa9de0b92e2f02`
+- [head] `src/click/types.py:449` `_NumberRangeBase.convert` · distance 0 · evidence `84a4595ef0893b6801819ee03af1cb5bb530d625431b28799287c84fe9577ca0`
 
 ## Test plan
 

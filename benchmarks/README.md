@@ -31,8 +31,9 @@ uv pip install --python artifacts/environments/httpx/bin/python -e 'artifacts/re
 成功探针会保存实际冻结的版本到 manifests/*-environment.txt。首次命令中的 HTTPX 间接依赖没有预先锁定；
 复现该次环境时使用生成的清单，其中 editable 路径相对于项目根目录。
 
-精简机器结果进入 results/，完整日志、Git 变异副本与环境留在 artifacts/。重放会清理并重建自己对应的
-artifacts/benchmark-replay/<case_id>，不会修改基准原始克隆或用户其他仓库。
+精简机器结果进入 results/，完整日志、Git 变异副本与环境留在 artifacts/。每次重放创建独立的
+artifacts/benchmark-replay/run-<id>/<case_id>，保留此前运行目录和Git对象，并在运行目录保存results.json。
+最新结果文件原子更新；不会修改基准原始克隆或用户其他仓库。
 `semantic_equal` 只验证图解析缓存一致性；`unresolved_count` 是保留的未知调用数量，不是错误率。
 B1/B4、质量指标、覆盖和容器验证未运行时不会填写虚构数字。
 

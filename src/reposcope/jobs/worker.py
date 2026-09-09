@@ -104,9 +104,21 @@ class Worker:
                     self.store.update(jid, "analyzing", "Comparing both immutable snapshots", owner=self.owner)
                     result = analyze(self.store, repo, base, head, jid, p.get("mode", "direct"), p.get("question", ""))
                     self.store.update(jid, "analyzing", "Deterministic report saved", result=result, owner=self.owner)
+
+                    def execute_validation():
+                        self.tests(
+                            jid, {"run_id": jid, "plan_id": result["test_plan"]["plan_id"]}, cancelled, stop_reason
+                        )
+                        self.store.update(jid, "analyzing", "Validation feedback saved", owner=self.owner)
+
                     if p.get("agent") and not cancelled():
                         self.store.update(jid, "retrieving", "Looking up evidence gaps", owner=self.owner)
-                        result = Controller(self.store, result).run(cancelled)
+                        result = Controller(
+                            self.store, result, test_executor=execute_validation if p.get("allow_tests") else None
+                        ).run(cancelled)
+                    elif p.get("allow_tests") and not cancelled():
+                        execute_validation()
+                        result = self.store.job(jid)["report"]
                     validate_report(self.store, result)
             reason = stop_reason()
             if reason:

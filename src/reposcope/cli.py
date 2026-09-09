@@ -3,10 +3,11 @@ from pathlib import Path
 
 import typer
 
-from reposcope.config import Settings
+from reposcope.config import RepoScopeError, Settings
 from reposcope.graph.store import Store
 from reposcope.indexing.parser import build_snapshot, semantic_hash
-from reposcope.models import digest
+from reposcope.jobs.submission import submit_tests
+from reposcope.models import TestRunInput, digest
 from reposcope.reports.render import export, validate_report
 from reposcope.repository.git import comparison, resolve, validate_repository
 from reposcope.retrieval.search import Search
@@ -23,6 +24,12 @@ def register(path: Path, profile_id: str | None = None):
     s = store()
     root = validate_repository(str(path), s.settings)
     repo_id = digest(str(root))[:20]
+    if profile_id is None:
+        try:
+            profile_id = s.get("repositories", repo_id).get("profile_id")
+        except RepoScopeError as exc:
+            if exc.code != "not_found":
+                raise
     s.put("repositories", repo_id, {"repo_id": repo_id, "path": str(root), "name": root.name, "profile_id": profile_id})
     typer.echo(repo_id)
 
@@ -107,15 +114,47 @@ def verify(run_id: str):
 
 
 @app.command()
-def test(run_id: str):
+def test(run_id: str, attempt: int = 1, reason: str | None = None):
     s = store()
     report = s.job(run_id)["report"]
-    jid = s.enqueue(
-        "test",
-        {"run_id": run_id, "plan_id": report["test_plan"]["plan_id"]},
-        key="test:" + digest([run_id, report["test_plan"]["plan_id"]]),
-    )
+    if not report:
+        raise typer.BadParameter("Analysis report is not ready")
+    jid = submit_tests(s, run_id, TestRunInput(plan_id=report["test_plan"]["plan_id"], attempt=attempt, reason=reason))
     typer.echo(json.dumps({"execution_id": jid, "message": "Run reposcope worker to execute"}))
+
+
+@app.command()
+def status(run_id: str):
+    job = store().job(run_id)
+    typer.echo(
+        json.dumps(
+            {"run_id": run_id, "status": job["state"], "error": job["error"], "report": job["report"]},
+            ensure_ascii=False,
+            indent=2,
+        )
+    )
+
+
+@app.command()
+def cancel(run_id: str):
+    s = store()
+    s.cancel(run_id)
+    from reposcope.jobs.submission import test_attempts
+
+    for row in test_attempts(s, run_id):
+        s.cancel(row["execution_id"])
+    typer.echo("Cancellation requested; check task status for cleanup completion")
+
+
+@app.command("export")
+def export_command(run_id: str, output: Path, format: str = "json"):
+    report = store().job(run_id)["report"]
+    if not report:
+        raise typer.BadParameter("Analysis report is not ready")
+    content, _ = export(report, format)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    output.write_text(content)
+    typer.echo(str(output))
 
 
 if __name__ == "__main__":

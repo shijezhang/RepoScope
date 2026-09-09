@@ -112,12 +112,13 @@ class Store:
             now = time.time()
             # Test tasks are never automatically rerun after a lost worker lease.
             stale = db.execute(
-                "SELECT id,kind,cancel FROM jobs WHERE lease<? AND state NOT IN ('completed','failed','cancelled','interrupted','queued')",
+                "SELECT id,kind,cancel,payload FROM jobs WHERE lease<? AND state NOT IN ('completed','failed','cancelled','interrupted','queued')",
                 (now,),
             ).fetchall()
             for row in stale:
-                state = "interrupted" if row["kind"] == "test" else "cancelled" if row["cancel"] else "queued"
-                if row["kind"] == "test":
+                can_execute = row["kind"] == "test" or json.loads(row["payload"]).get("allow_tests", False)
+                state = "interrupted" if can_execute else "cancelled" if row["cancel"] else "queued"
+                if can_execute:
                     db.execute("INSERT OR IGNORE INTO recovery VALUES(?,?,?)", (row["id"], "pending", "{}"))
                 db.execute("UPDATE jobs SET state=?,owner=NULL,lease=NULL WHERE id=?", (state, row["id"]))
                 self._event(db, row["id"], state, "Expired worker lease; previous execution is not resubmitted")

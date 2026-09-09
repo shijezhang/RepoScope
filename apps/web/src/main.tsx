@@ -24,6 +24,7 @@ import {
 } from "./types";
 import "@xyflow/react/dist/style.css";
 import "./style.css";
+import { ExecutionPanel } from "./ExecutionPanel";
 
 function Badge({ status }: { status: string }) {
   return <span className={`badge ${status}`}>{statusLabel(status)}</span>;
@@ -58,6 +59,23 @@ function App() {
   const report = run?.report;
   const [testJob, setTestJob] = useState<Run | null>(null);
   const [showAllClaims, setShowAllClaims] = useState(false);
+  const [agent, setAgent] = useState(false);
+  const [allowTests, setAllowTests] = useState(false);
+  const attempt = Math.max(
+    0,
+    ...(run?.test_attempts || []).map((item) => item.attempt),
+  );
+  const latestAttempt = run?.test_attempts?.find(
+    (item) => item.attempt === attempt,
+  );
+  const testRunning = !!latestAttempt && !terminal(latestAttempt.status);
+  useEffect(() => {
+    if (latestAttempt)
+      setTestJob({
+        run_id: latestAttempt.execution_id,
+        status: latestAttempt.status,
+      });
+  }, [latestAttempt?.execution_id, latestAttempt?.status]);
   useEffect(() => {
     if (!testJob || terminal(testJob.status)) return;
     const timer = setInterval(() => {
@@ -191,6 +209,8 @@ function App() {
         head,
         mode,
         question: question || undefined,
+        agent,
+        allow_tests: allowTests,
       });
       open(result.run_id);
       await refresh();
@@ -381,6 +401,29 @@ function App() {
                     placeholder="例如：哪些调用方可能受影响，需要验证哪些边界？"
                   />
                 </label>
+                <label className="agent-toggle">
+                  <input
+                    type="checkbox"
+                    checked={agent}
+                    onChange={(e) => setAgent(e.target.checked)}
+                  />
+                  <span>启用模型补查（可选）</span>
+                </label>
+                <p className="muted">
+                  默认仅进行结构分析。模型补查根据问题查找证据；服务端未配置模型时会保留基础报告并明确降级。
+                </p>
+                <label className="agent-toggle">
+                  <input
+                    type="checkbox"
+                    checked={allowTests}
+                    onChange={(e) => setAllowTests(e.target.checked)}
+                  />
+                  <span>分析时执行登记测试（Docker）</span>
+                </label>
+                <p className="muted">
+                  使用已登记的执行配置，最多进行一次 Base / Head
+                  对照，结果可能仍为部分验证。关闭模型补查时由固定流程验证；开启后由模型在预算内选择是否验证。
+                </p>
                 <div className="form-actions">
                   <button type="button" onClick={() => setCreating(false)}>
                     返回
@@ -429,6 +472,15 @@ function App() {
                   </div>
                   <h1>
                     变更影响报告 <Badge status={run.status} />
+                    {report && (
+                      <Badge
+                        status={
+                          typeof report.completeness === "string"
+                            ? report.completeness
+                            : "unknown"
+                        }
+                      />
+                    )}
                   </h1>
                   <p className="muted">
                     {report
@@ -471,6 +523,16 @@ function App() {
                   )}
                 </div>
               </div>
+              {run.payload?.agent &&
+                report?.limitations.some((item) =>
+                  /model_unavailable|REPOSCOPE_LLM_MODEL|REPOSCOPE_LLM_API_KEY/.test(
+                    item,
+                  ),
+                ) && (
+                  <div className="progress" role="status">
+                    模型补查未配置，本报告已降级为基础结构分析；未产生模型补查结论。
+                  </div>
+                )}
               {run.error != null && (
                 <div className="error" role="alert">
                   {typeof run.error === "string"
@@ -708,9 +770,11 @@ function App() {
                         disabled={
                           busy ||
                           (!report.test_plan.nodeids.length &&
-                            report.test_plan.status !==
-                              "collection_required") ||
-                          !terminal(run.status)
+                            report.test_plan.status !== "collection_required" &&
+                            attempt === 0) ||
+                          !terminal(run.status) ||
+                          testRunning ||
+                          attempt >= 3
                         }
                         onClick={() =>
                           void act(async () => {
@@ -719,6 +783,13 @@ function App() {
                               status: string;
                             }>(`/analyses/${runId}/test-runs`, {
                               plan_id: report.test_plan.plan_id,
+                              attempt: attempt + 1,
+                              ...(attempt > 0
+                                ? {
+                                    reason:
+                                      "Retry requested after environment preparation",
+                                  }
+                                : {}),
                             });
                             setTestJob({
                               run_id: submitted.execution_id,
@@ -728,7 +799,13 @@ function App() {
                           })
                         }
                       >
-                        {busy ? "正在提交…" : "运行建议测试"}
+                        {busy
+                          ? "正在提交…"
+                          : attempt >= 3
+                            ? "已达 3 次验证上限"
+                            : attempt > 0
+                              ? "重试验证"
+                              : "运行建议测试"}
                       </button>
                     </div>
                     <Badge status={report.test_plan.status} />
@@ -741,7 +818,10 @@ function App() {
                             disabled={busy}
                             onClick={() =>
                               void act(async () => {
-                                await api(`/analyses/${runId}/cancel`, {});
+                                await api(
+                                  `/analyses/${testJob.run_id}/cancel`,
+                                  {},
+                                );
                                 setTestJob(
                                   await api<Run>(`/jobs/${testJob.run_id}`),
                                 );
@@ -775,33 +855,12 @@ function App() {
                       </pre>
                     </details>
                     {report.executions.map((execution, i) => (
-                      <details className="execution" key={i} open>
-                        <summary>
-                          执行 {i + 1} ·{" "}
-                          {statusLabel(String(execution.status || "unknown"))}
-                        </summary>
-                        {Array.isArray(execution.results) && (
-                          <div className="test-list">
-                            {(
-                              execution.results as {
-                                nodeid: string;
-                                status: string;
-                                duration: number;
-                              }[]
-                            ).map((result) => (
-                              <div key={result.nodeid}>
-                                <code>{result.nodeid}</code>
-                                <Badge status={result.status} />
-                                <span>{result.duration.toFixed(3)} s</span>
-                              </div>
-                            ))}
-                          </div>
-                        )}
-                        <details>
-                          <summary>执行环境、日志与阶段详情</summary>
-                          <pre>{JSON.stringify(execution, null, 2)}</pre>
-                        </details>
-                      </details>
+                      <ExecutionPanel
+                        key={i}
+                        value={execution}
+                        index={i}
+                        expanded={i === report.executions.length - 1}
+                      />
                     ))}
                   </section>
                   <section className="panel followup">

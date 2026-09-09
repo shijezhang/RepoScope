@@ -1,6 +1,6 @@
 // Real local integration smoke check. No network routes are mocked.
 import { chromium } from "@playwright/test";
-import { mkdir } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 const origin = process.env.REPOSCOPE_WEB_URL || "http://127.0.0.1:8000";
 const repository = process.env.REPOSCOPE_LIVE_REPO;
 if (!repository)
@@ -43,16 +43,51 @@ try {
   if (exported.run_id !== runId)
     throw new Error("Export belongs to different run");
   await page.getByText("导出报告", { exact: true }).click();
-  if (!exported.executions.length)
+  const before = await (
+    await page.request.get(`${origin}/api/analyses/${runId}`)
+  ).json();
+  let targetAttempt = Math.max(
+    0,
+    ...(before.test_attempts || []).map((item) => item.attempt),
+  );
+  if (process.env.REPOSCOPE_LIVE_RETRY === "1" && targetAttempt === 1) {
+    const submitted = page.waitForResponse(
+      (r) =>
+        r.url().endsWith(`/analyses/${runId}/test-runs`) &&
+        r.request().method() === "POST",
+    );
+    await page.getByRole("button", { name: "重试验证", exact: true }).click();
+    const response = await submitted;
+    if (!response.ok()) throw new Error(await response.text());
+    console.log("Retry submitted", response.request().postData());
+    targetAttempt = 2;
+  } else if (!exported.executions.length) {
     await page
       .getByRole("button", { name: "运行建议测试", exact: true })
       .click();
+    targetAttempt = 1;
+  }
   let run;
-  for (let i = 0; i < 40; i++) {
+  for (let i = 0; i < 120; i++) {
     run = await (
       await page.request.get(`${origin}/api/analyses/${runId}`)
     ).json();
-    if (run.report?.executions?.length) break;
+    const attempt = run.test_attempts?.find(
+      (item) => item.attempt === targetAttempt,
+    );
+    if (i % 10 === 0)
+      console.log(
+        "Waiting for real test attempt",
+        targetAttempt,
+        attempt?.status,
+      );
+    if (
+      attempt &&
+      ["completed", "failed", "cancelled", "interrupted"].includes(
+        attempt.status,
+      )
+    )
+      break;
     await page.waitForTimeout(1500);
   }
   if (!run.report?.executions?.length)
@@ -63,15 +98,45 @@ try {
     path: "../../docs/examples/workbench.png",
     fullPage: true,
   });
+  const comparison = run.report.executions
+    .filter((item) => item.kind === "comparison")
+    .at(-1);
+  if (comparison) {
+    const table = page.getByRole("table").last();
+    await table.waitFor();
+    if (
+      (await table.getByRole("row").count()) !==
+      comparison.comparison.tests.length + 1
+    )
+      throw new Error("UI test count differs from report");
+    await page.locator(".execution").last().scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: "../../docs/examples/workbench-results.png",
+      fullPage: false,
+    });
+  }
+  const finalExport = await (
+    await page.request.get(`${origin}/api/analyses/${runId}/export?format=json`)
+  ).json();
+  if (finalExport.revision !== run.report.revision)
+    throw new Error("Final export revision differs");
   const result = {
     run_id: runId,
     url: page.url(),
     source_path: await page.locator(".source-meta strong").innerText(),
     export_filename: file.suggestedFilename(),
     revision: run.report.revision,
-    execution_status: run.report.executions.at(-1).status,
+    execution_status:
+      comparison?.comparison?.status || run.report.executions.at(-1).status,
+    test_attempts: run.test_attempts,
+    comparison: comparison?.comparison,
+    final_export_revision: finalExport.revision,
     console_errors: errors,
   };
+  await writeFile(
+    "../../docs/examples/workbench-verification.json",
+    JSON.stringify(result, null, 2) + "\n",
+  );
   console.log(JSON.stringify(result, null, 2));
   if (errors.length) throw new Error("Browser errors");
 } finally {

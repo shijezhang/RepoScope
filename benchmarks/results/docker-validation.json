@@ -1,0 +1,570 @@
+{
+  "kind": "real-docker-acceptance",
+  "timestamp": 1788969766.707679,
+  "image_id": "sha256:f8f79ca52e3acbd15007628491597ce67846037dc04dbb404b04d12536deea9f",
+  "image_repo_digests": [
+    "reposcope-fixture-tests@sha256:f8f79ca52e3acbd15007628491597ce67846037dc04dbb404b04d12536deea9f"
+  ],
+  "python_environment": "3.12.14 (main, Aug 31 2026, 23:47:53) [GCC 14.2.0]\nPygments==2.21.0\ncoverage==7.10.6\niniconfig==2.3.0\npackaging==26.3\npip==25.0.1\npluggy==1.6.0\npytest-cov==6.2.1\npytest==8.4.2",
+  "architecture": "arm64",
+  "docker": {
+    "ServerVersion": "29.5.2",
+    "OperatingSystem": "Ubuntu 24.04.4 LTS",
+    "OSType": "linux",
+    "Architecture": "aarch64",
+    "NCPU": 2,
+    "MemTotal": 3039522816,
+    "Driver": "overlayfs"
+  },
+  "case": "fixture-01",
+  "base_sha": "62233eca326d6785076b329a8ebc39284ff1f791",
+  "head_sha": "82f9c75e4509e019851484f011e7326a683f5279",
+  "results": {
+    "base": {
+      "collection": {
+        "execution_id": "acceptance-1788969758442080000-collect-base",
+        "started_at": 1788969758.4420931,
+        "snapshot_id": "e5e7a8756ff3ed82ab8538e96f715edbc445dc756f764e6b178286f6aaef318f",
+        "status": "completed",
+        "mode": "collect",
+        "nodeids": [
+          "test_calc.py::test_positive",
+          "test_calc.py::test_negative",
+          "test_calc.py::test_legacy",
+          "test_calc.py::test_plugin"
+        ],
+        "results": [
+          {
+            "nodeid": "test_calc.py::test_positive",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_negative",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_legacy",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_plugin",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          }
+        ],
+        "container": "reposcope-7f5d73d7f3666eab58a3bec1156b5554",
+        "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+        "tree_hash": "2192bbf29b4328793c46e2564eae9e1a7057d40b",
+        "test_suite_hash": "2bb56ad3934260f9738ad6bf7eca34f8fc97a98826166b992b7b0d428b1d8e0c",
+        "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+        "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+        "command_hash": "901cb903dd0c76d7409b12d15690af3e8ca1de3595ea83be589cb2bbb79b2fd3",
+        "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 4 items\n\n<Dir work>\n  <Module test_calc.py>\n    <Function test_positive>\n    <Function test_negative>\n    <Function test_legacy>\n    <Function test_plugin>\n\n========================== 4 tests collected in 0.01s ==========================\n",
+        "exit_code": 0,
+        "collection_errors": [],
+        "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/7f5d73d7f3666eab58a3bec1156b5554bc6129a01ab94c06f968d5efd8fa2c02",
+        "coverage_ids": [],
+        "cleanup_status": "completed",
+        "wall_seconds": 0.9356202079798095
+      },
+      "execution": {
+        "execution_id": "acceptance-1788969758442080000-base",
+        "started_at": 1788969759.383744,
+        "snapshot_id": "e5e7a8756ff3ed82ab8538e96f715edbc445dc756f764e6b178286f6aaef318f",
+        "status": "completed",
+        "mode": "run",
+        "nodeids": [
+          "test_calc.py::test_positive",
+          "test_calc.py::test_negative",
+          "test_calc.py::test_legacy",
+          "test_calc.py::test_plugin"
+        ],
+        "results": [
+          {
+            "nodeid": "test_calc.py::test_positive",
+            "status": "passed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 0.007087707999971826,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "call",
+                "status": "passed",
+                "duration": 0.0011881359999961205,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 0.00018267500001911685,
+                "message": ""
+              }
+            ],
+            "duration": 0.008458518999987064
+          },
+          {
+            "nodeid": "test_calc.py::test_negative",
+            "status": "passed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 7.766400005948526e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "call",
+                "status": "passed",
+                "duration": 0.001063657000031526,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 0.00012014300000373623,
+                "message": ""
+              }
+            ],
+            "duration": 0.0012614640000947475
+          },
+          {
+            "nodeid": "test_calc.py::test_legacy",
+            "status": "passed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 7.336999999552063e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "call",
+                "status": "passed",
+                "duration": 0.0011180590000776647,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 9.588099999291444e-05,
+                "message": ""
+              }
+            ],
+            "duration": 0.0012873100000660997
+          },
+          {
+            "nodeid": "test_calc.py::test_plugin",
+            "status": "passed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 6.665800003702316e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "call",
+                "status": "passed",
+                "duration": 0.0009506419999070204,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 9.500599992406933e-05,
+                "message": ""
+              }
+            ],
+            "duration": 0.0011123059998681128
+          }
+        ],
+        "container": "reposcope-d83932e3da395cdfad202bf67378e3f0",
+        "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+        "tree_hash": "2192bbf29b4328793c46e2564eae9e1a7057d40b",
+        "test_suite_hash": "2bb56ad3934260f9738ad6bf7eca34f8fc97a98826166b992b7b0d428b1d8e0c",
+        "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+        "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+        "command_hash": "342481e3e5b748c01fe0756efc96ef48dfdb7a8f9c9c3b60511c28f257e54aca",
+        "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 4 items\n\ntest_calc.py ....                                                        [100%]\n\n============================== 4 passed in 0.02s ===============================\n",
+        "exit_code": 0,
+        "collection_errors": [],
+        "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/d83932e3da395cdfad202bf67378e3f05e9db4bcb43488a3b8b647f7e9731cc7",
+        "coverage_ids": [
+          "e6e9aeac1a636bf733b7192a077ce279d850675e202fdfe48df7d7c4f0b7672d",
+          "8753f53e83cee42f63707092659b185bd0a62a4eb40a6f84afbc5f2e48d21e80",
+          "487b343130b186508d91599ba144c11806e68d387493f6a634dde1b5d0af8734",
+          "8a47e8c8cf798d725a2d456238622c77bfbdfc3424f77870b47943fd35c80f4d",
+          "a38b9fce7ff042f9992034e06350921e75e265ddecabe0ad9ba08b6d3ba53385",
+          "4043e2a25a5482ff773b63d4c523e820b0eea06e7c9041615b2b3a9ed7bcd2f3",
+          "8837a9a1f2d5ac88bf91ea501a15733a89415213300f410e4f60d0020dfea786",
+          "810f89ac20f8dcb8f5a638558b5f7aad8835566698bebb58744916e2c2dc11cc",
+          "de86ecfb5b020dd39d0d76b6742c6053f3d93c510550f9d4ffd49f9ced182299",
+          "7c2739319c39c0d64fcbfd1935cc3d0ba3a1be45f9281bea539b746ce229f79a",
+          "631eb909b1be1ede24e176ed3e171427e72d7de24677900256ecef7155618a69",
+          "f608cb79753bfa5f93d2c14fd81b1d07761b2de5c2b500468c91120e7d156846",
+          "f1f5c9fb083a96a201b136a80366d525b896337612e36cb2757cbae0555d02fa",
+          "df992f528958fd08545305c367e3cd03f4b91a189567ae0879097d7fee2a2aee",
+          "453de74025c364ea0b757bf8bd059500ed2e7c0027aa6b66aff8ddaa37af8071"
+        ],
+        "cleanup_status": "completed",
+        "wall_seconds": 0.5449237499851733
+      }
+    },
+    "head": {
+      "collection": {
+        "execution_id": "acceptance-1788969758442080000-collect-head",
+        "started_at": 1788969759.936258,
+        "snapshot_id": "64be50bfdafd80fd7a93383734c49e46c6daf4207ab520973634a3dad1cec494",
+        "status": "completed",
+        "mode": "collect",
+        "nodeids": [
+          "test_calc.py::test_positive",
+          "test_calc.py::test_negative",
+          "test_calc.py::test_legacy",
+          "test_calc.py::test_plugin"
+        ],
+        "results": [
+          {
+            "nodeid": "test_calc.py::test_positive",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_negative",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_legacy",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          },
+          {
+            "nodeid": "test_calc.py::test_plugin",
+            "status": "not_run",
+            "phases": [],
+            "duration": 0
+          }
+        ],
+        "container": "reposcope-26e040e85f12d69f5d4e2e797a3ec8cc",
+        "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+        "tree_hash": "94e819b28e8b2015255be746d46031a2fede6da2",
+        "test_suite_hash": "9be22a94c01d6957c8d0e27d363c3f4ea632abef5a75788fb2a071d21b7b3df9",
+        "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+        "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+        "command_hash": "901cb903dd0c76d7409b12d15690af3e8ca1de3595ea83be589cb2bbb79b2fd3",
+        "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 4 items\n\n<Dir work>\n  <Module test_calc.py>\n    <Function test_positive>\n    <Function test_negative>\n    <Function test_legacy>\n    <Function test_plugin>\n\n========================== 4 tests collected in 0.00s ==========================\n",
+        "exit_code": 0,
+        "collection_errors": [],
+        "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/26e040e85f12d69f5d4e2e797a3ec8cceab0ac98f668c52c15d3259ce06c53c4",
+        "coverage_ids": [],
+        "cleanup_status": "completed",
+        "wall_seconds": 0.5155097079696134
+      },
+      "execution": {
+        "execution_id": "acceptance-1788969758442080000-head",
+        "started_at": 1788969760.456706,
+        "snapshot_id": "64be50bfdafd80fd7a93383734c49e46c6daf4207ab520973634a3dad1cec494",
+        "status": "completed",
+        "mode": "run",
+        "nodeids": [
+          "test_calc.py::test_positive",
+          "test_calc.py::test_negative",
+          "test_calc.py::test_legacy",
+          "test_calc.py::test_plugin"
+        ],
+        "results": [
+          {
+            "nodeid": "test_calc.py::test_positive",
+            "status": "failed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 0.005829704999996466,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "call",
+                "status": "failed",
+                "duration": 0.001448099000072034,
+                "message": "def test_positive():\n>       assert order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = order(10)\n\ntest_calc.py:5: AssertionError"
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 0.0001178090000166776,
+                "message": ""
+              }
+            ],
+            "duration": 0.007395613000085177
+          },
+          {
+            "nodeid": "test_calc.py::test_negative",
+            "status": "passed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 7.537099997989571e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "call",
+                "status": "passed",
+                "duration": 0.0007176500000696251,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 9.496500001660024e-05,
+                "message": ""
+              }
+            ],
+            "duration": 0.000887986000066121
+          },
+          {
+            "nodeid": "test_calc.py::test_legacy",
+            "status": "failed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 6.81589999658172e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "call",
+                "status": "failed",
+                "duration": 0.0009784479999552786,
+                "message": "def test_legacy():\n>       assert old_order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = old_order(10)\n\ntest_calc.py:13: AssertionError"
+              },
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 9.604800004581193e-05,
+                "message": ""
+              }
+            ],
+            "duration": 0.0011426549999669078
+          },
+          {
+            "nodeid": "test_calc.py::test_plugin",
+            "status": "failed",
+            "phases": [
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "setup",
+                "status": "passed",
+                "duration": 7.236900000862079e-05,
+                "message": ""
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "call",
+                "status": "failed",
+                "duration": 0.0010593209999569808,
+                "message": "def test_plugin():\n>       assert plugin(10) == 10\nE       assert 11 == 10\nE        +  where 11 = plugin(10)\n\ntest_calc.py:17: AssertionError"
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "phase": "teardown",
+                "status": "passed",
+                "duration": 0.00010209199990640627,
+                "message": ""
+              }
+            ],
+            "duration": 0.0012337819998720079
+          }
+        ],
+        "container": "reposcope-741287b461114b74f57333fb328fb4dc",
+        "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+        "tree_hash": "94e819b28e8b2015255be746d46031a2fede6da2",
+        "test_suite_hash": "9be22a94c01d6957c8d0e27d363c3f4ea632abef5a75788fb2a071d21b7b3df9",
+        "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+        "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+        "command_hash": "342481e3e5b748c01fe0756efc96ef48dfdb7a8f9c9c3b60511c28f257e54aca",
+        "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 4 items\n\ntest_calc.py F.FF                                                        [100%]\n\n=================================== FAILURES ===================================\n________________________________ test_positive _________________________________\n\n    def test_positive():\n>       assert order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = order(10)\n\ntest_calc.py:5: AssertionError\n_________________________________ test_legacy __________________________________\n\n    def test_legacy():\n>       assert old_order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = old_order(10)\n\ntest_calc.py:13: AssertionError\n_________________________________ test_plugin __________________________________\n\n    def test_plugin():\n>       assert plugin(10) == 10\nE       assert 11 == 10\nE        +  where 11 = plugin(10)\n\ntest_calc.py:17: AssertionError\n=========================== short test summary info ============================\nFAILED test_calc.py::test_positive - assert 11 == 10\nFAILED test_calc.py::test_legacy - assert 11 == 10\nFAILED test_calc.py::test_plugin - assert 11 == 10\n========================= 3 failed, 1 passed in 0.02s ==========================\n",
+        "exit_code": 1,
+        "collection_errors": [],
+        "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/741287b461114b74f57333fb328fb4dc52fdae0e0ea8591da6f2fd16a2b08fd8",
+        "coverage_ids": [
+          "265331c4701953d364e83f0a8b768a525591066f1a1d0777f44e053cd05f98c0",
+          "b66460d066bb4dbc0c2b6f7de8d65c25c225f859851618a57c21df1a1c760e45",
+          "175d1c4504a20976975fb093644d889a94bd0bbc000ef86c6251a301a7fe798b",
+          "125277d59173285146f267a4d627917d1ef4a1a6e51bfa61b626db688a2135d7",
+          "8c12d58c387b2b232c0ce14ce1866fbc3b75bc9bd4e8f231b7d0cb4b5d0502c0",
+          "79d027aa464fabad50b699aeb1657f7ff2b864295a9801ec2a3448fe9557e08b",
+          "bd6e24bd566c4e9138e4bc76f8ca99062e364c09c6e2da6c276f0a3f5898e330",
+          "0deb0b1c467a5cfbe0a2e7200f84a72e2295a736ecd2a03b158dcefbaa374801",
+          "70eec1e7746acf1a5ac67ca897c5f8e1107e9cf381f93c811f597a1e55ee37c2",
+          "67d9ec8048045a39ebf329b374a83ef445cbfb592c8ff7b35abade3dab0d0383",
+          "06409b516d206076e1a8a41889f92a2311f068fe16c7178563dc3d6eba56b192",
+          "260230c405134d8e23d99d013fdf0d7419b2301e97d589e371c40d3330254244",
+          "598196c880f0604f3809283721a0f1d3a2fe5216dda1cf8a2ad9827981dce0d8",
+          "54ae5e5e4248b65210fea004eab982503e81ca36f083325ee8edb1fecc51757f",
+          "38f668a50d794d6c33eba26a1fa01bf610bbac15196bf138de5daf3b634093b7"
+        ],
+        "cleanup_status": "completed",
+        "wall_seconds": 0.5815637499908917
+      }
+    }
+  },
+  "comparison": {
+    "comparable": true,
+    "status": "suspected_regression",
+    "tests": [
+      {
+        "nodeid": "test_calc.py::test_positive",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_negative",
+        "base_status": "passed",
+        "head_status": "passed",
+        "finding": "passed_both"
+      },
+      {
+        "nodeid": "test_calc.py::test_legacy",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_plugin",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      }
+    ],
+    "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+  },
+  "coverage_exact_binding": "passed",
+  "cancellation": {
+    "execution_id": "acceptance-1788969758442080000-cancel",
+    "started_at": 1788969761.616298,
+    "snapshot_id": "ba0df2b459a4cf5199dccf4beb4db5305ed3c0398124e91fa65779e0344962c9",
+    "status": "cancelled",
+    "mode": "run",
+    "nodeids": [
+      "test_slow.py::test_slow"
+    ],
+    "results": [
+      {
+        "nodeid": "test_slow.py::test_slow",
+        "status": "cancelled",
+        "phases": [],
+        "duration": 0
+      }
+    ],
+    "container": "reposcope-d6445c684ba88e72f65abcc1cc9158f1",
+    "environment_hash": "3bf8802f1a9d343bcf782349ae09e4cbbc7c43deb3e206ecdcf2e148201a1b11",
+    "tree_hash": "0135b10834a1828e614161792b50607e98781c4d",
+    "test_suite_hash": "733124236623992b6328e912405f981c8350cc2a765769b4c7250265fb6b240f",
+    "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+    "comparison_hash": "733124236623992b6328e912405f981c8350cc2a765769b4c7250265fb6b240f",
+    "command_hash": "3ae313f4b60046c3905968ce2700931ce865c56082add2603831552028efefc6",
+    "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 1 item\n\ntest_slow.py ",
+    "exit_code": 137,
+    "collection_errors": [],
+    "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/d6445c684ba88e72f65abcc1cc9158f103300ec64d5bececa15f7299787e7794",
+    "coverage_ids": [],
+    "cleanup_status": "completed",
+    "wall_seconds": 1.4144296669983305
+  },
+  "cancellation_observed_live_container": true,
+  "timeout": {
+    "execution_id": "acceptance-1788969758442080000-timeout",
+    "started_at": 1788969763.4771059,
+    "snapshot_id": "ba0df2b459a4cf5199dccf4beb4db5305ed3c0398124e91fa65779e0344962c9",
+    "status": "timeout",
+    "mode": "run",
+    "nodeids": [
+      "test_slow.py::test_slow"
+    ],
+    "results": [
+      {
+        "nodeid": "test_slow.py::test_slow",
+        "status": "timeout",
+        "phases": [],
+        "duration": 0
+      }
+    ],
+    "container": "reposcope-4decf9185960ead77cd0941dd8b4c854",
+    "environment_hash": "4b368d9f367e579ce3d073dd9838b12cd40a9f854746d57f74c9d7e5c0bb98f7",
+    "tree_hash": "0135b10834a1828e614161792b50607e98781c4d",
+    "test_suite_hash": "733124236623992b6328e912405f981c8350cc2a765769b4c7250265fb6b240f",
+    "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+    "comparison_hash": "733124236623992b6328e912405f981c8350cc2a765769b4c7250265fb6b240f",
+    "command_hash": "3ae313f4b60046c3905968ce2700931ce865c56082add2603831552028efefc6",
+    "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0\nrootdir: /work\ncollected 1 item\n\ntest_slow.py ",
+    "exit_code": 137,
+    "collection_errors": [],
+    "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/docker-validation-state/executions/4decf9185960ead77cd0941dd8b4c8541d5d1f0fa5391eebc65b40273a5f208f",
+    "coverage_ids": [],
+    "cleanup_status": "completed",
+    "wall_seconds": 3.194992834003642
+  },
+  "remaining_containers": [],
+  "temporary_workspaces": [],
+  "runtime_controls": {
+    "NetworkMode": "none",
+    "ReadonlyRootfs": true,
+    "CapDrop": [
+      "ALL"
+    ],
+    "SecurityOpt": [
+      "no-new-privileges"
+    ],
+    "Memory": 536870912,
+    "NanoCpus": 1000000000,
+    "PidsLimit": 128,
+    "Tmpfs": {
+      "/tmp": "rw,nosuid,nodev,size=128m"
+    },
+    "mount_destinations": [
+      "/output",
+      "/control",
+      "/work"
+    ]
+  },
+  "working_tree_unchanged": true,
+  "scope": "One self-owned fixture; proves this local isolation path, not arbitrary-project compatibility or benchmark quality"
+}

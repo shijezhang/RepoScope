@@ -1,0 +1,53 @@
+{
+  "run_id": "6f44606d87764314bb7a67aeb8a9440d",
+  "url": "http://127.0.0.1:8000/?run=6f44606d87764314bb7a67aeb8a9440d",
+  "source_path": "calc.py:1–2",
+  "export_filename": "reposcope-6f44606d87764314bb7a67aeb8a9440d.json",
+  "revision": 3,
+  "execution_status": "suspected_regression",
+  "test_attempts": [
+    {
+      "execution_id": "9cebed3c60004d199e1c4bde524a9d1c",
+      "status": "completed",
+      "attempt": 1
+    },
+    {
+      "execution_id": "3647d4a09aa441719188ef25a7f9b168",
+      "status": "completed",
+      "attempt": 2
+    }
+  ],
+  "comparison": {
+    "comparable": true,
+    "status": "suspected_regression",
+    "tests": [
+      {
+        "nodeid": "test_calc.py::test_legacy",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_negative",
+        "base_status": "passed",
+        "head_status": "passed",
+        "finding": "passed_both"
+      },
+      {
+        "nodeid": "test_calc.py::test_plugin",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_positive",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      }
+    ],
+    "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+  },
+  "final_export_revision": 3,
+  "console_errors": []
+}

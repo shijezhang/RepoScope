@@ -9,7 +9,7 @@ from reposcope.config import RepoScopeError
 from reposcope.models import Relation, Snapshot, Symbol, digest
 from reposcope.repository.git import git, read_tree
 
-VERSION = "ast312-resolver-v2"
+VERSION = "ast312-resolver-v3"
 
 
 def module_name(path):
@@ -247,7 +247,8 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
         parent = metadata[sym.symbol_id]["parent"]
         if parent is not None:
             for p in by_local[(sym.path, parent)]:
-                edge(p, sym, "CONTAINS", sym.start)
+                if p.start <= sym.start and sym.end <= p.end:
+                    edge(p, sym, "CONTAINS", sym.start)
 
     def resolve(path, scope, expr):
         info = parsed[path]
@@ -320,7 +321,7 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
         if cancelled():
             raise RepoScopeError("cancelled", "Symbol resolution interrupted")
         for item in info["imports"]:
-            sources = by_local[(path, item["scope"])]
+            sources = [s for s in by_local[(path, item["scope"])] if s.start <= item["line"] <= s.end]
             targets = export_target(item["target"], set())
             if not targets:
                 parent = item["target"].rsplit(".", 1)[0]
@@ -339,7 +340,7 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
                     else ("" if kind == "INHERITS" else scope)
                 )
                 targets, reason = resolve(path, lookup_scope, item["expr"])
-                sources = by_local[(path, scope)]
+                sources = [s for s in by_local[(path, scope)] if s.start <= item["line"] <= s.end]
                 if not targets or reason:
                     unresolved.append(
                         {**item, "path": path, "reason": reason, "candidate_ids": [s.symbol_id for s in targets]}

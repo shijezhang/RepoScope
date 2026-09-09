@@ -177,3 +177,101 @@ def test_selector_budget_and_fallback():
     assert select_tests(["a", "b"], {"x": 3}, {}, budget=1)["nodeids"] == ["a", "b"]
     selected = select_tests(["a", "b"], {"x": 3, "y": 1}, {"a": ["x"], "b": ["y"]}, budget=1)
     assert selected["nodeids"] == ["a"] and selected["uncovered"] == ["y"]
+
+
+def test_explicit_test_retry_is_bounded_and_deduplicated(store, git_repo):
+    repo, commit, _ = git_repo
+    sha = commit(BASE)
+    client = TestClient(create_app(store.settings))
+    rid = client.post("/api/repositories", json={"path": repo["path"], "profile_id": "fixture"}).json()["repo_id"]
+    # Re-registering a path in the UI must not wipe its server-managed profile.
+    assert client.post("/api/repositories", json={"path": repo["path"]}).json()["profile_id"] == "fixture"
+    jid = client.post("/api/analyses", json={"repo_id": rid, "base": sha, "head": sha}).json()["run_id"]
+    Worker(store).once()
+    report = store.job(jid)["report"]
+    payload = {"plan_id": report["test_plan"]["plan_id"]}
+    first = client.post(f"/api/analyses/{jid}/test-runs", json=payload).json()["execution_id"]
+    retry = {**payload, "attempt": 2, "reason": "Prepared environment"}
+    assert client.post(f"/api/analyses/{jid}/test-runs", json=retry).status_code == 400
+    Worker(store).once()
+    assert client.post(f"/api/analyses/{jid}/test-runs", json=payload).json()["execution_id"] == first
+    assert client.post(f"/api/analyses/{jid}/test-runs", json={**payload, "attempt": 2}).status_code == 400
+    second = client.post(f"/api/analyses/{jid}/test-runs", json=retry).json()["execution_id"]
+    assert second != first
+    assert client.post(f"/api/analyses/{jid}/test-runs", json=retry).json()["execution_id"] == second
+    assert (
+        client.post(f"/api/analyses/{jid}/test-runs", json={**payload, "attempt": 4, "reason": "again"}).status_code
+        == 422
+    )
+    attempts = client.get(f"/api/analyses/{jid}").json()["test_attempts"]
+    assert [a["attempt"] for a in attempts] == [1, 2]
+
+
+def test_agent_paths_and_test_candidates_stay_in_run(store, git_repo):
+    repo, commit, _ = git_repo
+    snap = build_snapshot(store, repo, commit(BASE))
+    report = analyze(store, repo, snap, snap, "paths")
+    agent = Controller(store, report)
+    by_name = {symbol.qualname: symbol for symbol in snap.symbols}
+    result = agent.call(
+        "find_paths",
+        {
+            "snapshot_id": snap.snapshot_id,
+            "source_id": by_name["test_zero"].symbol_id,
+            "target_id": by_name["total"].symbol_id,
+        },
+    )
+    assert len(result["paths"][0]) == 2
+    assert all(edge["snapshot_id"] == snap.snapshot_id for edge in result["paths"][0])
+    assert agent.call("get_test_candidates", {"run_id": "paths"})["status"] == "collection_required"
+    with pytest.raises(RepoScopeError):
+        agent.call("get_test_candidates", {"run_id": "another"})
+
+
+def test_authorized_analysis_validation_and_agent_feedback(store, git_repo):
+    repo, commit, _ = git_repo
+    sha = commit(BASE)
+    store.put("repositories", repo["repo_id"], repo)
+    run_id = store.enqueue("analysis", {"repo_id": repo["repo_id"], "base": sha, "head": sha, "allow_tests": True})
+    Worker(store).once()
+    report = store.job(run_id)["report"]
+    assert report["revision"] == 2
+    assert report["test_plan"]["status"] == "test_environment_unavailable"
+    assert len(report["executions"]) == 1
+    readonly = Controller(store, report)
+    with pytest.raises(RepoScopeError, match="read-only"):
+        readonly.call("run_tests", {"run_id": run_id, "plan_id": report["test_plan"]["plan_id"]})
+
+    called = []
+
+    class FakeDecision:
+        model = "test-only-structured-decisions"
+        usage = {"input_tokens": 0, "output_tokens": 0}
+
+        def decide(self, context, tools):
+            if called:
+                assert context["prior_results"][0]["result"]["status"] == "test_environment_unavailable"
+                return Decision(tool="finish", summary="Environment unavailable; retain partial report")
+            assert "run_tests" in tools
+            return Decision(
+                tool="run_tests",
+                arguments={"run_id": run_id, "plan_id": report["test_plan"]["plan_id"]},
+                summary="Validate registered plan",
+            )
+
+    agent = Controller(store, report, FakeDecision(), test_executor=lambda: called.append(True))
+    result = agent.run()
+    assert called == [True]
+    assert result["tool_calls"][0]["tool"] == "run_tests"
+    assert result["metadata"]["agent"]["test_validation_submitted"] is True
+    with pytest.raises(RepoScopeError, match="One base/head"):
+        agent.call("run_tests", {"run_id": run_id, "plan_id": report["test_plan"]["plan_id"]})
+
+
+def test_expired_analysis_with_test_permission_is_not_replayed(store):
+    run_id = store.enqueue("analysis", {"allow_tests": True})
+    assert store.claim("dead") == run_id
+    with store.connect() as db:
+        db.execute("UPDATE jobs SET lease=? WHERE id=?", (time.time() - 1, run_id))
+    assert store.claim("next") is None
+    assert store.job(run_id)["state"] == "interrupted"

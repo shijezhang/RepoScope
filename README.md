@@ -2,7 +2,7 @@
 
 **代码变更影响分析与回归验证工作台。** 输入本地 Python Git 仓库的两个提交，查看两侧符号变化、潜在调用方、证据路径和测试验证状态。
 
-当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照分析、CLI/API/工作台、解析增量与正确性测试已落地；容器执行真实验收、强检索模型实测、Agent 对照和正式标注评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
+当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照、CLI/API/工作台、两仓库 Docker 对照、解析增量和本地强检索实测已落地；推理模型真实接入、Agent 公平对照和正式标注评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
 
 ![真实分析工作台](docs/examples/workbench.png)
 
@@ -36,6 +36,9 @@ uv run reposcope callers SNAPSHOT_ID SYMBOL_ID
 uv run reposcope verify RUN_ID
 # 提交测试任务，需要 worker 和已准备的 Docker profile
 uv run reposcope test RUN_ID
+uv run reposcope status RUN_ID
+# 环境修复后的显式重试（最多3个attempt）
+uv run reposcope test RUN_ID --attempt 2 --reason "Environment prepared"
 ```
 
 API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-Event-ID`；JSON、Markdown、HTML 来自同一报告 revision。测试只在显式请求后执行。
@@ -44,7 +47,7 @@ API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-
 
 目标代码仅由 Docker runner 执行。没有 Docker、镜像或登记 profile 时，显示 `test_environment_unavailable`，不会偷偷在宿主机运行。构建与登记方式见 [执行配置](docs/profiles/README.md)。测试容器使用固定命令、断网、资源上限和独立 Git 快照目录。
 
-开发机本次没有 Docker，已验证执行器参数、取消与恢复契约，但未验证真实容器。`benchmarks/runners/*probe.py` 是可信公开仓库的 **M0 本地环境探针**，不经过产品 runner，不能视为隔离验收。API/worker 默认在宿主机运行，以便 worker 管理测试容器；应用容器方案见 [部署说明](docs/deployment.md)。
+本机已安装 Docker + 独立 Colima 环境，自建fixture与Click/HTTPX固定测试池均完成真实容器验证，取消与超时也实际通过。`benchmarks/runners/*probe.py` 是可信公开仓库的 **M0 本地环境探针**，不经过产品 runner，不能视为隔离验收。API/worker 默认在宿主机运行，以便 worker 管理测试容器；应用容器方案见 [部署说明](docs/deployment.md)。
 
 ## 实测与重放
 
@@ -53,7 +56,9 @@ API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-
 | 检查 | 实测范围 |
 |---|---|
 | pytest 收集 | Click 8.1.8：650；HTTPX 0.28.1：1413 |
-| 同池回归探针 | Click：base 38 passed / 1 skipped，变异 head 4 failed；HTTPX：base 106 passed，变异 head 1 failed |
+| 真实 Docker 同池对照 | Click：base 39 passed，head 35 passed / 4 failed；HTTPX：base 106 passed，head 105 passed / 1 failed；各复跑一次状态一致 |
+| 保守测试选择 | 两池选中 39/39、106/106；缩减率 0%，不宣称节省 |
+| 本地强检索 | 两仓库 4 个英文查询；2 次磁盘重载排名一致，非质量金标 |
 | 全量/解析增量一致性 | 12 条开发变异；以同一 head 的规范化 hash 比较 |
 | 标注状态 | unreviewed；不作为正式质量、召回率或泛化结论 |
 
@@ -61,9 +66,9 @@ API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-
 
 ## 检索与 Agent
 
-默认结构化 diff 分析不依赖模型。标识符/BM25/RRF 可直接运行；`Search.strong_query` 要求本地存在明确 revision 的 Embedding 与 Reranker，缺失时明确失败。它未被默认为已经完成 B1 实验。
+默认结构化 diff 分析不依赖模型。标识符/BM25/RRF 可直接运行；`Search.strong_query` 要求本地存在明确 revision 的 Embedding 与 Reranker，缺失时明确失败。已用固定MiniLM Embedding/CrossEncoder实际完成4个开发查询与资源测量，详情见 [ADR004](docs/decisions/004-local-strong-retrieval.md)；尚未完成正式B1质量比较。
 
-可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。当前 Agent 只补查证据，最多 6 轮、12 次工具、60 秒补查预算，不自行执行 shell 或修改代码；相同查询去重，出错保留确定性报告。模型 token 用量保留，但尚无真实 B4/B3 对照或收益结论。
+可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。默认只补查证据，最多6轮、12次工具、60秒补查预算；只有显式开启 `allow_tests` 才能在预算内选择一次Base/Head验证并读取反馈，不自行执行shell或修改代码。固定流程也支持相同授权与执行器。相同查询去重，出错保留确定性报告；模型API尚未配置，因此未宣称真实B4/B3对照或收益。
 
 ## 开发与文档
 

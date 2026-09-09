@@ -6,10 +6,10 @@ Head: `261d24e05c7712da9d71c99a45eb954e8f994cf6`
 
 ## Potential impact
 
-- [base] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `b597ee1ff131ee846f940fc14577105ec44d33f2fa14ac6b575a2a7136efabc1`
-- [head] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `88b4385be220219582036ad0f8efa83a54d86e5955c7930f8f810b88f9633a85`
-- [base] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `2e285a1c11dfe085a334a8c1540c88140fdf556f89dccc7f10cc1d6288b8ffb7`
-- [head] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `a48b614502de2a1dc6a06876b1c9ea2336f913020f83216bb53e009b38138796`
+- [base] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `8c664f6c04d679ac29c65c293fcafabe9835992873beaf5dffeff5f2a6a2bbab`
+- [head] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `f1e62bc2852727dc65c0caeadba87d728a37766ea9f165f8d2836fee0860e005`
+- [base] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `fc3af97504f7cf051ba2dc559b2314b92194eac9891a873f3c327421ca6f774e`
+- [head] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `689b7c9e12b02826033690b57c2eafd97d98105086ea780d9bd50c51fb2a988e`
 
 ## Test plan
 

@@ -9,6 +9,7 @@ import os
 import shutil
 import subprocess
 import time
+import uuid
 from pathlib import Path
 
 from reposcope.config import Settings
@@ -42,10 +43,10 @@ def commit(root, message):
     return git(root, "rev-parse", "HEAD")
 
 
-def main():
+def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", help="Replay a single case_id")
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     manifests = {
         r["repo_id"]: r
         for r in json.loads((ROOT / "benchmarks/manifests/repositories.json").read_text())["repositories"]
@@ -55,11 +56,14 @@ def main():
         cases = [case for case in cases if case["case_id"] == args.case]
         if not cases:
             parser.error("Unknown case")
+    run_id = "run-" + uuid.uuid4().hex
+    run_directory = ROOT / "artifacts/benchmark-replay" / run_id
+    run_directory.mkdir(parents=True, exist_ok=False)
     results = []
     for case in cases:
-        directory = ROOT / "artifacts/benchmark-replay" / case["case_id"]
-        if directory.exists():
-            shutil.rmtree(directory)
+        # Published reports can retain Git object references indefinitely.
+        # Every invocation owns a new directory; prior runs are never removed.
+        directory = run_directory / case["case_id"]
         root = directory / "repository"
         root.parent.mkdir(parents=True, exist_ok=True)
         if case["repo_id"] == "fixture":
@@ -78,8 +82,10 @@ def main():
         mutation = case["mutation"]
         path = root / mutation["path"]
         source = path.read_text()
-        if mutation["old"] not in source:
-            raise RuntimeError(f"Mutation anchor missing: {case['case_id']}")
+        expected = mutation.get("expected_occurrences", 1)
+        actual = source.count(mutation["old"])
+        if not mutation["old"] or actual != expected:
+            raise RuntimeError(f"Mutation anchor mismatch: {case['case_id']} expected {expected}, found {actual}")
         path.write_text(source.replace(mutation["old"], mutation["new"]))
         head = commit(root, case["case_id"])
         repo = {"repo_id": case["repo_id"], "path": str(root), "name": case["repo_id"]}
@@ -117,12 +123,20 @@ def main():
         results.append(item)
         print(json.dumps(item), flush=True)
     output = ROOT / "benchmarks/results" / (f"{args.case}-index.json" if args.case else "index-consistency.json")
-    output.write_text(
-        json.dumps(
-            {"scope": "single-run parse-cache consistency; all references re-resolved", "cases": results}, indent=2
-        )
-        + "\n"
-    )
+    document = {
+        "scope": "single-run parse-cache consistency; all references re-resolved",
+        "run_id": run_id,
+        "cases": results,
+    }
+    content = json.dumps(document, indent=2) + "\n"
+    (run_directory / "results.json").write_text(content)
+    output.parent.mkdir(parents=True, exist_ok=True)
+    temporary = output.with_name(f".{output.name}.{run_id}.tmp")
+    try:
+        temporary.write_text(content)
+        temporary.replace(output)
+    finally:
+        temporary.unlink(missing_ok=True)
     return int(any(not item["semantic_equal"] or item["full_status"] != "ready" for item in results))
 
 

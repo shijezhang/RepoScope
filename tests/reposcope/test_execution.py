@@ -234,3 +234,57 @@ def test_unconfirmed_cleanup_preserves_checkout_until_recovery(store):
     assert recovered["cleanup_status"] == "completed"
     assert not checkout.exists()
     assert "temporary_directory" not in recovered
+
+
+def test_local_immutable_image_ids_supported_but_mutable_tags_rejected(store):
+    repo = profile(store)
+    runner = TestRunner(store)
+    path = store.settings.home / "profiles/test.json"
+    value = json.loads(path.read_text())
+    value["image"] = "sha256:" + "b" * 64
+    path.write_text(json.dumps(value))
+    assert runner.profile(repo)["image"] == value["image"]
+    value["image"] = "python:3.12-slim"
+    path.write_text(json.dumps(value))
+    with pytest.raises(RepoScopeError):
+        runner.profile(repo)
+
+
+def test_server_plugin_allowlist_accepts_modules_and_rejects_arguments(store):
+    repo = profile(store)
+    runner = TestRunner(store)
+    path = store.settings.home / "profiles/test.json"
+    value = json.loads(path.read_text())
+    value["pytest_plugins"] = ["anyio.pytest_plugin"]
+    path.write_text(json.dumps(value))
+    assert runner.profile(repo)["pytest_plugins"] == ["anyio.pytest_plugin"]
+    for plugin in ["-c evil.ini", "../plugin", "anyio;exit", "no:reposcope_pytest", "reposcope_pytest"]:
+        value["pytest_plugins"] = [plugin]
+        path.write_text(json.dumps(value))
+        with pytest.raises(RepoScopeError):
+            runner.profile(repo)
+
+
+def test_execution_wall_time_persists_on_error_and_reuse(store):
+    repo = profile(store)
+    runner = TestRunner(store)
+    with patch("reposcope.execution.runner.shutil.which", return_value=None):
+        result = runner.collect(snapshot(), repo, "timing")
+        assert result["started_at"] > 0
+        assert result["wall_seconds"] >= 0
+        assert runner.collect(snapshot(), repo, "timing")["wall_seconds"] == result["wall_seconds"]
+
+
+def test_checkout_asset_limit_is_server_bounded(store):
+    repo = profile(store)
+    runner = TestRunner(store)
+    path = store.settings.home / "profiles/test.json"
+    value = json.loads(path.read_text())
+    value["max_checkout_file_bytes"] = 4_000_000
+    path.write_text(json.dumps(value))
+    assert runner.profile(repo)["max_checkout_file_bytes"] == 4_000_000
+    for amount in [0, 20_000_001, "unlimited"]:
+        value["max_checkout_file_bytes"] = amount
+        path.write_text(json.dumps(value))
+        with pytest.raises(RepoScopeError):
+            runner.profile(repo)

@@ -10,11 +10,11 @@
 
 仓库从 `./artifacts/repositories` 只读挂载到 `/repositories`，登记容器内路径。状态持久卷在 `/state`；API 和worker共享同一目录。不要同时启动 Compose worker 和宿主 worker 操作同一状态目录。
 
-本开发机无 Docker，本次未运行 Compose/build；提供的文件需要在有 Docker 的机器验收后，才算部署门槛通过。
+本机Docker与Colima已安装，宿主API/worker与目标测试容器的模式已实际通过；应用Compose镜像尚未实跑，因此该部署方式仍待验收。
 
 ## 取消与恢复
 
-API 只登记任务，worker 通过 SQLite 租约领取，后台心跳续租。取消请求与完成资源回收是不同状态。测试 execution_id 在提交前持久化；worker失联后进入 interrupted，清理已知容器身份，不自动重跑测试。相同计划重复提交返回原 execution_id。
+API 只登记任务，worker 通过 SQLite 租约领取，后台心跳续租。取消请求与完成资源回收是不同状态。测试 execution_id 在提交前持久化；worker失联后进入 interrupted，清理已知容器身份，不自动重跑测试。相同计划与attempt重复提交返回原execution_id；显式重试需理由、前一attempt终态，最多3次。授权分析内测试的任务失联后同样进入interrupted，避免重复模型提交。
 
 ## 资源与产物
 

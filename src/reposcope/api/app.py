@@ -1,5 +1,6 @@
 import asyncio
 import json
+import os
 from pathlib import Path
 
 from fastapi import FastAPI, Header, Query, Request
@@ -9,6 +10,7 @@ from pydantic import BaseModel
 
 from reposcope.config import RepoScopeError, Settings
 from reposcope.graph.store import Store
+from reposcope.jobs.submission import submit_tests, test_attempts
 from reposcope.jobs.worker import TERMINAL
 from reposcope.models import AnalysisInput, RegisterInput, TestRunInput, digest
 from reposcope.reports.render import export
@@ -69,6 +71,7 @@ def create_app(settings=None):
             "version": "0.2.0",
             "docker_available": bool(shutil.which("docker")),
             "worker": "separate process",
+            "model_configured": bool(os.getenv("REPOSCOPE_LLM_MODEL") and os.getenv("REPOSCOPE_LLM_API_KEY")),
         }
 
     @app.get("/api/repositories")
@@ -79,7 +82,14 @@ def create_app(settings=None):
     def register(body: RegisterInput):
         root = validate_repository(body.path, settings)
         repo_id = digest(str(root))[:20]
-        repo = {"repo_id": repo_id, "path": str(root), "name": body.name or root.name, "profile_id": body.profile_id}
+        profile_id = body.profile_id
+        if "profile_id" not in body.model_fields_set:
+            try:
+                profile_id = store.get("repositories", repo_id).get("profile_id")
+            except RepoScopeError as exc:
+                if exc.code != "not_found":
+                    raise
+        repo = {"repo_id": repo_id, "path": str(root), "name": body.name or root.name, "profile_id": profile_id}
         store.put("repositories", repo_id, repo)
         return repo
 
@@ -109,10 +119,12 @@ def create_app(settings=None):
                 job["error"] = json.loads(job["error"])
             except ValueError:
                 pass
-        return {
+        value = {
             key: job[key]
             for key in ["run_id", "status", "payload", "report", "error", "created", "updated", "kind", "cancel"]
         }
+        value["test_attempts"] = test_attempts(store, job["run_id"]) if job["kind"] == "analysis" else []
+        return value
 
     @app.get("/api/analyses")
     def analyses():
@@ -165,14 +177,7 @@ def create_app(settings=None):
 
     @app.post("/api/analyses/{run_id}/test-runs", status_code=202)
     def test_run(run_id: str, body: TestRunInput):
-        job = store.job(run_id)
-        if job["state"] != "completed" or not job["report"]:
-            raise RepoScopeError("snapshot_not_ready", "Wait for completed analysis")
-        if body.plan_id != job["report"]["test_plan"]["plan_id"]:
-            raise RepoScopeError("invalid_plan", "Test plan does not belong to this report")
-        jid = store.enqueue(
-            "test", {"run_id": run_id, "plan_id": body.plan_id}, key="test:" + digest([run_id, body.plan_id])
-        )
+        jid = submit_tests(store, run_id, body)
         return {"execution_id": jid, "status": store.job(jid)["state"]}
 
     @app.get("/api/evidence/{evidence_id}")

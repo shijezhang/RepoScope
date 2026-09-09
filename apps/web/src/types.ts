@@ -46,12 +46,15 @@ export type Report = {
   completeness: unknown;
 };
 export type Run = {
+  test_attempts?: { execution_id: string; attempt: number; status: string }[];
   payload?: {
     repo_id: string;
     base: string;
     head: string;
     mode: "direct" | "pr";
     question?: string;
+    agent?: boolean;
+    allow_tests?: boolean;
   };
   created?: number;
   run_id: string;
@@ -105,7 +108,6 @@ export const terminal = (status: string) =>
 export const statusLabel = (s: string) =>
   ({
     completed: "已完成",
-    complete: "已完成",
     succeeded: "已完成",
     failed: "失败",
     cancelled: "已取消",
@@ -116,6 +118,10 @@ export const statusLabel = (s: string) =>
     inferred: "推断",
     unknown: "未知",
     pending: "未运行",
+    partial: "部分分析",
+    inconclusive: "证据不足",
+    suspected_regression: "疑似回归",
+    complete: "完整报告",
     collection_required: "待收集测试",
     collected: "已收集",
     not_run: "未运行",

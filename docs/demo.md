@@ -1,11 +1,11 @@
-# 3–5分钟演示脚本
+# 3–5分钟演示
 
-先按README启动API与worker，按benchmarks/README准备仓库并执行replay.py。以下全部为真实代码分析，fixture和人工变异需明确说明。
+先按README启动API和worker；Docker使用独立Colima环境。基准仓库已准备时执行replay.py获得新的不可变run，实际路径从benchmarks/results/index-consistency.json的replay_repository读取。不要删除旧run来刷新演示。
 
-1. **0:00–0:40 问题与版本。** 登记 `artifacts/benchmark-replay/click-01/repository` 的绝对路径；base `HEAD~1`、head `HEAD`。展示报告实际SHA，说明用户未提交改动不进入本次分析。
-2. **0:40–1:40 影响证据。** 查看Click types边界变化、两侧符号、上游潜在调用方；点击base源码，展示原始判断。路径只表示可能影响，截断/未知仍保留。可以下载JSON并核对revision。
-3. **1:40–2:40 回归证据。** 打开 `benchmarks/results/regression-probes.json`，展示同测试池base通过/head失败。明确这是可控变异与M0本地探针，产品Docker没有就绪时不声称已容器验证。
-4. **2:40–3:40 未知与失败。** 登记fixture变异仓库，用实际动态调用case（见cases/development.json）展示未知项；点击运行测试，无profile时界面准确显示环境不可用。成功、失败、未知均是产品结果。
-5. **3:40–5:00 工程与局限。** 展示12条解析增量hash结果、取消/恢复设计与交付状态。说明强基线、正式标注和Agent收益尚未验收。
+1. **0:00–0:40 固定版本。** 登记Click case的实际路径，profile为click；填写记录的base/head SHA。展示最终SHA，说明未提交工作区不会混入。
+2. **0:40–1:40 影响证据。** 展示区间边界变化、两侧源码与潜在调用方。图只证明静态关系，未知和截断仍保留。下载JSON核对revision。
+3. **1:40–2:40 真实回归。** 运行登记测试池，或查看同SHA的真实历史：Click base39通过、head4失败；HTTPX base106通过、head1失败。两次观察一致仍不声称排除flaky。显示逐测试两侧与疑似回归。
+4. **2:40–3:40 未知与重试。** 使用dynamic-unknown fixture；展示getattr保留未知。历史环境不足报告可以显式重试，实际UI记录已从attempt1环境不足转为attempt2对照成功。任务完成与分析partial分别显示。
+5. **3:40–5:00 工程与局限。** 展示12条解析一致性、4个真实强检索query与保存的负面结果；测试选择缩减0%，不把子阶段耗时包装为节省。说明推理模型与正式金标仍待完成。
 
-静态示例：`python benchmarks/runners/examples.py` 基于真实变异仓库生成 `docs/examples/*.json|md|html`。这些报告是deterministic analysis示例，明确tests未执行。真实UI脚本为 `apps/web/scripts/live-check.mjs`，需要API、worker、本机Chrome与已重放fixture。
+`benchmarks/runners/examples.py`生成三格式静态分析示例；它们明确没有产品测试执行记录。真实容器结果在public-docker-validation.json，不能把单独宿主探针拼成产品执行。`apps/web/scripts/live-check.mjs`使用真实Chrome，可重放当前API/worker的创建、证据、导出与测试流程，完整参数见脚本。

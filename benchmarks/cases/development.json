@@ -6,7 +6,8 @@
     "mutation": {
       "path": "src/click/types.py",
       "old": "operator.le if self.min_open else operator.lt",
-      "new": "operator.lt if self.min_open else operator.le"
+      "new": "operator.lt if self.min_open else operator.le",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Range inclusive and exclusive minimum tests should detect regression.",
     "annotation_status": "unreviewed",
@@ -20,7 +21,8 @@
     "mutation": {
       "path": "src/click/types.py",
       "old": "return (rv or \"\").split(self.envvar_list_splitter)",
-      "new": "return [rv or \"\"]"
+      "new": "return [rv or \"\"]",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Environment variable splitting consumers should change.",
     "annotation_status": "unreviewed",
@@ -34,7 +36,8 @@
     "mutation": {
       "path": "src/click/types.py",
       "old": "class ParamType:",
-      "new": "class ParamType:\n    # Benchmark documentation-only clarification."
+      "new": "class ParamType:\n    # Benchmark documentation-only clarification.",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Symbols retain behavior; source identity still changes.",
     "annotation_status": "unreviewed",
@@ -48,7 +51,8 @@
     "mutation": {
       "path": "httpx/_status_codes.py",
       "old": "return 200 <= value <= 299",
-      "new": "return 201 <= value <= 299"
+      "new": "return 201 <= value <= 299",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "HTTP 200 success and response status consumers should change.",
     "annotation_status": "unreviewed",
@@ -62,7 +66,8 @@
     "mutation": {
       "path": "httpx/_status_codes.py",
       "old": "return 400 <= value <= 599",
-      "new": "return 500 <= value <= 599"
+      "new": "return 500 <= value <= 599",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Client errors should incorrectly stop counting as errors.",
     "annotation_status": "unreviewed",
@@ -76,7 +81,8 @@
     "mutation": {
       "path": "httpx/_status_codes.py",
       "old": "class codes(IntEnum):",
-      "new": "class codes(IntEnum):\n    # Benchmark documentation-only clarification."
+      "new": "class codes(IntEnum):\n    # Benchmark documentation-only clarification.",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "No observable status behavior change expected.",
     "annotation_status": "unreviewed",
@@ -90,7 +96,8 @@
     "mutation": {
       "path": "calc.py",
       "old": "return amount if amount >= 0 else 0",
-      "new": "return amount + 1 if amount >= 0 else 0"
+      "new": "return amount + 1 if amount >= 0 else 0",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "api.order and positive test should be affected.",
     "annotation_status": "unreviewed",
@@ -104,7 +111,8 @@
     "mutation": {
       "path": "calc.py",
       "old": "def legacy(value):\n    return total(value)\n\n\n",
-      "new": ""
+      "new": "",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Keep deleted legacy base evidence and detect retained import.",
     "annotation_status": "unreviewed",
@@ -118,7 +126,8 @@
     "mutation": {
       "path": "calc.py",
       "old": "def legacy(value):",
-      "new": "def renamed(value):"
+      "new": "def renamed(value):",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Retained caller is stale after definition rename.",
     "annotation_status": "unreviewed",
@@ -131,8 +140,9 @@
     "kind": "dynamic-unknown",
     "mutation": {
       "path": "api.py",
-      "old": "getattr(calc, 'total')(value)",
-      "new": "getattr(calc, 'legacy')(value)"
+      "old": "getattr(calc, \"total\")(value)",
+      "new": "getattr(calc, \"legacy\")(value)",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Dynamic call remains unknown; never claim proven static target.",
     "annotation_status": "unreviewed",
@@ -146,7 +156,8 @@
     "mutation": {
       "path": "api.py",
       "old": "from calc import Base, legacy, total",
-      "new": "from calc import Base, legacy, total\nFEATURE_FLAG = True"
+      "new": "from calc import Base, legacy, total\nFEATURE_FLAG = True",
+      "expected_occurrences": 1
     },
     "expected_review_hypothesis": "Module-level change should retain module evidence.",
     "annotation_status": "unreviewed",
@@ -160,7 +171,8 @@
     "mutation": {
       "path": "calc.py",
       "old": "return total(value)\n",
-      "new": "return total(value + 1)\n"
+      "new": "return total(value + 1)\n",
+      "expected_occurrences": 2
     },
     "expected_review_hypothesis": "Inherited price and legacy calls both change; dispatch may remain candidate.",
     "annotation_status": "unreviewed",

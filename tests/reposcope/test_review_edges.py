@@ -124,3 +124,26 @@ def test_imported_definition_reassigned_in_source_is_not_resolved(store, git_rep
     )
     snap = build_snapshot(store, repo, sha)
     assert ("target", "resolved") not in calls(snap, "caller")
+
+
+def test_repeated_definition_calls_and_containment_use_source_owner(store, git_repo):
+    repo, commit, _ = git_repo
+    sha = commit(
+        {
+            "a.py": "def first():\n    pass\ndef second():\n    pass\ndef caller():\n    return first()\ndef caller():\n    return second()\nclass C:\n    def old(self):\n        return first()\nclass C:\n    def new(self):\n        return second()\n"
+        }
+    )
+    snap = build_snapshot(store, repo, sha)
+    symbols = {s.symbol_id: s for s in snap.symbols}
+    owners = sorted((s for s in snap.symbols if s.qualname == "caller"), key=lambda s: s.start)
+    for owner, expected in zip(owners, ["first", "second"]):
+        targets = [
+            symbols[r.target_id].qualname
+            for r in snap.relations
+            if r.relation_type == "CALLS" and r.source_id == owner.symbol_id
+        ]
+        assert targets == [expected]
+    for relation in snap.relations:
+        if relation.relation_type == "CONTAINS":
+            source, target = symbols[relation.source_id], symbols[relation.target_id]
+            assert source.start <= target.start <= target.end <= source.end

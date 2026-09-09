@@ -69,7 +69,8 @@ class TestRunner:
             if cleaned and checkout:
                 directory = Path(checkout)
                 if (
-                    directory.parent.resolve() == Path(tempfile.gettempdir()).resolve()
+                    directory.parent.resolve()
+                    in {Path(tempfile.gettempdir()).resolve(), (self.store.settings.home / "execution-tmp").resolve()}
                     and directory.name.startswith("reposcope-test-")
                     and not directory.is_symlink()
                 ):
@@ -91,13 +92,37 @@ class TestRunner:
             profile = json.loads(path.read_text())
         except (OSError, ValueError) as exc:
             raise RepoScopeError("test_environment_unavailable", "Test profile is unavailable") from exc
-        allowed = {"image", "python", "timeout", "memory", "cpus", "pids_limit", "test_paths"}
-        if set(profile) - allowed or not re.fullmatch(r"[^\s]+@sha256:[a-f0-9]{64}", profile.get("image", "")):
+        allowed = {
+            "image",
+            "python",
+            "timeout",
+            "memory",
+            "cpus",
+            "pids_limit",
+            "test_paths",
+            "pytest_plugins",
+            "max_checkout_file_bytes",
+        }
+        if set(profile) - allowed or not re.fullmatch(r"(?:[^\s]+@)?sha256:[a-f0-9]{64}", profile.get("image", "")):
             raise RepoScopeError(
                 "test_environment_unavailable", "Profile requires immutable image digest and supported fields"
             )
         if profile.get("python", "python") not in {"python", "python3", "/usr/local/bin/python"}:
             raise RepoScopeError("test_environment_unavailable", "Unsupported interpreter")
+        plugins = profile.get("pytest_plugins", [])
+        if (
+            not isinstance(plugins, list)
+            or len(plugins) > 16
+            or any(
+                not isinstance(plugin, str)
+                or not re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*)*", plugin)
+                or plugin == "reposcope_pytest"
+                for plugin in plugins
+            )
+        ):
+            raise RepoScopeError(
+                "test_environment_unavailable", "Plugins must be explicit Python module names in the server profile"
+            )
         paths = profile.get("test_paths", ["tests"])
         if (
             not isinstance(paths, list)
@@ -116,6 +141,9 @@ class TestRunner:
                 not 0 < float(profile.get("timeout", 120)) <= 3600
                 or not 0 < float(profile.get("cpus", 1)) <= 16
                 or not 16 <= int(profile.get("pids_limit", 128)) <= 4096
+                or not 1_000
+                <= int(profile.get("max_checkout_file_bytes", self.store.settings.max_file_bytes))
+                <= 20_000_000
             ):
                 raise ValueError()
             if not re.fullmatch(r"[1-9][0-9]*[mg]", profile.get("memory", "512m")):
@@ -124,7 +152,7 @@ class TestRunner:
             raise RepoScopeError("test_environment_unavailable", "Invalid resource limits")
         return profile
 
-    def export_tree(self, snapshot, repo, destination):
+    def export_tree(self, snapshot, repo, destination, max_file_bytes=None):
         """Git object reads include assets/configs, independent of the parser file manifest."""
         root = repo.get("path") or repo.get("source")
 
@@ -151,7 +179,7 @@ class TestRunner:
             total += size
             if (
                 count > self.store.settings.max_files
-                or size > self.store.settings.max_file_bytes
+                or size > (max_file_bytes if max_file_bytes is not None else self.store.settings.max_file_bytes)
                 or total > self.store.settings.max_total_bytes
             ):
                 raise RepoScopeError("budget_exceeded", "Execution checkout exceeds file budget")
@@ -171,6 +199,7 @@ class TestRunner:
         return self._execute(snapshot, repo, nodeids, execution_id, cancelled, False)
 
     def _execute(self, snapshot, repo, nodeids, execution_id, cancelled, collect):
+        started_at, started_clock = time.time(), time.perf_counter()
         profile_error = None
         try:
             profile = self.profile(repo)
@@ -180,6 +209,7 @@ class TestRunner:
         container = "reposcope-" + digest(execution_id)[:32]
         result = {
             "execution_id": execution_id,
+            "started_at": started_at,
             "snapshot_id": snapshot.snapshot_id,
             "status": "preparing",
             "mode": "collect" if collect else "run",
@@ -223,14 +253,16 @@ class TestRunner:
                 )
             ):
                 raise RepoScopeError("invalid_nodeid", "Invalid repository-relative pytest nodeid")
-            temp = tempfile.mkdtemp(prefix="reposcope-test-")
+            temp_root = self.store.settings.home / "execution-tmp"
+            temp_root.mkdir(parents=True, exist_ok=True)
+            temp = tempfile.mkdtemp(prefix="reposcope-test-", dir=temp_root)
             directory = Path(temp)
             result["temporary_directory"] = str(directory)
             self._save(execution_id, result)
             work, output, control = (directory / name for name in ("work", "output", "control"))
             for path in (work, output, control):
                 path.mkdir()
-            suite_hash = self.export_tree(snapshot, repo, work)
+            suite_hash = self.export_tree(snapshot, repo, work, max_file_bytes=profile.get("max_checkout_file_bytes"))
             expected = binding(snapshot, digest(profile), suite_hash)
             result.update(expected)
             manifest = getattr(self, "_export_manifest", None)
@@ -319,6 +351,8 @@ class TestRunner:
                 "-p",
                 "no:cacheprovider",
             ]
+            for plugin in profile.get("pytest_plugins", []):
+                command.extend(["-p", plugin])
             if collect:
                 command.append("--collect-only")
             command.extend(["--", *(nodeids if nodeids is not None else profile.get("test_paths", ["tests"]))])
@@ -392,6 +426,7 @@ class TestRunner:
             if temp and result.get("cleanup_status") != "unconfirmed":
                 shutil.rmtree(temp)
                 result.pop("temporary_directory", None)
+            result["wall_seconds"] = time.perf_counter() - started_clock
             self._save(execution_id, result)
 
     @staticmethod

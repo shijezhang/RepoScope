@@ -40,7 +40,7 @@ class Snapshot(BaseModel):
     commit_sha: str
     tree_hash: str
     manifest_hash: str
-    parser_version: str = "ast312-resolver-v2"
+    parser_version: str = "ast312-resolver-v3"
     status: str = "ready"
     files: dict[str, str]
     symbols: list[Symbol]
@@ -57,6 +57,7 @@ class AnalysisInput(BaseModel):
     mode: Literal["direct", "pr"] = "direct"
     question: str = Field(default="", max_length=4000)
     agent: bool = False
+    allow_tests: bool = False
 
 
 class RegisterInput(BaseModel):
@@ -67,6 +68,8 @@ class RegisterInput(BaseModel):
 
 class TestRunInput(BaseModel):
     plan_id: str
+    attempt: int = Field(default=1, ge=1, le=3)
+    reason: str | None = Field(default=None, max_length=500)
 
 
 class Claim(BaseModel):

@@ -1,0 +1,84 @@
+{
+  "kind": "actual Docker fixed worker flow",
+  "run_id": "2ab825a9ea4749c3b9cb7d8da92a3f28",
+  "parser_version": "ast312-resolver-v3",
+  "status": "completed",
+  "completeness": "partial",
+  "revision": 2,
+  "model": null,
+  "explicit_allow_tests": true,
+  "wall_seconds": 5.810463166970294,
+  "comparison": {
+    "comparable": true,
+    "status": "suspected_regression",
+    "tests": [
+      {
+        "nodeid": "test_calc.py::test_legacy",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_negative",
+        "base_status": "passed",
+        "head_status": "passed",
+        "finding": "passed_both"
+      },
+      {
+        "nodeid": "test_calc.py::test_plugin",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      },
+      {
+        "nodeid": "test_calc.py::test_positive",
+        "base_status": "passed",
+        "head_status": "failed",
+        "finding": "suspected_regression"
+      }
+    ],
+    "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+  },
+  "events": [
+    {
+      "event_id": 1,
+      "state": "queued",
+      "message": "Task queued"
+    },
+    {
+      "event_id": 2,
+      "state": "preparing",
+      "message": "Worker acquired task"
+    },
+    {
+      "event_id": 3,
+      "state": "analyzing",
+      "message": "Comparing both immutable snapshots"
+    },
+    {
+      "event_id": 4,
+      "state": "analyzing",
+      "message": "Deterministic report saved"
+    },
+    {
+      "event_id": 5,
+      "state": "testing",
+      "message": "Collecting tests in the registered isolated environment"
+    },
+    {
+      "event_id": 6,
+      "state": "analyzing",
+      "message": "Test evidence appended as new report revision"
+    },
+    {
+      "event_id": 7,
+      "state": "analyzing",
+      "message": "Validation feedback saved"
+    },
+    {
+      "event_id": 8,
+      "state": "completed",
+      "message": "completed"
+    }
+  ]
+}
