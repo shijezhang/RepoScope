@@ -71,3 +71,5 @@
 - 独立子任务新增indexing/chunks.py与22项测试：完整行、完整签名/声明、范围/content_hash校验、稳定chunk ID、超限明确partial。主Agent已读代码并统一验证。
 - 全量96项pytest通过，ruff check/format、diff-check通过。分块暂未接Search，下一轮接真实tokenizer并验证chunk到parent聚合。
 - 下一轮优先：接线长函数分块；强检索实验仍只本地公开仓库，不向模型API扩大源码范围。可选将已验证短决策配置用于本地工作台，需晨前再做最终UI/打包/Compose核对。
+
+- 本轮提交f98e1d2已推送；CI请下一轮核对。工作台、wheel、Compose仍须晨前按最终源码重新核验，不沿用旧source_matches_current标记。
