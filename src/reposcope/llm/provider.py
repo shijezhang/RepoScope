@@ -1,6 +1,7 @@
 """OpenAI-compatible structured decision adapter. Credentials are never persisted."""
 
 import os
+from urllib.parse import urlsplit
 
 import httpx
 from pydantic import BaseModel, Field, ValidationError
@@ -26,6 +27,19 @@ class Provider:
         ):
             raise RepoScopeError("model_scope_changed", "Provider no longer matches the reviewed destination/model")
         self.base_url, self.model, self.key = config["base_url"], config["model"], config["api_key"]
+        self.request_options = {}
+        thinking = os.getenv("REPOSCOPE_LLM_THINKING")
+        if thinking:
+            if (
+                thinking not in {"enabled", "disabled"}
+                or urlsplit(self.base_url).hostname != "api.deepseek.com"
+                or not self.model.startswith("deepseek-v4-")
+            ):
+                raise RepoScopeError(
+                    "model_configuration_error",
+                    "Explicit thinking mode requires a supported DeepSeek v4 endpoint and enabled/disabled value",
+                )
+            self.request_options["thinking"] = {"type": thinking}
         self.diagnostics = []
         self.usage = {
             "input_tokens": 0,
@@ -44,6 +58,7 @@ class Provider:
         diagnostic = {
             "request_number": self.usage["requests"],
             "request_upper_bound": request_upper_bound(context, tools),
+            "request_options": self.request_options,
         }
         self.diagnostics.append(diagnostic)
         try:
@@ -57,6 +72,7 @@ class Provider:
                         "response_format": {"type": "json_object"},
                         "max_tokens": OUTPUT_TOKENS,
                         "temperature": 0,
+                        **self.request_options,
                     },
                 )
                 response.raise_for_status()

@@ -60,3 +60,14 @@
 - 下一轮：处理已耗尽的工具预算与重复schema开销（run_tests执行后不应仍向模型提供可再次执行的schema）；研究明确的结构化短决策输出配置，保持模型名称、输出/总预算和数据范围不变，保留本次负面结果。不要盲目增加max_tokens或重复请求。
 
 - 本轮核心提交：1f9af01；已推送，[CI通过](https://github.com/shijezhang/RepoScope/actions/runs/34391095267)。原始失败文件SHA256仍为699c9f0a6cd9f82099a7d4324a28dbb60e7f77009d9cc8f5d848028a931ccdff。
+
+### 03:00轮：结构化短决策、真实反馈收尾与分块基础
+
+- 核对官方DeepSeek thinking参数，新增显式可选disabled/enabled，仅支持指定DeepSeek v4服务；未改用户配置文件、模型名、600输出或12000总预算。默认请求行为不变。
+- 03:00独立实验run-3efbebc3f3a044a5b052a879e9934a7d（agent-night-0300.json）仍失败：一例重复get_test_candidates；一例明确缺少summary，不再是截断。保留结果。
+- 修复真实工具职责说明和完整JSON示例；候选ID向模型有界摘要但执行计划完整；run_tests耗尽后移出可用schema，后端防重仍保留。
+- 03:15新实验run-17da207b8d9b48f4a60f5c6d794cd78b（agent-night-0315.json）：两Agent均实际触发一次Base/Head，模型消费测试反馈后model_finished，无字段错误。fixture-01观察3条疑似回归，fixture-04保持passed_both与动态限制。
+- 两Agent分别11.35/10.52秒、3/4请求、6353/7679总tokens；同轮fixed分别5.60/4.60秒。模型更慢，不能宣称收益。所有上下文准入、数据范围和每任务预算已核验，未覆盖旧实验。
+- 独立子任务新增indexing/chunks.py与22项测试：完整行、完整签名/声明、范围/content_hash校验、稳定chunk ID、超限明确partial。主Agent已读代码并统一验证。
+- 全量96项pytest通过，ruff check/format、diff-check通过。分块暂未接Search，下一轮接真实tokenizer并验证chunk到parent聚合。
+- 下一轮优先：接线长函数分块；强检索实验仍只本地公开仓库，不向模型API扩大源码范围。可选将已验证短决策配置用于本地工作台，需晨前再做最终UI/打包/Compose核对。

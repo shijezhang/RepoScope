@@ -250,6 +250,8 @@ def test_authorized_analysis_validation_and_agent_feedback(store, git_repo):
 
         def decide(self, context, tools):
             if called:
+                assert "run_tests" not in tools
+                assert context["test_execution_allowed"] is False
                 assert context["prior_results"][0]["result"]["status"] == "test_environment_unavailable"
                 return Decision(tool="finish", summary="Environment unavailable; retain partial report")
             assert "run_tests" in tools
@@ -287,3 +289,16 @@ def test_installed_application_can_serve_explicit_web_build(store, tmp_path, mon
     assert response.status_code == 200
     assert "RepoScope installation test" in response.text
     assert client.get("/api/health").json()["status"] == "ok"
+
+
+def test_candidate_tool_bounds_identifiers_without_modifying_execution_plan(store, git_repo):
+    repo, commit, _ = git_repo
+    snap = build_snapshot(store, repo, commit(BASE))
+    report = analyze(store, repo, snap, snap, "candidate-summary")
+    report["test_plan"]["uncovered"] = ["symbol-" + str(i) for i in range(50)]
+    result = Controller(store, report).call("get_test_candidates", {"run_id": report["run_id"]})
+    assert result["collection_required"] is True
+    assert result["nodeids"] == []
+    assert result["uncovered_total"] == 50 and result["uncovered_truncated"] is True
+    assert len(result["uncovered"]) == 6
+    assert len(report["test_plan"]["uncovered"]) == 50

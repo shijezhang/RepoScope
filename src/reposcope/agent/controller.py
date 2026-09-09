@@ -107,7 +107,14 @@ class Controller:
         if name == "get_test_candidates":
             if args.run_id != self.report["run_id"]:
                 raise RepoScopeError("invalid_run", "Tool requested another analysis")
-            return self.report["test_plan"]
+            plan = dict(self.report["test_plan"])
+            for field, maximum in (("nodeids", 20), ("uncovered", 6), ("coverage_evidence_ids", 6)):
+                values = plan.get(field, [])
+                plan[field] = values[:maximum]
+                plan[field + "_total"] = len(values)
+                plan[field + "_truncated"] = len(values) > maximum
+            plan["collection_required"] = plan["status"] == "collection_required"
+            return plan
         if name == "read_evidence":
             value = self.store.get("evidence", args.evidence_id)
             if value["snapshot_id"] not in self.allowed:
@@ -161,6 +168,8 @@ class Controller:
     def run(self, cancelled=lambda: False):
         started, results = time.monotonic(), []
         context_packing = []
+        completion_reason = "decision_limit"
+        decision_after_test_feedback = False
         schemas = {
             name: cls.model_json_schema()
             for name, cls in TOOLS.items()
@@ -186,12 +195,26 @@ class Controller:
                 ):
                     raise RepoScopeError("budget_exceeded", "Agent lookup budget exhausted")
                 remaining = 12000 - sum(self.provider.usage[k] for k in ("input_tokens", "output_tokens"))
+                available_schemas = {
+                    name: schema for name, schema in schemas.items() if name != "run_tests" or not self.test_submitted
+                }
                 context, packing = pack_context(
-                    self.report, results, schemas, remaining, self.test_executor is not None
+                    self.report,
+                    results,
+                    available_schemas,
+                    remaining,
+                    self.test_executor is not None and not self.test_submitted,
                 )
+                packing["available_tools"] = sorted(available_schemas)
+                packing["included_result_tools"] = [row["tool"] for row in context["prior_results"]]
                 context_packing.append(packing)
-                decision = self.provider.decide(context, schemas)
+                decision = self.provider.decide(context, available_schemas)
+                decision_after_test_feedback |= any(
+                    row["tool"] in {"run_tests", "get_test_result"} and row["result"].get("total_test_results", 0) > 0
+                    for row in context["prior_results"]
+                )
                 if decision.tool == "finish":
+                    completion_reason = "model_finished"
                     break
                 key = digest([run_id, decision.tool, decision.arguments])
                 if key in seen:
@@ -211,6 +234,7 @@ class Controller:
             else:
                 self.report["limitations"].append("Agent decision rounds exhausted")
         except (RepoScopeError, ValueError) as exc:
+            completion_reason = exc.code if isinstance(exc, RepoScopeError) else "invalid_tool_arguments"
             self.report["limitations"].append(str(exc))
         self.report["tool_calls"] = results
         self.report["metadata"]["agent"] = {
@@ -218,7 +242,10 @@ class Controller:
             "usage": self.provider.usage,
             "provider_diagnostics": getattr(self.provider, "diagnostics", []),
             "seconds": time.monotonic() - started,
-            "prompt_version": "lookup-v2-whole-evidence",
+            "prompt_version": "lookup-v4-explicit-contracts",
+            "completion_reason": completion_reason,
+            "decision_after_test_feedback": decision_after_test_feedback,
+            "request_options": getattr(self.provider, "request_options", {}),
             "context_packing": context_packing,
             "mode": "bounded investigation and validation"
             if self.test_executor is not None

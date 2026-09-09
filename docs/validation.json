@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 71,
+    "passed": 96,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -154,5 +154,13 @@
     "cases": 2,
     "original_budget_unchanged": true,
     "remaining_failure": "fixture-04 finish_reason=length with empty JSON; fixture-01 no model post-test closure"
-  }
+  },
+  "overnight_agent_0315": {
+    "result": "benchmarks/results/agent-night-0315.json",
+    "cases": 2,
+    "validations_and_model_feedback_completed": 2,
+    "same_budget": true,
+    "quality_benefit_claim": false
+  },
+  "chunking": "22 unit tests passed; not yet connected to Search"
 }
