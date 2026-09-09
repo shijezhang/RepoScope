@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
+from reposcope.agent.context import pack_context
 from reposcope.config import RepoScopeError
 from reposcope.llm.provider import Provider
 from reposcope.models import digest
@@ -159,6 +160,7 @@ class Controller:
 
     def run(self, cancelled=lambda: False):
         started, results = time.monotonic(), []
+        context_packing = []
         schemas = {
             name: cls.model_json_schema()
             for name, cls in TOOLS.items()
@@ -183,31 +185,11 @@ class Controller:
                     or sum(self.provider.usage[k] for k in ("input_tokens", "output_tokens")) >= 12000
                 ):
                     raise RepoScopeError("budget_exceeded", "Agent lookup budget exhausted")
-                context = {
-                    "run_id": self.report["run_id"],
-                    "question": self.report["question"],
-                    "base": self.report["base"],
-                    "head": self.report["head"],
-                    "limitations": self.report["limitations"],
-                    "test_plan": {key: self.report["test_plan"][key] for key in ("plan_id", "status")},
-                    "test_execution_allowed": self.test_executor is not None,
-                    "impact_summary": [
-                        {
-                            "symbol_id": item["symbol"]["symbol_id"],
-                            "path": item["symbol"]["path"],
-                            "qualname": item["symbol"]["qualname"],
-                            "side": item["side"],
-                            "distance": item["distance"],
-                            "evidence_id": item["evidence_id"],
-                        }
-                        for item in self.report["impacts"][:6]
-                    ],
-                    "prior_results": results[-3:],
-                }
                 remaining = 12000 - sum(self.provider.usage[k] for k in ("input_tokens", "output_tokens"))
-                # UTF-8 bytes are a conservative input-token upper bound; reserve output and system/schema space.
-                if len(json.dumps(context).encode()) + len(json.dumps(schemas).encode()) + 2000 > remaining:
-                    raise RepoScopeError("budget_exceeded", "Agent context exceeds remaining input budget")
+                context, packing = pack_context(
+                    self.report, results, schemas, remaining, self.test_executor is not None
+                )
+                context_packing.append(packing)
                 decision = self.provider.decide(context, schemas)
                 if decision.tool == "finish":
                     break
@@ -236,7 +218,8 @@ class Controller:
             "usage": self.provider.usage,
             "provider_diagnostics": getattr(self.provider, "diagnostics", []),
             "seconds": time.monotonic() - started,
-            "prompt_version": "lookup-v1",
+            "prompt_version": "lookup-v2-whole-evidence",
+            "context_packing": context_packing,
             "mode": "bounded investigation and validation"
             if self.test_executor is not None
             else "read-only gap investigation",

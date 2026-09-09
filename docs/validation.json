@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 66,
+    "passed": 71,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -128,7 +128,8 @@
     "clean_locked_install": "passed",
     "cli_help": "passed",
     "api_route_count": 17,
-    "wheel_matches_source": true
+    "wheel_matches_source": false,
+    "overnight_note": "Source changed after prior wheel/Compose checks; rebuild and verify final snapshot before morning handoff"
   },
   "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
   "fixed_worker_docker_flow": "completed",
@@ -142,9 +143,16 @@
     "status": "passed",
     "mode": "analysis-only",
     "source_files_verified": 22,
-    "source_matches_current": true,
+    "source_matches_current": false,
     "model_called": false,
     "target_pytest_called": false
   },
-  "ci_import_fix": "explicit repository pythonpath for benchmark test imports"
+  "ci_import_fix": "explicit repository pythonpath for benchmark test imports",
+  "overnight_agent_0230": {
+    "result": "benchmarks/results/agent-night-0230.json",
+    "agent_validations_triggered": 1,
+    "cases": 2,
+    "original_budget_unchanged": true,
+    "remaining_failure": "fixture-04 finish_reason=length with empty JSON; fixture-01 no model post-test closure"
+  }
 }

@@ -46,3 +46,15 @@
 - 本机已启动临时caffeinate，启动后6小时40分钟自动退出；仍需保持Codex应用运行和网络可用。
 
 - 常驻API/worker尚未因本轮修改重启；晨前完成代码后重启并核验本机health与真实界面。
+
+### 02:30轮：完整证据预算打包与真实验证
+
+- 新增llm/messages.py统一实际请求序列化与预算计算；输出仍600 tokens，累计仍12000，另保留512 framing余量。按实际system/context UTF-8上界而非重复估算。
+- 新增agent/context.py：按完整结果/限制/符号摘要准入，优先最新工具反馈，遗漏明确计数；不切断源码或签名。
+- 保存原失败作为回归测试，在原fixture-01停止点相同剩余预算下可容纳完整最近证据。
+- 真实新实验run-94512b88b97e4d068473d9da5008ee31，结果agent-night-0230.json；继承原审批scope并运行前后核验，原agent-validation.json未变。
+- fixture-01 Agent：3次请求，5929输入/1278输出，28.18秒；实际触发run_tests并生成一组Base/Head结果（改进：原来没有验证）。但下一轮仍因剩余上下文预算不足停止，没有模型再次消费测试反馈。
+- fixture-04 Agent：3次请求，5847输入/1598输出，27.63秒，未触发测试。现在有明确诊断：finish_reason=length、content_characters=0、json_invalid；只能对本次失败认定生成上限耗尽且JSON为空，不反推旧失败原因。
+- 同轮固定流程分别6.98/6.73秒完成测试。不能宣称Agent更快或正式质量收益。
+- 71项全量pytest通过、ruff check/format与diff-check通过；新实验不覆盖旧失败。
+- 下一轮：处理已耗尽的工具预算与重复schema开销（run_tests执行后不应仍向模型提供可再次执行的schema）；研究明确的结构化短决策输出配置，保持模型名称、输出/总预算和数据范围不变，保留本次负面结果。不要盲目增加max_tokens或重复请求。
