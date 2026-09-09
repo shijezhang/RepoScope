@@ -1,5 +1,6 @@
 """Offline, non-gold strong retrieval probe against fixed public snapshots."""
 
+import argparse
 import gc
 import importlib.metadata
 import json
@@ -35,6 +36,16 @@ QUERIES = {
 
 
 def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument(
+        "--output",
+        default="strong-retrieval-chunks.json",
+        help="Result filename; original baseline is never overwritten",
+    )
+    parser.add_argument("--cache-dir", default="artifacts/model-probe/chunk-vectors")
+    args = parser.parse_args()
+    if Path(args.output).name != args.output or not args.output.endswith(".json"):
+        parser.error("Output must be a JSON filename")
     os.chdir(ROOT)
     result = {
         "annotation_status": "unreviewed",
@@ -45,14 +56,14 @@ def main():
         "device": "cpu",
         "limitations": [
             "Not a held-out evaluation; no relevance labels or quality claims.",
-            "General English models, not code-trained models; long text is truncated to model limits.",
+            "General English models, not code-trained models; oversized complete declarations/lines remain explicit retrieval gaps, never silently truncated.",
             "No B2/B3/B4 quality comparison and no API or external inference service.",
         ],
         "queries": [],
         "disk_reload_checks": [],
         "torch_threads": 4,
     }
-    output = ROOT / "benchmarks/results/strong-retrieval-probe.json"
+    output = ROOT / "benchmarks/results" / args.output
 
     def save():
         output.write_text(json.dumps(result, indent=2) + "\n")
@@ -66,6 +77,7 @@ def main():
             for name in ["sentence-transformers", "transformers", "torch", "numpy", "huggingface-hub"]
         }
         models = json.loads((ROOT / "benchmarks/manifests/models.json").read_text())
+        models["cache_dir"] = args.cache_dir
         result["models"] = models
         result["acquisition"] = {
             kind: json.loads((ROOT / f"artifacts/models/{kind}-acquisition.json").read_text())

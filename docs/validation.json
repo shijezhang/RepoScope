@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 96,
+    "passed": 103,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -162,5 +162,15 @@
     "same_budget": true,
     "quality_benefit_claim": false
   },
-  "chunking": "22 unit tests passed; not yet connected to Search"
+  "chunking": {
+    "state": "integrated into strong retrieval",
+    "query_probes": 4,
+    "disk_reloads_equal": 2,
+    "corpus_states": [
+      "partial",
+      "partial"
+    ],
+    "new_fake_model_integration_tests": 7,
+    "result": "benchmarks/results/strong-retrieval-chunks-0330.json"
+  }
 }

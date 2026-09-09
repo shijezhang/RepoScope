@@ -73,3 +73,13 @@
 - 下一轮优先：接线长函数分块；强检索实验仍只本地公开仓库，不向模型API扩大源码范围。可选将已验证短决策配置用于本地工作台，需晨前再做最终UI/打包/Compose核对。
 
 - 本轮提交f98e1d2已推送；CI请下一轮核对。工作台、wheel、Compose仍须晨前按最终源码重新核验，不沿用旧source_matches_current标记。
+
+### 03:30轮：长函数分块接入强检索
+
+- 新增retrieval/corpus.py；Search强检索用实际Embedding/CrossEncoder tokenizer无截断计数，按保留query/pair空间的预算构建ready块；超限query拒绝，超限源码保留partial统计不送模型。
+- Dense先按chunk再聚合父符号，最多两个候选块重排，每父只返回一项且附可验证chunk源码/行/hash；所有pair在模型调用前复核预算。缓存绑定chunk内容/父映射/分块和模型配置，不复用旧整符号缓存。
+- 7项新假模型集成测试通过，覆盖实际输入预算、后段命中、父级去重、partial/全超限、query预算与cache；主Agent已审查分块实现和全部结果。
+- 真实本地重模型4查询和2次磁盘重载通过，排名相同/分数差0。Click3258 ready/75 oversized，完全覆盖1422/1452父；HTTPX2802/85，1251/1301父。两语料均partial，质量无金标，部分首位仍为模块/测试。
+- 首次总时长97.11/51.80秒，warm0.51/0.61秒；重载18.11/16.03秒。新结果strong-retrieval-chunks-0330.json，旧强检索记录未覆盖。所有推理在本地CPU，没有API外发。
+- 下一轮优先M5：实际模型tokenizer/config文件也应核验并纳入cache binding（当前只强校验weights，revision/hash声明还不足以发现本地tokenizer被改动）；然后设计统一发布边界。勿把当前vector artifact ready误称全语料ready。
+- Corpus重建当前仍较慢，可先持久化可验证chunk/稀疏派生产物，再用bundle同时引用graph/chunks/vector；不要为了速度跳过内容/预算验证。
