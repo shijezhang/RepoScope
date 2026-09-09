@@ -4,10 +4,14 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 55,
+    "passed": 66,
     "failed": 0,
     "warnings": 2,
-    "warning_scope": "Starlette/httpx TestClient deprecation"
+    "warning_scope": "Starlette/httpx TestClient deprecation",
+    "entrypoints_verified": [
+      "python -m pytest",
+      "pytest console entrypoint"
+    ]
   },
   "lint": {
     "ruff_check": "passed",
@@ -107,7 +111,16 @@
     "gold_labels": false,
     "max_rss_mb_approx": 837
   },
-  "agent_comparison": "not_run: inference model not configured",
+  "agent_comparison": {
+    "status": "executed_negative",
+    "cases": 2,
+    "agent_validations_completed": 0,
+    "requests": 4,
+    "input_tokens": 8658,
+    "output_tokens": 1497,
+    "automatic_retries": 0,
+    "scope": "explicitly approved fixture-01 and fixture-04 only"
+  },
   "production_claim": false,
   "packaging": {
     "sdist": "passed",
@@ -119,5 +132,19 @@
   },
   "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
   "fixed_worker_docker_flow": "completed",
-  "github_ci_previous_checkpoint": "https://github.com/shijezhang/RepoScope/actions/runs/34371607395"
+  "github_ci_previous_checkpoint": "https://github.com/shijezhang/RepoScope/actions/runs/34371607395",
+  "provider_connectivity": {
+    "status": "passed",
+    "model": "deepseek-v4-pro",
+    "repository_context_sent": false
+  },
+  "compose": {
+    "status": "passed",
+    "mode": "analysis-only",
+    "source_files_verified": 22,
+    "source_matches_current": true,
+    "model_called": false,
+    "target_pytest_called": false
+  },
+  "ci_import_fix": "explicit repository pythonpath for benchmark test imports"
 }

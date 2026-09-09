@@ -1,17 +1,36 @@
 services:
   api:
-    build: .
-    ports: ["127.0.0.1:8000:8000"]
+    image: ${REPOSCOPE_APP_IMAGE:-reposcope-app:local}
+    build:
+      context: .
+      args:
+        NODE_IMAGE: ${REPOSCOPE_NODE_IMAGE:-node:22-bookworm-slim}
+        PYTHON_IMAGE: ${REPOSCOPE_PYTHON_IMAGE:-python:3.12-slim}
+        GIT_VERSION: ${REPOSCOPE_GIT_VERSION:-1:2.47.3-0+deb13u1}
+    ports: ["127.0.0.1:${REPOSCOPE_HTTP_PORT:-8000}:8000"]
     volumes:
-      - reposcope-state:/state
-      - ./artifacts/repositories:/repositories:ro
+      - ${REPOSCOPE_STATE_MOUNT:-reposcope-state}:/state
+      - ${REPOSCOPE_REPOSITORY_DIR:-./artifacts/repositories}:/repositories:ro
+    healthcheck:
+      test: ["CMD", "/app/.venv/bin/python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health', timeout=2)"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    cpus: 1
+    mem_limit: 512m
     restart: unless-stopped
   worker:
-    build: .
+    image: ${REPOSCOPE_APP_IMAGE:-reposcope-app:local}
     command: ["/app/.venv/bin/reposcope", "worker"]
+    depends_on:
+      api:
+        condition: service_healthy
     volumes:
-      - reposcope-state:/state
-      - ./artifacts/repositories:/repositories:ro
+      - ${REPOSCOPE_STATE_MOUNT:-reposcope-state}:/state
+      - ${REPOSCOPE_REPOSITORY_DIR:-./artifacts/repositories}:/repositories:ro
+    cpus: 1
+    mem_limit: 512m
     restart: unless-stopped
 volumes:
   reposcope-state:

@@ -1,0 +1,23 @@
+{
+  "state": "authorized",
+  "recorded_at": "2026-09-09T17:15:51.726528+00:00",
+  "user_confirmation": "同意，仅按预览范围发送",
+  "destination": "https://api.deepseek.com",
+  "model": "deepseek-v4-pro",
+  "preview": "docs/examples/agent-data-preview.json",
+  "preview_sha256": "ed97e10d66d4eb2eaaae516941f5e645dde3bc1ef45ba0b076a108610dc199b8",
+  "case_ids": [
+    "fixture-01",
+    "fixture-04"
+  ],
+  "checkpoint": "run-68deaa06d5cd4072892470a1d8740b3d",
+  "scope": "Only the sealed preview fixture source, analysis and test summaries; no other repositories or provider configuration contents",
+  "fixed_arms_resubmission_allowed": false,
+  "original_preview_modified": false,
+  "execution_summary": {
+    "requests": 4,
+    "preview_unchanged": true,
+    "successful_tool_source_scope_verified": true,
+    "additional_requests_submitted": false
+  }
+}

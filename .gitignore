@@ -17,3 +17,4 @@ test-results/
 .coverage*
 htmlcov/
 build/
+*.local.json

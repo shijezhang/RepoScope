@@ -1,0 +1,107 @@
+{
+  "probe_state": "completed_with_negative_results",
+  "annotation_status": "unreviewed",
+  "scope": "Two development cases, one observation per arm; no formal quality metrics or generalization",
+  "model": "deepseek-v4-pro",
+  "requests": 4,
+  "input_tokens": 8658,
+  "output_tokens": 1497,
+  "failed_model_requests": 1,
+  "fixed_arms_reexecuted": false,
+  "preview_unchanged": true,
+  "successful_tool_source_scope_verified": true,
+  "cases": [
+    {
+      "case_id": "fixture-01",
+      "fixed_validation_completed": true,
+      "fixed_findings": [
+        {
+          "nodeid": "test_calc.py::test_legacy",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        },
+        {
+          "nodeid": "test_calc.py::test_negative",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        },
+        {
+          "nodeid": "test_calc.py::test_plugin",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        },
+        {
+          "nodeid": "test_calc.py::test_positive",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        }
+      ],
+      "agent_task_outcome": "incomplete_no_validation",
+      "agent_validation_completed": false,
+      "agent_stop_kind": "local_context_budget_guard",
+      "agent_reported_limitations": [
+        "Agent context exceeds remaining input budget"
+      ],
+      "agent_model_requests": 2,
+      "agent_successful_tools": [
+        "read_evidence",
+        "read_evidence"
+      ],
+      "fixed_wall_seconds": 11.338775166950654,
+      "agent_wall_seconds": 13.590539875032846,
+      "benefit_assessment": "No observed validation benefit in this probe: fixed flow validated both snapshots; Agent stopped without validation."
+    },
+    {
+      "case_id": "fixture-04",
+      "fixed_validation_completed": true,
+      "fixed_findings": [
+        {
+          "nodeid": "test_calc.py::test_legacy",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        },
+        {
+          "nodeid": "test_calc.py::test_negative",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        },
+        {
+          "nodeid": "test_calc.py::test_plugin",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        },
+        {
+          "nodeid": "test_calc.py::test_positive",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        }
+      ],
+      "agent_task_outcome": "incomplete_no_validation",
+      "agent_validation_completed": false,
+      "agent_stop_kind": "structured_model_output_validation_error",
+      "agent_reported_limitations": [
+        "Model decision failed (ValidationError); deterministic report retained"
+      ],
+      "agent_model_requests": 2,
+      "agent_successful_tools": [
+        "read_evidence"
+      ],
+      "fixed_wall_seconds": 5.93536187504651,
+      "agent_wall_seconds": 23.454828249989077,
+      "benefit_assessment": "No observed validation benefit in this probe: fixed flow validated both snapshots; Agent stopped without validation."
+    }
+  ],
+  "diagnostic_limits": [
+    "Provider recorded ValidationError but not finish_reason, raw output, or field-level error; exact cause is not established.",
+    "Job completed means the worker stopped successfully, not that the Agent completed validation.",
+    "The context guard estimates UTF-8 byte length conservatively; token totals below the cap do not imply another request was allowed."
+  ]
+}

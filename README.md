@@ -2,7 +2,7 @@
 
 **代码变更影响分析与回归验证工作台。** 输入本地 Python Git 仓库的两个提交，查看两侧符号变化、潜在调用方、证据路径和测试验证状态。
 
-当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照、CLI/API/工作台、两仓库 Docker 对照、解析增量和本地强检索实测已落地；推理模型真实接入、Agent 公平对照和正式标注评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
+当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照、CLI/API/工作台、两仓库 Docker 对照、解析增量和本地强检索实测已落地；推理服务已接入并完成两个真实Agent探针，但两者未完成测试验证；正式标注与效果评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
 
 ![真实分析工作台](docs/examples/workbench.png)
 
@@ -68,7 +68,7 @@ API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-
 
 默认结构化 diff 分析不依赖模型。标识符/BM25/RRF 可直接运行；`Search.strong_query` 要求本地存在明确 revision 的 Embedding 与 Reranker，缺失时明确失败。已用固定MiniLM Embedding/CrossEncoder实际完成4个开发查询与资源测量，详情见 [ADR004](docs/decisions/004-local-strong-retrieval.md)；尚未完成正式B1质量比较。
 
-可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。默认只补查证据，最多6轮、12次工具、60秒补查预算；只有显式开启 `allow_tests` 才能在预算内选择一次Base/Head验证并读取反馈，不自行执行shell或修改代码。固定流程也支持相同授权与执行器。相同查询去重，出错保留确定性报告；模型API尚未配置，因此未宣称真实B4/B3对照或收益。
+可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。默认只补查证据，最多6轮、12次工具、60秒补查预算；只有显式开启 `allow_tests` 才能在预算内选择一次Base/Head验证并读取反馈，不自行执行shell或修改代码。固定流程也支持相同授权与执行器。相同查询去重，出错保留确定性报告；现有DeepSeek兼容配置已接入，两个已授权Agent开发探针分别因上下文预算和输出校验停止，均未执行测试；保留负面结果，默认使用固定流程，不宣称Agent收益。
 
 ## 开发与文档
 
@@ -87,3 +87,7 @@ npm --prefix apps/web run test:e2e
 - [演示脚本](docs/demo.md) / [部署](docs/deployment.md)
 
 源码在 `src/reposcope/`，前端在 `apps/web/`。旧文档抽取、社区摘要、Gradio、金融/论文数据、旧测试及安装残留已退出当前项目；历史保留于原 Git 提交。项目在 NetworkX、Python AST、FastAPI、pytest、coverage.py、React Flow 等开源组件之上实现快照、有限解析、影响证据与执行协调，不把这些基础算法称为原创。
+
+现有兼容服务也可通过本地 JSON、TOML 或 `key=value` 文件接入，启动 API/worker 前设置 `REPOSCOPE_LLM_CONFIG`。
+字段为 `base_url`、`model`、`api_key`（或 `api_key_env` 引用已有环境变量）；环境变量 `REPOSCOPE_LLM_*` 优先。
+配置按数据读取，不执行 shell，不将密钥加入日志或报告。JSON 建议使用 `provider.local.json`，已由 Git 忽略。

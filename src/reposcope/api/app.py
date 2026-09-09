@@ -12,6 +12,7 @@ from reposcope.config import RepoScopeError, Settings
 from reposcope.graph.store import Store
 from reposcope.jobs.submission import submit_tests, test_attempts
 from reposcope.jobs.worker import TERMINAL
+from reposcope.llm.config import provider_settings
 from reposcope.models import AnalysisInput, RegisterInput, TestRunInput, digest
 from reposcope.reports.render import export
 from reposcope.repository.git import comparison, resolve, validate_repository
@@ -66,12 +67,19 @@ def create_app(settings=None):
     def health():
         import shutil
 
+        try:
+            provider = provider_settings()
+            configured = bool(provider["base_url"] and provider["model"] and provider["api_key"])
+            model_status = "configured" if configured else "not_configured"
+        except RepoScopeError as exc:
+            configured, model_status = False, exc.code
         return {
             "status": "ok",
             "version": "0.2.0",
             "docker_available": bool(shutil.which("docker")),
             "worker": "separate process",
-            "model_configured": bool(os.getenv("REPOSCOPE_LLM_MODEL") and os.getenv("REPOSCOPE_LLM_API_KEY")),
+            "model_configured": configured,
+            "model_status": model_status,
         }
 
     @app.get("/api/repositories")
@@ -205,7 +213,8 @@ def create_app(settings=None):
             headers={"Content-Disposition": f'attachment; filename="reposcope-{run_id}.{extension}"'},
         )
 
-    web = Path(__file__).resolve().parents[3] / "apps" / "web" / "dist"
+    default_web = Path(__file__).resolve().parents[3] / "apps" / "web" / "dist"
+    web = Path(os.getenv("REPOSCOPE_WEB_DIR", str(default_web))).expanduser().resolve()
     if web.exists():
         app.mount("/", StaticFiles(directory=web, html=True), name="web")
     return app
