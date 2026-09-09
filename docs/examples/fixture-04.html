@@ -1,0 +1,38 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>RepoScope report</title><style>body{max-width:1100px;margin:40px auto;font:15px/1.6 system-ui;background:#f6f8fc;color:#18304e}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:28px;background:white;border:1px solid #dce3ed;border-radius:12px}</style><pre># RepoScope analysis
+
+Run: `example-fixture-04` · Revision: 1 · partial
+Base: `62233eca326d6785076b329a8ebc39284ff1f791`
+Head: `6e45eb33251ab242130f1936354ca09dfa097e60`
+
+## Potential impact
+
+- [base] `api.py:12` `plugin` · distance 0 · evidence `2cd869ff7e7b4e9a2121ed0c81f4652947faf6b295883bc9276a4851115ad81b`
+- [head] `api.py:12` `plugin` · distance 0 · evidence `925776226aec623fbdc8f402ab4bf433879c1dc97c52db66d84e7265e34c53ac`
+- [base] `test_calc.py:1` `&lt;module&gt;` · distance 1 · evidence `2f8385105b409796261c07f18178a294698a131b4b752389d04acce4e3449767`
+- [head] `test_calc.py:1` `&lt;module&gt;` · distance 1 · evidence `7869d77d42c9fffc42e43c3fc7ba081cb7d98b212c81bda85b339181e8623f90`
+- [base] `test_calc.py:16` `test_plugin` · distance 1 · evidence `b1f92782ae56948a8f44b3d9c41b359f55d86072e6c670a5cfec1bceb41da26e`
+- [head] `test_calc.py:16` `test_plugin` · distance 1 · evidence `04c72bf472e8bd1e0d2ca3110d71994d4de8daa93e7d93966313e63bfe278216`
+- [base] `test_calc.py:4` `test_positive` · distance 2 · evidence `5371148cad5de4b93b7613b5d24c68976f964fd8296d098ce6ae6b4cea538721`
+- [head] `test_calc.py:4` `test_positive` · distance 2 · evidence `2594f7652d3809fed9375d5a98ab10affc9283796aa431c010935533a3bfce14`
+- [base] `test_calc.py:8` `test_negative` · distance 2 · evidence `a71b373ca6c6d018628500d519c01a79f131c332d21f0d59fb472dcd04d72de9`
+- [head] `test_calc.py:8` `test_negative` · distance 2 · evidence `9ae996d6f6da68035e4eeed34170437490315e0f291613f8643647b16dc504b6`
+- [base] `test_calc.py:12` `test_legacy` · distance 2 · evidence `f05467245c34ea108f588431480fe3c1ebe9ba38a78930c751b839707cb02286`
+- [head] `test_calc.py:12` `test_legacy` · distance 2 · evidence `2c8ed56cb6cc71ed0880e4312da193421fb597771f6e7455fefe25382d94a109`
+
+## Test plan
+
+Status: collection_required
+- Coverage unavailable: collect and run the full registered test pool
+
+## Execution
+
+```json
+[]
+```
+
+## Limitations
+
+- old: 4 unresolved/candidate call sites in affected files
+- new: 4 unresolved/candidate call sites in affected files
+- Tests have not been collected or executed for this plan
+- No valid version-bound coverage imported; test selection must fall back conservatively</pre></html>

@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    ports: ["127.0.0.1:8000:8000"]
+    volumes:
+      - reposcope-state:/state
+      - ./artifacts/repositories:/repositories:ro
+    restart: unless-stopped
+  worker:
+    build: .
+    command: ["/app/.venv/bin/reposcope", "worker"]
+    volumes:
+      - reposcope-state:/state
+      - ./artifacts/repositories:/repositories:ro
+    restart: unless-stopped
+volumes:
+  reposcope-state:

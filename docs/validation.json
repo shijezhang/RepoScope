@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-09",
+  "version": "0.2.0",
+  "python": "3.12.13",
+  "backend": {
+    "command": "uv run --frozen pytest",
+    "passed": 38,
+    "failed": 0,
+    "warnings": 2,
+    "warning_scope": "Starlette/httpx TestClient deprecation"
+  },
+  "lint": {
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "git_diff_check": "passed"
+  },
+  "frontend": {
+    "typescript_vite_build": "passed",
+    "playwright_contract_passed": 2,
+    "contract_mocks": true,
+    "narrow_width_px": 640
+  },
+  "live_browser": {
+    "route_mocks": false,
+    "run_id": "6f44606d87764314bb7a67aeb8a9440d",
+    "source_path": "calc.py:1-2",
+    "report_revision": 2,
+    "json_download": "passed",
+    "execution_status": "test_environment_unavailable",
+    "console_errors": [],
+    "screenshot": "docs/examples/workbench.png"
+  },
+  "benchmarks": {
+    "repositories": 2,
+    "collected_tests": {
+      "click": 650,
+      "httpx": 1413
+    },
+    "parse_incremental_equal": 12,
+    "cases": 12,
+    "annotation_status": "unreviewed",
+    "formal_quality_evaluation": "not_run"
+  },
+  "docker_real_execution": "not_run: Docker unavailable",
+  "strong_retrieval_model_probe": "not_run",
+  "agent_comparison": "not_run",
+  "production_claim": false,
+  "packaging": {
+    "sdist": "passed",
+    "wheel": "passed",
+    "clean_locked_install": "passed",
+    "cli_help": "passed",
+    "api_route_count": 17,
+    "wheel_matches_source": true
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "repositories": [
+    {
+      "repo_id": "click",
+      "commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "python": "Python 3.12.13",
+      "source_python_files": 16,
+      "source_lines": 10205,
+      "source_bytes": 349894,
+      "collection_exit_code": 0,
+      "collected_nodeids": 650,
+      "collection_seconds": 0.7183938749949448,
+      "log": "artifacts/probes/click-collection.txt",
+      "execution_kind": "local-environment-probe",
+      "product_isolation_verified": false
+    },
+    {
+      "repo_id": "httpx",
+      "commit": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "python": "Python 3.12.13",
+      "source_python_files": 23,
+      "source_lines": 8828,
+      "source_bytes": 284396,
+      "collection_exit_code": 0,
+      "collected_nodeids": 1413,
+      "collection_seconds": 2.449623749998864,
+      "log": "artifacts/probes/httpx-collection.txt",
+      "execution_kind": "local-environment-probe",
+      "product_isolation_verified": false
+    }
+  ],
+  "quality_evaluation": "not_run",
+  "annotation_status": "unreviewed"
+}
