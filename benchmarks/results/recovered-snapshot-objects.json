@@ -1,0 +1,20 @@
+{
+  "repository": "artifacts/benchmark-replay/fixture-01/repository",
+  "report_content_modified": false,
+  "recovered": [
+    {
+      "commit_sha": "62233eca326d6785076b329a8ebc39284ff1f791",
+      "ref": "refs/reposcope/recovered/62233eca326d6785076b329a8ebc39284ff1f791",
+      "tree_hash": "2192bbf29b4328793c46e2564eae9e1a7057d40b",
+      "source": "persisted immutable snapshot.files",
+      "exact_commit_verified": true
+    },
+    {
+      "commit_sha": "82f9c75e4509e019851484f011e7326a683f5279",
+      "ref": "refs/reposcope/recovered/82f9c75e4509e019851484f011e7326a683f5279",
+      "tree_hash": "94e819b28e8b2015255be746d46031a2fede6da2",
+      "source": "persisted immutable snapshot.files",
+      "exact_commit_verified": true
+    }
+  ]
+}

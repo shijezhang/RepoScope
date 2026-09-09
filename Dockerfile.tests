@@ -1,0 +1,6 @@
+# Build once, resolve the immutable local image ID or registry digest, then
+# put that value in a server-managed profile. Add target repository dependencies during this build.
+ARG PYTHON_IMAGE=python:3.12-slim
+FROM ${PYTHON_IMAGE}
+RUN pip install --no-cache-dir pytest==8.4.2 coverage==7.10.6 pytest-cov==6.2.1
+WORKDIR /work

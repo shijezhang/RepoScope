@@ -1,0 +1,58 @@
+{
+  "kind": "post-run-engineering-selection-replay",
+  "quality_benchmark": false,
+  "limitations": [
+    "No held-out labels or quality metric",
+    "Conservative full fallback may yield zero reduction",
+    "No runtime saving is inferred from selected counts",
+    "This probe does not execute additional tests"
+  ],
+  "cases": [
+    {
+      "case_id": "click-01",
+      "parser_versions": {
+        "base": "ast312-resolver-v2",
+        "head": "ast312-resolver-v2"
+      },
+      "pool_count": 39,
+      "selected_count": 39,
+      "test_count_reduction": 0.0,
+      "strategy": "all",
+      "reasons": [
+        "Parser diagnostics or unresolved calls require full test pool"
+      ],
+      "coverage_source_snapshot": "830751b50fc5dd097b2d3997cf211f8d4a532487dbce3011955c7018e77447f3",
+      "coverage_evidence_count": 44,
+      "selection_inputs": [
+        "immutable base/head source snapshots",
+        "successfully collected nodeids",
+        "exactly base-bound call-phase coverage"
+      ],
+      "head_failure_set_used": false,
+      "executed_alternative_policy": false
+    },
+    {
+      "case_id": "httpx-02",
+      "parser_versions": {
+        "base": "ast312-resolver-v3",
+        "head": "ast312-resolver-v3"
+      },
+      "pool_count": 106,
+      "selected_count": 106,
+      "test_count_reduction": 0.0,
+      "strategy": "all",
+      "reasons": [
+        "Parser diagnostics or unresolved calls require full test pool"
+      ],
+      "coverage_source_snapshot": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+      "coverage_evidence_count": 12,
+      "selection_inputs": [
+        "immutable base/head source snapshots",
+        "successfully collected nodeids",
+        "exactly base-bound call-phase coverage"
+      ],
+      "head_failure_set_used": false,
+      "executed_alternative_policy": false
+    }
+  ]
+}

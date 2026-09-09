@@ -1,0 +1,30 @@
+<!doctype html><html lang="en"><meta charset="utf-8"><title>RepoScope report</title><style>body{max-width:1100px;margin:40px auto;font:15px/1.6 system-ui;background:#f6f8fc;color:#18304e}pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:28px;background:white;border:1px solid #dce3ed;border-radius:12px}</style><pre># RepoScope analysis
+
+Run: `example-httpx-02` · Revision: 1 · partial
+Base: `26d48e0634e6ee9cdc0533996db289ce4b430177`
+Head: `261d24e05c7712da9d71c99a45eb954e8f994cf6`
+
+## Potential impact
+
+- [base] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `8c664f6c04d679ac29c65c293fcafabe9835992873beaf5dffeff5f2a6a2bbab`
+- [head] `httpx/_status_codes.py:80` `codes.is_error` · distance 0 · evidence `f1e62bc2852727dc65c0caeadba87d728a37766ea9f165f8d2836fee0860e005`
+- [base] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `fc3af97504f7cf051ba2dc559b2314b92194eac9891a873f3c327421ca6f774e`
+- [head] `httpx/_models.py:764` `Response.is_error` · distance 1 · evidence `689b7c9e12b02826033690b57c2eafd97d98105086ea780d9bd50c51fb2a988e`
+
+## Test plan
+
+Status: collection_required
+- Coverage unavailable: collect and run the full registered test pool
+
+## Execution
+
+```json
+[]
+```
+
+## Limitations
+
+- old: 266 unresolved/candidate call sites in affected files
+- new: 266 unresolved/candidate call sites in affected files
+- Tests have not been collected or executed for this plan
+- No valid version-bound coverage imported; test selection must fall back conservatively</pre></html>

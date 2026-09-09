@@ -1,0 +1,754 @@
+{
+  "annotation_status": "unreviewed",
+  "quality_metrics": null,
+  "scope": "four English development queries; actual Dense + BM25/identifier + RRF + CrossEncoder",
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "python": "3.12.13",
+  "device": "cpu",
+  "limitations": [
+    "Not a held-out evaluation; no relevance labels or quality claims.",
+    "General English models, not code-trained models; long text is truncated to model limits.",
+    "No B2/B3/B4 quality comparison and no API or external inference service."
+  ],
+  "queries": [
+    {
+      "repo_id": "click",
+      "commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+      "symbol_count": 1452,
+      "parser_version": "ast312-resolver-v3",
+      "query": "Validate a command line parameter against an integer range with inclusive and exclusive boundaries.",
+      "phase": "first-query-this-snapshot",
+      "wall_seconds": 17.603018624999095,
+      "process_peak_rss_bytes": 649969664,
+      "result": {
+        "hits": [
+          {
+            "symbol": {
+              "symbol_id": "0f2a5a70a3e9bd889fcf33a7194c14d87ca05a4148d6ec24d88c1a1ce4a6457f",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/types.py",
+              "module": "click.types",
+              "qualname": "IntRange",
+              "kind": "Class",
+              "start": 517,
+              "end": 540,
+              "signature": "_NumberRangeBase, IntParamType",
+              "content_hash": "b730dd777e46e61e2581ed990ef45f4c932aa0ea0557bafea3be3fce7492cdc2"
+            },
+            "score": -4.168218612670898,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "9733ac3597ed69d7a2d72a8b980177d208d028aec22761b0c23a625c108e5505",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/core.py",
+              "module": "click.core",
+              "qualname": "Parameter.type_cast_value",
+              "kind": "Method",
+              "start": 2298,
+              "end": 2347,
+              "signature": "self, ctx: Context, value: t.Any",
+              "content_hash": "b54f548cc7a3538c015cc52ead7220bb5ba3daca900af2b74ecfbec3dc3bc610"
+            },
+            "score": -4.170886039733887,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "f0500ca0c52679f3f984cafe84fd59dc235e465ac9ca30f4ffa7c32092b9666c",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/core.py",
+              "module": "click.core",
+              "qualname": "ParameterSource",
+              "kind": "Class",
+              "start": 143,
+              "end": 166,
+              "signature": "enum.Enum",
+              "content_hash": "10263ce967c31501266e68a9e7d336e4854f55b8c10f06a9293df5b2806bce35"
+            },
+            "score": -4.314530372619629,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "1574ed8459549d7fcede0ee334712f383cf44f9e611186c7f0ffa94f4264a5e3",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "examples/validation/validation.py",
+              "module": "examples.validation.validation",
+              "qualname": "cli",
+              "kind": "Function",
+              "start": 27,
+              "end": 48,
+              "signature": "count, foo, url",
+              "content_hash": "57b4341eca1d1c18e70d6c2f07f0d7dda78b07d5a0204a00bc0f74d34cf93668"
+            },
+            "score": -5.320333480834961,
+            "sources": [
+              "dense",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "d8276f0011e71e0581144030b59b83f9e4fbdb349761941790a7ac219047e75b",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/types.py",
+              "module": "click.types",
+              "qualname": "ParamType",
+              "kind": "Class",
+              "start": 24,
+              "end": 154,
+              "signature": "",
+              "content_hash": "b84f887449a6d6ade3da8a17a624f59b38d3a33f1342f8fddd34b0b24d3d79cb"
+            },
+            "score": -6.326009273529053,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          }
+        ],
+        "seconds": 17.602584666979965,
+        "models": {
+          "schema_version": 1,
+          "scope": "English natural-language development probes, not a quality benchmark",
+          "embedding": "artifacts/models/embedding",
+          "embedding_repository": "sentence-transformers/all-MiniLM-L6-v2",
+          "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "embedding_license": "apache-2.0",
+          "embedding_model_card": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+          "reranker": "artifacts/models/reranker",
+          "reranker_repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+          "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+          "reranker_license": "apache-2.0",
+          "reranker_model_card": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/blob/233902d25c440f23af6f7d6e94d2946bac0bee0a/README.md",
+          "device": "cpu",
+          "batch_size": 16,
+          "reranker_batch_size": 8,
+          "cache_dir": "artifacts/model-probe/vectors",
+          "embedding_weights_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+          "embedding_weights_bytes": 90868376,
+          "reranker_weights_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+          "reranker_weights_bytes": 90870598
+        },
+        "state": "ready",
+        "timings": {
+          "model_load_seconds": 0.5502974159899168,
+          "index_seconds": 8.06382954196306,
+          "query_seconds": 0.5227644580299966
+        },
+        "model_memory_reused": false,
+        "vector_cache": {
+          "state": "built",
+          "artifact": "artifacts/model-probe/vectors/9b5a05eb9b2607ad9a57a46564072075eb77e5dfd5deed0eb2d93d7932301108.npz",
+          "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+          "update_mode": "full-embedding-per-snapshot"
+        },
+        "limits": {
+          "embedding_max_tokens": 256,
+          "reranker_max_tokens": 512,
+          "candidate_pool": 30,
+          "score_kind": "reranker output; not calibrated confidence"
+        }
+      }
+    },
+    {
+      "repo_id": "click",
+      "commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+      "symbol_count": 1452,
+      "parser_version": "ast312-resolver-v3",
+      "query": "Split an environment variable into multiple command line option values.",
+      "phase": "warm-query-this-snapshot",
+      "wall_seconds": 0.3710124170174822,
+      "process_peak_rss_bytes": 649969664,
+      "result": {
+        "hits": [
+          {
+            "symbol": {
+              "symbol_id": "b08fe03e02f145f9807735f2de414afff6829a8a59bfbfb96a7b253570900562",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/core.py",
+              "module": "click.core",
+              "qualname": "Option",
+              "kind": "Class",
+              "start": 2452,
+              "end": 2971,
+              "signature": "Parameter",
+              "content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec"
+            },
+            "score": 2.1044607162475586,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "e7a045582553bfbb29d497c5b68957caf14e957187df013acdf807f83916aade",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/types.py",
+              "module": "click.types",
+              "qualname": "ParamType.split_envvar_value",
+              "kind": "Method",
+              "start": 120,
+              "end": 128,
+              "signature": "self, rv: str",
+              "content_hash": "351520723c6325a383fc39e68a6303a969865429416893a0a377c087a01df1c4"
+            },
+            "score": 2.004096031188965,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "d8276f0011e71e0581144030b59b83f9e4fbdb349761941790a7ac219047e75b",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/types.py",
+              "module": "click.types",
+              "qualname": "ParamType",
+              "kind": "Class",
+              "start": 24,
+              "end": 154,
+              "signature": "",
+              "content_hash": "b84f887449a6d6ade3da8a17a624f59b38d3a33f1342f8fddd34b0b24d3d79cb"
+            },
+            "score": -1.4862240552902222,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "f0500ca0c52679f3f984cafe84fd59dc235e465ac9ca30f4ffa7c32092b9666c",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "src/click/core.py",
+              "module": "click.core",
+              "qualname": "ParameterSource",
+              "kind": "Class",
+              "start": 143,
+              "end": 166,
+              "signature": "enum.Enum",
+              "content_hash": "10263ce967c31501266e68a9e7d336e4854f55b8c10f06a9293df5b2806bce35"
+            },
+            "score": -2.4703140258789062,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "dfaae3950d93da6a1bf901f348746e05aa2c88abf548de2df868943f675d16d7",
+              "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+              "path": "tests/test_options.py",
+              "module": "tests.test_options",
+              "qualname": "test_option_help_preserve_paragraphs.cmd",
+              "kind": "Function",
+              "start": 575,
+              "end": 587,
+              "signature": "config",
+              "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa"
+            },
+            "score": -2.9251761436462402,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          }
+        ],
+        "seconds": 0.370542208023835,
+        "models": {
+          "schema_version": 1,
+          "scope": "English natural-language development probes, not a quality benchmark",
+          "embedding": "artifacts/models/embedding",
+          "embedding_repository": "sentence-transformers/all-MiniLM-L6-v2",
+          "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "embedding_license": "apache-2.0",
+          "embedding_model_card": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+          "reranker": "artifacts/models/reranker",
+          "reranker_repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+          "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+          "reranker_license": "apache-2.0",
+          "reranker_model_card": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/blob/233902d25c440f23af6f7d6e94d2946bac0bee0a/README.md",
+          "device": "cpu",
+          "batch_size": 16,
+          "reranker_batch_size": 8,
+          "cache_dir": "artifacts/model-probe/vectors",
+          "embedding_weights_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+          "embedding_weights_bytes": 90868376,
+          "reranker_weights_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+          "reranker_weights_bytes": 90870598
+        },
+        "state": "ready",
+        "timings": {
+          "model_load_seconds": 2.0797597244381905e-07,
+          "index_seconds": 4.1601015254855156e-07,
+          "query_seconds": 0.3614332090364769
+        },
+        "model_memory_reused": true,
+        "vector_cache": {
+          "state": "memory_hit",
+          "artifact": "artifacts/model-probe/vectors/9b5a05eb9b2607ad9a57a46564072075eb77e5dfd5deed0eb2d93d7932301108.npz",
+          "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+          "update_mode": "full-embedding-per-snapshot"
+        },
+        "limits": {
+          "embedding_max_tokens": 256,
+          "reranker_max_tokens": 512,
+          "candidate_pool": 30,
+          "score_kind": "reranker output; not calibrated confidence"
+        }
+      }
+    },
+    {
+      "repo_id": "httpx",
+      "commit": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+      "symbol_count": 1301,
+      "parser_version": "ast312-resolver-v3",
+      "query": "Determine whether an HTTP response status code represents a client or server error.",
+      "phase": "first-query-this-snapshot",
+      "wall_seconds": 9.017119082971476,
+      "process_peak_rss_bytes": 837255168,
+      "result": {
+        "hits": [
+          {
+            "symbol": {
+              "symbol_id": "0b30a4370e9d9364bad3e25791b065ec5fb317741ba6749b9e6462c2d060e83b",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "test_head",
+              "kind": "TestCase",
+              "start": 156,
+              "end": 160,
+              "signature": "server",
+              "content_hash": "c4bda6e48e2fc615ff2bf9a9e99ae143f238b8e547a6b37bd212b8d6def6a5fa"
+            },
+            "score": 4.053823471069336,
+            "sources": [
+              "dense",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "4a5afe6ed09bcd0bd6a4455a35911e6d1731fb1a1aae3c5858cad7138f8dc64d",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "test_patch",
+              "kind": "TestCase",
+              "start": 170,
+              "end": 174,
+              "signature": "server",
+              "content_hash": "050b8da7dca5390508487520353755842106f9ce0f67767e4e668873ec9b6bf5"
+            },
+            "score": 4.007599353790283,
+            "sources": [
+              "dense",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "27148d1342cfceea4752cbb8ab3be0d0f2b22734d369489ff9be800111e67bf2",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "test_get",
+              "kind": "TestCase",
+              "start": 16,
+              "end": 30,
+              "signature": "server",
+              "content_hash": "9ed4e59ac4f12e88bedeed000c9f7c350203b80e569a4515dffc2ce5eb42176b"
+            },
+            "score": 3.9812300205230713,
+            "sources": [
+              "dense",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "ce3ff6c3cc95028dd6abaa9f1da8eabc4bfa16e39c753c161c07130b7b38d09d",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "test_raise_for_status",
+              "kind": "TestCase",
+              "start": 134,
+              "end": 146,
+              "signature": "server",
+              "content_hash": "67bdd8beafe85cfbc94d440ecc5006b7d1dd1ebaefef9cc3990aa5cf4456ee1e"
+            },
+            "score": 3.682640552520752,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "c916534de821cd0097ebd239ea2a42fc3e4a7b3028d5145b5bd69343fe5b906c",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "test_stream_response",
+              "kind": "TestCase",
+              "start": 92,
+              "end": 97,
+              "signature": "server",
+              "content_hash": "978466e1c7b8c41482f7e42e7ca4937366a378938cb761d57f5efcc7085f528b"
+            },
+            "score": 3.527883291244507,
+            "sources": [
+              "dense",
+              "reranker"
+            ]
+          }
+        ],
+        "seconds": 9.016669415985234,
+        "models": {
+          "schema_version": 1,
+          "scope": "English natural-language development probes, not a quality benchmark",
+          "embedding": "artifacts/models/embedding",
+          "embedding_repository": "sentence-transformers/all-MiniLM-L6-v2",
+          "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "embedding_license": "apache-2.0",
+          "embedding_model_card": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+          "reranker": "artifacts/models/reranker",
+          "reranker_repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+          "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+          "reranker_license": "apache-2.0",
+          "reranker_model_card": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/blob/233902d25c440f23af6f7d6e94d2946bac0bee0a/README.md",
+          "device": "cpu",
+          "batch_size": 16,
+          "reranker_batch_size": 8,
+          "cache_dir": "artifacts/model-probe/vectors",
+          "embedding_weights_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+          "embedding_weights_bytes": 90868376,
+          "reranker_weights_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+          "reranker_weights_bytes": 90870598
+        },
+        "state": "ready",
+        "timings": {
+          "model_load_seconds": 0.18655033299000934,
+          "index_seconds": 8.379317833983805,
+          "query_seconds": 0.43615462502930313
+        },
+        "model_memory_reused": false,
+        "vector_cache": {
+          "state": "built",
+          "artifact": "artifacts/model-probe/vectors/25dde07c9df04031ea7892895690b6db0bd218706449b18549b8851c4c91f8ca.npz",
+          "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+          "update_mode": "full-embedding-per-snapshot"
+        },
+        "limits": {
+          "embedding_max_tokens": 256,
+          "reranker_max_tokens": 512,
+          "candidate_pool": 30,
+          "score_kind": "reranker output; not calibrated confidence"
+        }
+      }
+    },
+    {
+      "repo_id": "httpx",
+      "commit": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+      "symbol_count": 1301,
+      "parser_version": "ast312-resolver-v3",
+      "query": "Decode JSON content from an HTTP response.",
+      "phase": "warm-query-this-snapshot",
+      "wall_seconds": 0.7860300000174902,
+      "process_peak_rss_bytes": 837255168,
+      "result": {
+        "hits": [
+          {
+            "symbol": {
+              "symbol_id": "9b06bddb7e82981ac6ee4a8e8feb377722a11648e5f42d890fdef949727000ca",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "httpx/_models.py",
+              "module": "httpx._models",
+              "qualname": "",
+              "kind": "Module",
+              "start": 1,
+              "end": 1277,
+              "signature": "",
+              "content_hash": "3dc317ea41d97d1da988f7a86f657c38cac0a48a687f6990df5053403b35987b"
+            },
+            "score": 4.834814071655273,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "d00cd6b277f3a965c3b8a4e82fff5863d25876602572a756f89fcf1f81ed325e",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/test_asgi.py",
+              "module": "tests.test_asgi",
+              "qualname": "",
+              "kind": "Module",
+              "start": 1,
+              "end": 224,
+              "signature": "",
+              "content_hash": "0850a14f503a050c17ba020b458960db8f5a93ebd45f9ba4c758db0c85fd692d"
+            },
+            "score": 4.73959493637085,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "eae5f64adf1b0c1b95e93f7544ba6631c76da2d242612a9cbd389730c6e8ef24",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/test_asgi.py",
+              "module": "tests.test_asgi",
+              "qualname": "echo_headers",
+              "kind": "Function",
+              "start": 48,
+              "end": 56,
+              "signature": "scope, receive, send",
+              "content_hash": "e14829f5a6f947b6f35b497fdd100909774a2bda2a31cf7ba7fd6d639b8a7e3d"
+            },
+            "score": 4.638031482696533,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "3201aba83da49134386f78699e5b423e81b3d9fde357de9510040dd782ca3abd",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/conftest.py",
+              "module": "tests.conftest",
+              "qualname": "echo_headers",
+              "kind": "Function",
+              "start": 163,
+              "end": 175,
+              "signature": "scope: Scope, receive: Receive, send: Send",
+              "content_hash": "e8d04965ee2d4d45c58618ee34833b31952213b8be6119b8f1e883bf14506ead"
+            },
+            "score": 4.540367126464844,
+            "sources": [
+              "bm25_identifier",
+              "reranker"
+            ]
+          },
+          {
+            "symbol": {
+              "symbol_id": "6add0e476c4e4ea0e20a6e7dd40d47e67d6dac42a829f27fccffb00be21ed424",
+              "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+              "path": "tests/client/test_client.py",
+              "module": "tests.client.test_client",
+              "qualname": "echo_raw_headers",
+              "kind": "Function",
+              "start": 336,
+              "end": 341,
+              "signature": "request: httpx.Request",
+              "content_hash": "ca6ba8a053bb4dc1fe696184f1e0521d226eafdadc1f85d3e9b19206730c9e0f"
+            },
+            "score": 4.535942077636719,
+            "sources": [
+              "dense",
+              "bm25_identifier",
+              "reranker"
+            ]
+          }
+        ],
+        "seconds": 0.7848601249861531,
+        "models": {
+          "schema_version": 1,
+          "scope": "English natural-language development probes, not a quality benchmark",
+          "embedding": "artifacts/models/embedding",
+          "embedding_repository": "sentence-transformers/all-MiniLM-L6-v2",
+          "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+          "embedding_license": "apache-2.0",
+          "embedding_model_card": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+          "reranker": "artifacts/models/reranker",
+          "reranker_repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+          "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+          "reranker_license": "apache-2.0",
+          "reranker_model_card": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/blob/233902d25c440f23af6f7d6e94d2946bac0bee0a/README.md",
+          "device": "cpu",
+          "batch_size": 16,
+          "reranker_batch_size": 8,
+          "cache_dir": "artifacts/model-probe/vectors",
+          "embedding_weights_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+          "embedding_weights_bytes": 90868376,
+          "reranker_weights_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+          "reranker_weights_bytes": 90870598
+        },
+        "state": "ready",
+        "timings": {
+          "model_load_seconds": 2.0902371034026146e-07,
+          "index_seconds": 7.919734343886375e-07,
+          "query_seconds": 0.7751425000024028
+        },
+        "model_memory_reused": true,
+        "vector_cache": {
+          "state": "memory_hit",
+          "artifact": "artifacts/model-probe/vectors/25dde07c9df04031ea7892895690b6db0bd218706449b18549b8851c4c91f8ca.npz",
+          "snapshot_id": "468b6eebcb4b1f44879b98cfea2e95636d345e4ddd9306e2d8998f08365d5be0",
+          "update_mode": "full-embedding-per-snapshot"
+        },
+        "limits": {
+          "embedding_max_tokens": 256,
+          "reranker_max_tokens": 512,
+          "candidate_pool": 30,
+          "score_kind": "reranker output; not calibrated confidence"
+        }
+      }
+    }
+  ],
+  "disk_reload_checks": [
+    {
+      "repo_id": "click",
+      "wall_seconds": 0.9193247089860961,
+      "cache_state": "disk_hit",
+      "ranking_equal": true,
+      "max_score_delta": 0.0
+    },
+    {
+      "repo_id": "httpx",
+      "wall_seconds": 0.7881241669529118,
+      "cache_state": "disk_hit",
+      "ranking_equal": true,
+      "max_score_delta": 0.0
+    }
+  ],
+  "torch_threads": 4,
+  "packages": {
+    "sentence-transformers": "5.7.0",
+    "transformers": "5.16.1",
+    "torch": "2.13.0",
+    "numpy": "2.4.6",
+    "huggingface-hub": "1.30.0"
+  },
+  "models": {
+    "schema_version": 1,
+    "scope": "English natural-language development probes, not a quality benchmark",
+    "embedding": "artifacts/models/embedding",
+    "embedding_repository": "sentence-transformers/all-MiniLM-L6-v2",
+    "embedding_revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+    "embedding_license": "apache-2.0",
+    "embedding_model_card": "https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2/blob/1110a243fdf4706b3f48f1d95db1a4f5529b4d41/README.md",
+    "reranker": "artifacts/models/reranker",
+    "reranker_repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+    "reranker_revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+    "reranker_license": "apache-2.0",
+    "reranker_model_card": "https://huggingface.co/cross-encoder/ms-marco-MiniLM-L6-v2/blob/233902d25c440f23af6f7d6e94d2946bac0bee0a/README.md",
+    "device": "cpu",
+    "batch_size": 16,
+    "reranker_batch_size": 8,
+    "cache_dir": "artifacts/model-probe/vectors",
+    "embedding_weights_sha256": "53aa51172d142c89d9012cce15ae4d6cc0ca6895895114379cacb4fab128d9db",
+    "embedding_weights_bytes": 90868376,
+    "reranker_weights_sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+    "reranker_weights_bytes": 90870598
+  },
+  "acquisition": {
+    "embedding": {
+      "repository": "sentence-transformers/all-MiniLM-L6-v2",
+      "revision": "1110a243fdf4706b3f48f1d95db1a4f5529b4d41",
+      "license": "apache-2.0",
+      "acquisition": "copied existing cached snapshot; original download time unavailable",
+      "copy_seconds": 0.18881629104726017,
+      "bytes": 91578415
+    },
+    "reranker": {
+      "repository": "cross-encoder/ms-marco-MiniLM-L6-v2",
+      "revision": "233902d25c440f23af6f7d6e94d2946bac0bee0a",
+      "license": "apache-2.0",
+      "acquisition": "resumed first download into project artifacts",
+      "download_seconds_this_invocation": 154.99759016605094,
+      "prior_failed_attempts": [
+        {
+          "type": "ContentTooShortError",
+          "received_bytes": 14764432,
+          "expected_bytes": 90870598,
+          "elapsed_seconds": null
+        }
+      ],
+      "files": {
+        "README.md": {
+          "bytes": 3673,
+          "sha256": "7c0ec39941d0d1d766ccde671f592971d82fe45b7eea550a80d1ea864ebc3baa",
+          "existing_bytes": 3673,
+          "seconds": 6.245760167017579,
+          "retried_errors": []
+        },
+        "config.json": {
+          "bytes": 794,
+          "sha256": "380e02c93f431831be65d99a4e7e5f67c133985bf2e77d9d4eba46847190bacc",
+          "existing_bytes": 794,
+          "seconds": 4.771240166970529,
+          "retried_errors": []
+        },
+        "model.safetensors": {
+          "bytes": 90870598,
+          "sha256": "821d1aa69520101d6e0737f78a042ae25b19e5cb9160701909d10434f4aeb0ae",
+          "existing_bytes": 26298768,
+          "seconds": 77.86362116696546,
+          "retried_errors": []
+        },
+        "special_tokens_map.json": {
+          "bytes": 132,
+          "sha256": "3c3507f36dff57bce437223db3b3081d1e2b52ec3e56ee55438193ecb2c94dd6",
+          "existing_bytes": 0,
+          "seconds": 27.481397875002585,
+          "retried_errors": []
+        },
+        "tokenizer.json": {
+          "bytes": 711396,
+          "sha256": "d241a60d5e8f04cc1b2b3e9ef7a4921b27bf526d9f6050ab90f9267a1f9e5c66",
+          "existing_bytes": 0,
+          "seconds": 14.709831415966619,
+          "retried_errors": []
+        },
+        "tokenizer_config.json": {
+          "bytes": 1330,
+          "sha256": "a5c2e5a7b1a29a0702cd28c08a399b5ecc110c263009d17f7e3b415f25905fd8",
+          "existing_bytes": 0,
+          "seconds": 5.487974082992878,
+          "retried_errors": []
+        },
+        "vocab.txt": {
+          "bytes": 231508,
+          "sha256": "07eced375cec144d27c900241f3e339478dec958f92fddbc551f295c992038a3",
+          "existing_bytes": 0,
+          "seconds": 18.435318333038595,
+          "retried_errors": []
+        }
+      },
+      "bytes": 91819431
+    }
+  },
+  "state": "completed"
+}

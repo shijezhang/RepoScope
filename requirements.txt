@@ -1,0 +1,2 @@
+# Canonical reproducible installation: uv sync --frozen
+-e .

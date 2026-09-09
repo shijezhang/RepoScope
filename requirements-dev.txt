@@ -1,0 +1,2 @@
+# Canonical reproducible development installation: uv sync --frozen --extra dev
+-e .[dev]

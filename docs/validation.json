@@ -1,0 +1,123 @@
+{
+  "date": "2026-09-10",
+  "version": "0.2.0",
+  "python": "3.12.13",
+  "backend": {
+    "command": "uv run --frozen pytest",
+    "passed": 55,
+    "failed": 0,
+    "warnings": 2,
+    "warning_scope": "Starlette/httpx TestClient deprecation"
+  },
+  "lint": {
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "git_diff_check": "passed"
+  },
+  "frontend": {
+    "typescript_vite_build": "passed",
+    "playwright_contract_passed": 4,
+    "contract_mocks": true,
+    "narrow_width_px": 640
+  },
+  "live_browser": {
+    "run_id": "6f44606d87764314bb7a67aeb8a9440d",
+    "url": "http://127.0.0.1:8000/?run=6f44606d87764314bb7a67aeb8a9440d",
+    "source_path": "calc.py:1–2",
+    "export_filename": "reposcope-6f44606d87764314bb7a67aeb8a9440d.json",
+    "revision": 3,
+    "execution_status": "suspected_regression",
+    "test_attempts": [
+      {
+        "execution_id": "9cebed3c60004d199e1c4bde524a9d1c",
+        "status": "completed",
+        "attempt": 1
+      },
+      {
+        "execution_id": "3647d4a09aa441719188ef25a7f9b168",
+        "status": "completed",
+        "attempt": 2
+      }
+    ],
+    "comparison": {
+      "comparable": true,
+      "status": "suspected_regression",
+      "tests": [
+        {
+          "nodeid": "test_calc.py::test_legacy",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        },
+        {
+          "nodeid": "test_calc.py::test_negative",
+          "base_status": "passed",
+          "head_status": "passed",
+          "finding": "passed_both"
+        },
+        {
+          "nodeid": "test_calc.py::test_plugin",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        },
+        {
+          "nodeid": "test_calc.py::test_positive",
+          "base_status": "passed",
+          "head_status": "failed",
+          "finding": "suspected_regression"
+        }
+      ],
+      "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+    },
+    "final_export_revision": 3,
+    "console_errors": [],
+    "route_mocks": false
+  },
+  "benchmarks": {
+    "repositories": 2,
+    "collected_tests": {
+      "click": 650,
+      "httpx": 1413
+    },
+    "parse_incremental_equal": 12,
+    "cases": 12,
+    "annotation_status": "unreviewed",
+    "formal_quality_evaluation": "not_run"
+  },
+  "docker_real_execution": {
+    "fixture": "passed including cancellation/timeout/coverage",
+    "click_pool": {
+      "base_passed": 39,
+      "head_passed": 35,
+      "head_failed": 4,
+      "repeat_statuses_equal": true
+    },
+    "httpx_pool": {
+      "base_passed": 106,
+      "head_passed": 105,
+      "head_failed": 1,
+      "repeat_statuses_equal": true
+    },
+    "test_count_reduction": 0
+  },
+  "strong_retrieval_model_probe": {
+    "queries_completed": 4,
+    "disk_reloads_equal": 2,
+    "gold_labels": false,
+    "max_rss_mb_approx": 837
+  },
+  "agent_comparison": "not_run: inference model not configured",
+  "production_claim": false,
+  "packaging": {
+    "sdist": "passed",
+    "wheel": "passed",
+    "clean_locked_install": "passed",
+    "cli_help": "passed",
+    "api_route_count": 17,
+    "wheel_matches_source": true
+  },
+  "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
+  "fixed_worker_docker_flow": "completed",
+  "github_ci_previous_checkpoint": "https://github.com/shijezhang/RepoScope/actions/runs/34371607395"
+}

@@ -1,0 +1,17 @@
+{
+  "repository": "click",
+  "image_id": "sha256:89535aab153ee90daf1c3d82538ed94e3b3443f8913b71c9c867083038cb44d4",
+  "base_image": "sha256:f8f79ca52e3acbd15007628491597ce67846037dc04dbb404b04d12536deea9f",
+  "requirements": [
+    "iniconfig==2.0.0",
+    "packaging==24.2",
+    "pluggy==1.5.0",
+    "pytest==8.3.4",
+    "click==8.1.8",
+    "coverage==7.10.6",
+    "pytest-cov==6.2.1"
+  ],
+  "build_context": "Dockerfile and requirements only",
+  "build_wall_seconds": null,
+  "build_timing_note": "Initial build started before wall-clock instrumentation; duration not reconstructed"
+}

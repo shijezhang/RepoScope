@@ -1,0 +1,70 @@
+[
+  {
+    "case_id": "click-01",
+    "base_commit": "934813e4d421071a1b3db3973c02fe2721359a6e",
+    "mutation": {
+      "path": "src/click/types.py",
+      "old": "operator.le if self.min_open else operator.lt",
+      "new": "operator.lt if self.min_open else operator.le"
+    },
+    "test_files": [
+      "tests/test_types.py"
+    ],
+    "phases": {
+      "base": {
+        "exit_code": 0,
+        "seconds": 0.38925654103513807,
+        "summary": [
+          "38 passed, 1 skipped in 0.04s"
+        ],
+        "log": "artifacts/regression-probes/click-01-base.txt"
+      },
+      "head": {
+        "exit_code": 1,
+        "seconds": 0.39366649999283254,
+        "summary": [
+          "4 failed, 34 passed, 1 skipped in 0.06s"
+        ],
+        "log": "artifacts/regression-probes/click-01-head.txt"
+      }
+    },
+    "execution_kind": "local-environment-probe",
+    "product_isolation_verified": false,
+    "annotation_status": "unreviewed",
+    "observed_regression": true
+  },
+  {
+    "case_id": "httpx-02",
+    "base_commit": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+    "mutation": {
+      "path": "httpx/_status_codes.py",
+      "old": "return 400 <= value <= 599",
+      "new": "return 500 <= value <= 599"
+    },
+    "test_files": [
+      "tests/models/test_responses.py"
+    ],
+    "phases": {
+      "base": {
+        "exit_code": 0,
+        "seconds": 6.725883874983992,
+        "summary": [
+          "106 passed in 0.50s"
+        ],
+        "log": "artifacts/regression-probes/httpx-02-base.txt"
+      },
+      "head": {
+        "exit_code": 1,
+        "seconds": 2.1534642500337213,
+        "summary": [
+          "1 failed, 105 passed in 0.20s"
+        ],
+        "log": "artifacts/regression-probes/httpx-02-head.txt"
+      }
+    },
+    "execution_kind": "local-environment-probe",
+    "product_isolation_verified": false,
+    "annotation_status": "unreviewed",
+    "observed_regression": true
+  }
+]

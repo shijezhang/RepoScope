@@ -1,0 +1,9 @@
+3.12.14 (main, Aug 31 2026, 23:47:53) [GCC 14.2.0]
+Pygments==2.21.0
+coverage==7.10.6
+iniconfig==2.3.0
+packaging==26.3
+pip==25.0.1
+pluggy==1.6.0
+pytest-cov==6.2.1
+pytest==8.4.2
