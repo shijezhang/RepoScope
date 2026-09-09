@@ -1,6 +1,5 @@
 """Snapshot-scoped identifier/BM25 search; explicit optional strong baseline."""
 
-import hashlib
 import importlib.metadata
 import os
 import re
@@ -14,6 +13,7 @@ from rank_bm25 import BM25Okapi
 from reposcope.config import RepoScopeError
 from reposcope.models import digest
 from reposcope.retrieval.corpus import chunk_evidence, limits, prepare_corpus, token_count
+from reposcope.retrieval.model_files import verify_model_files
 from reposcope.retrieval.vector_cache import VectorCache
 
 
@@ -77,17 +77,16 @@ class Search:
             from sentence_transformers import CrossEncoder, SentenceTransformer
         except ImportError as exc:
             raise RepoScopeError("model_unavailable", "Install the models extra to run B1") from exc
-        model_key = digest(models)
+        # Recheck bytes even on a warm query: a revision string cannot detect
+        # an in-place tokenizer/config replacement in the local directory.
+        verification_started = time.perf_counter()
+        model_files = verify_model_files(models)
+        verification_seconds = time.perf_counter() - verification_started
+        model_key = digest({"models": models, "local_files": model_files})
         model_reused = self._strong_runtime is not None and self._strong_runtime["key"] == model_key
         load_started = time.perf_counter()
         if not model_reused:
             try:
-                for kind in ["embedding", "reranker"]:
-                    expected = models.get(kind + "_weights_sha256")
-                    if expected:
-                        weights = Path(models[kind]) / "model.safetensors"
-                        if hashlib.sha256(weights.read_bytes()).hexdigest() != expected:
-                            raise ValueError(f"{kind} weights do not match the pinned manifest")
                 embedding = SentenceTransformer(
                     models["embedding"],
                     revision=models["embedding_revision"],
@@ -144,6 +143,7 @@ class Search:
             "reranker_revision": models["reranker_revision"],
             "embedding_weights_sha256": models.get("embedding_weights_sha256"),
             "reranker_weights_sha256": models.get("reranker_weights_sha256"),
+            "model_files": model_files,
             "sentence_transformers": importlib.metadata.version("sentence-transformers"),
             "transformers": importlib.metadata.version("transformers"),
             "torch": importlib.metadata.version("torch"),
@@ -237,6 +237,7 @@ class Search:
             "corpus": corpus["stats"],
             "skipped_unrankable_candidates": skipped_candidates,
             "timings": {
+                "model_verification_seconds": verification_seconds,
                 "model_load_seconds": model_load_seconds,
                 "index_seconds": index_seconds,
                 "corpus_seconds": corpus_seconds,

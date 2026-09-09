@@ -2,6 +2,7 @@
 
 import importlib.metadata
 import sys
+from pathlib import Path
 from types import ModuleType, SimpleNamespace
 
 import numpy as np
@@ -9,6 +10,7 @@ import pytest
 
 from reposcope.config import RepoScopeError
 from reposcope.models import Snapshot, Symbol, digest
+from reposcope.retrieval.model_files import verify_model_files
 from reposcope.retrieval.search import Search
 
 QUERY = "needle"
@@ -92,9 +94,13 @@ def fake_models(monkeypatch, tmp_path):
             "0.0.test" if name in {"sentence-transformers", "transformers", "torch"} else original_version(name)
         ),
     )
+    for kind in ("embedding", "reranker"):
+        directory = tmp_path / kind
+        directory.mkdir()
+        (directory / "config.json").write_text("{}")
     models = {
-        "embedding": "fake-embedding",
-        "reranker": "fake-reranker",
+        "embedding": str(tmp_path / "embedding"),
+        "reranker": str(tmp_path / "reranker"),
         "embedding_revision": "embedding-v1",
         "reranker_revision": "reranker-v1",
         "query_max_tokens": 8,
@@ -276,3 +282,52 @@ def test_document_packing_respects_a_smaller_reranker_pair_limit(fake_models, mo
     assert result["hits"][0]["chunk"]["end"] == snapshot.symbols[0].end
     assert all(len(query) + len(text) + 3 <= 192 for batch in observed.reranker_batches for query, text in batch)
     assert_hit_binding(result["hits"][0], snapshot)
+
+
+@pytest.mark.parametrize("mutation", ["change", "add", "remove", "symlink"])
+def test_pinned_model_file_drift_rejected_on_warm_query(fake_models, mutation):
+    models, observed = fake_models
+    identity = verify_model_files(models)
+    for kind in identity:
+        models[kind + "_files"] = identity[kind]["files"]
+    search = Search(make_snapshot({"process.py": long_source()}))
+    search.strong_query(QUERY, models)
+    before = len(observed.embedding_batches)
+    root = Path(models["embedding"])
+    if mutation == "change":
+        (root / "config.json").write_text('{"changed": true}')
+    elif mutation == "add":
+        (root / "tokenizer.json").write_text("{}")
+    elif mutation == "remove":
+        (root / "config.json").unlink()
+    else:
+        (root / "extra.json").symlink_to(root / "config.json")
+    with pytest.raises(RepoScopeError) as error:
+        search.strong_query(QUERY, models)
+    assert error.value.code == "model_unavailable"
+    assert len(observed.embedding_batches) == before
+
+
+def test_changed_model_bytes_rebuild_runtime_and_disk_cache_at_same_revision(fake_models):
+    models, observed = fake_models
+    search = Search(make_snapshot({"process.py": long_source()}))
+    first = search.strong_query(QUERY, models)
+    second = search.strong_query(QUERY, models)
+    assert second["vector_cache"]["state"] == "memory_hit"
+    assert len(observed.loaded) == 2
+    (Path(models["embedding"]) / "config.json").write_text('{"changed": true}')
+    third = search.strong_query(QUERY, models)
+    assert third["model_memory_reused"] is False
+    assert third["vector_cache"]["state"] == "built"
+    assert third["vector_cache"]["artifact"] != first["vector_cache"]["artifact"]
+    assert len(observed.loaded) == 4
+    assert Search(search.snapshot).strong_query(QUERY, models)["vector_cache"]["state"] == "disk_hit"
+
+
+def test_declared_weight_checksum_still_required(fake_models):
+    models, observed = fake_models
+    models["embedding_weights_sha256"] = "wrong"
+    with pytest.raises(RepoScopeError) as error:
+        Search(make_snapshot({"process.py": long_source()})).strong_query(QUERY, models)
+    assert error.value.code == "model_unavailable"
+    assert not observed.loaded

@@ -85,3 +85,13 @@
 - Corpus重建当前仍较慢，可先持久化可验证chunk/稀疏派生产物，再用bundle同时引用graph/chunks/vector；不要为了速度跳过内容/预算验证。
 
 - 本轮103项全量pytest通过，源码提交3868a23已推送；下一轮核对CI。计数阶段原始日志保留artifacts/model-probe/chunk-probe-0330.log，临时路径已清理。
+
+### 04:00轮：实际模型文件完整性
+
+- 新增retrieval/model_files.py，每次强检索核验全部本地模型文件，已声明清单时严格匹配文件集合/hash/大小，拒绝修改、增删和符号链接。旧配置未声明完整清单时仅称local-content-fingerprint。
+- 实际文件身份纳入内存运行时key和磁盘vector binding；相同revision下更换配置也不复用旧语料/向量。每次warm query也核验，防止已有进程漏检本地变更。
+- 新增6项集成测试，109项全量pytest通过；ruff check/format、diff-check通过。真实embedding11文件/reranker7文件全部核验成功，流式hash耗时0.194秒；新warm延迟应计入此成本，未重用旧时延结论。
+- 结果model-file-verification-0400.json；边界记录ADR009。未调用模型API，未修改审批预览或旧实验。
+- 已确认3868a23与5d38129的CI通过。本轮提交后下轮核对新CI。
+- 下一轮：持久化hash校验的chunk/text/sparse语料以减少16秒重载成本，然后围绕固定snapshot/graph/corpus/vector/test目录建立统一发布指针，失败不得替换已发布版本。当前尚未实现此联合发布，不要在交付表上提前勾选。
+- 晨前仍需最终wheel、Compose、API/worker重启和真实UI版本核验；这些源匹配状态保持false。

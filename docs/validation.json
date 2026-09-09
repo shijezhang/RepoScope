@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 103,
+    "passed": 109,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -172,5 +172,11 @@
     ],
     "new_fake_model_integration_tests": 7,
     "result": "benchmarks/results/strong-retrieval-chunks-0330.json"
+  },
+  "model_file_integrity": {
+    "result": "benchmarks/results/model-file-verification-0400.json",
+    "verified_files": 18,
+    "checks_before_every_strong_query": true,
+    "seconds": 0.1944034170010127
   }
 }
