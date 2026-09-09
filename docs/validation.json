@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 109,
+    "passed": 114,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -178,5 +178,11 @@
     "verified_files": 18,
     "checks_before_every_strong_query": true,
     "seconds": 0.1944034170010127
+  },
+  "strong_index_bundle": {
+    "state": "strong-retrieval-only atomic snapshot/corpus/sparse/vector artifact",
+    "result": "benchmarks/results/strong-retrieval-bundle-0430.json",
+    "disk_reloads_equal": 2,
+    "product_global_publication": false
   }
 }

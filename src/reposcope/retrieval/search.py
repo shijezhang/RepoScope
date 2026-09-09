@@ -13,8 +13,8 @@ from rank_bm25 import BM25Okapi
 from reposcope.config import RepoScopeError
 from reposcope.models import digest
 from reposcope.retrieval.corpus import chunk_evidence, limits, prepare_corpus, token_count
+from reposcope.retrieval.index_bundle import BUNDLE_VERSION, IndexBundle, snapshot_content
 from reposcope.retrieval.model_files import verify_model_files
-from reposcope.retrieval.vector_cache import VectorCache
 
 
 def tokenize(text):
@@ -115,27 +115,13 @@ class Search:
             raise RepoScopeError(
                 "query_budget_exceeded", "Query exceeds the declared model/token reserve; it was not truncated"
             )
-        corpus_started = time.perf_counter()
-        if "corpus" not in runtime:
-            runtime["corpus"] = prepare_corpus(
-                self.snapshot, embedding, reranker, budget, tokenize, models.get("chunk_overlap_lines", 2)
-            )
-        corpus = runtime["corpus"]
-        corpus_seconds = time.perf_counter() - corpus_started
-        chunks, texts, groups = corpus["chunks"], corpus["texts"], corpus["groups"]
-        if not chunks:
-            raise RepoScopeError(
-                "retrieval_corpus_unavailable", "No complete source chunk fits the pinned model budgets"
-            )
         binding = {
             "snapshot_id": self.snapshot.snapshot_id,
             "manifest_hash": self.snapshot.manifest_hash,
             "parser_version": self.snapshot.parser_version,
-            "chunk_text_hash": digest(texts),
-            "chunk_ids": [chunk.chunk_id for chunk in chunks],
-            "parent_symbol_ids": [chunk.parent_symbol_id for chunk in chunks],
-            "corpus_state": corpus["stats"]["state"],
-            "oversized_hash": digest(corpus["stats"]["oversized"]),
+            "snapshot_content_hash": digest(snapshot_content(self.snapshot)),
+            "bundle_version": BUNDLE_VERSION,
+            "sparse_version": "identifier-regex-v1",
             "chunk_policy": {**budget, "overlap_lines": models.get("chunk_overlap_lines", 2)},
             "embedding": models.get("embedding_repository", models["embedding"]),
             "embedding_revision": models["embedding_revision"],
@@ -150,23 +136,38 @@ class Search:
             "device": models.get("device", "cpu"),
             "vector_format": "normalized-float32-chunks-v2",
         }
-        cache = VectorCache(models.get("cache_dir", Path(os.getenv("REPOSCOPE_HOME", "artifacts/state")) / "vectors"))
+        cache = IndexBundle(models.get("cache_dir", Path(os.getenv("REPOSCOPE_HOME", "artifacts/state")) / "vectors"))
+        corpus_started = time.perf_counter()
+        cached = None
+        if "corpus" not in runtime:
+            cached = cache.load_corpus(binding, self.snapshot, budget, tokenize)
+            runtime["corpus"] = (
+                cached[0]
+                if cached is not None
+                else prepare_corpus(
+                    self.snapshot, embedding, reranker, budget, tokenize, models.get("chunk_overlap_lines", 2)
+                )
+            )
+        corpus = runtime["corpus"]
+        corpus_seconds = time.perf_counter() - corpus_started
+        chunks, texts, groups = corpus["chunks"], corpus["texts"], corpus["groups"]
+        if not chunks:
+            raise RepoScopeError(
+                "retrieval_corpus_unavailable", "No complete source chunk fits the pinned model budgets"
+            )
         index_started = time.perf_counter()
         if "vectors" in runtime:
             vectors, cache_state = runtime["vectors"], "memory_hit"
+        elif cached is not None:
+            vectors, cache_state = cached[1], "disk_hit"
         else:
-            cached = cache.load(binding, len(chunks))
-            if cached is None:
-                vectors = embedding.encode(
-                    texts,
-                    normalize_embeddings=True,
-                    batch_size=models.get("batch_size", 16),
-                    show_progress_bar=False,
-                )
-                cache_state = "built"
-            else:
-                vectors, _ = cached
-                cache_state = "disk_hit"
+            vectors = embedding.encode(
+                texts,
+                normalize_embeddings=True,
+                batch_size=models.get("batch_size", 16),
+                show_progress_bar=False,
+            )
+            cache_state = "built"
         vectors = np.asarray(vectors, dtype=np.float32)
         if vectors.ndim != 2 or vectors.shape[0] != len(chunks) or not np.isfinite(vectors).all():
             raise RepoScopeError("vector_cache_invalid", "Encoded chunk vectors have invalid shape or values")
@@ -227,7 +228,7 @@ class Search:
         # Publish only after both embedding inference and reranking actually
         # succeed. Manifest and vectors become visible in one atomic replace.
         if cache_state == "built":
-            cache.publish(binding, vectors)
+            cache.publish_corpus(binding, self.snapshot, corpus, vectors, tokenize)
         runtime["vectors"] = vectors
         return {
             "hits": sorted(hits, key=lambda h: (-h["score"], h["symbol"]["symbol_id"]))[:limit],
@@ -247,6 +248,8 @@ class Search:
             "vector_cache": {
                 "state": cache_state,
                 "artifact": str(cache.path(binding)),
+                "publication": BUNDLE_VERSION,
+                "corpus_state": corpus["stats"]["state"],
                 "snapshot_id": self.snapshot.snapshot_id,
                 "update_mode": "full-embedding-per-snapshot",
             },

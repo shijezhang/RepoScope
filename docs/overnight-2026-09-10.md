@@ -95,3 +95,13 @@
 - 已确认3868a23与5d38129的CI通过。本轮提交后下轮核对新CI。
 - 下一轮：持久化hash校验的chunk/text/sparse语料以减少16秒重载成本，然后围绕固定snapshot/graph/corpus/vector/test目录建立统一发布指针，失败不得替换已发布版本。当前尚未实现此联合发布，不要在交付表上提前勾选。
 - 晨前仍需最终wheel、Compose、API/worker重启和真实UI版本核验；这些源匹配状态保持false。
+
+### 04:30轮：强检索语料与向量原子bundle
+
+- 已确认087af47 CI通过。新增retrieval/index_bundle.py，VectorCache支持同一NPZ中的snapshot/chunks/sparse terms/stats/vectors分量校验；Search复读不再重新tokenizer分块。绑定实际模型文件、语义snapshot、策略与库版本。
+- 恢复时重建源码声明/context核对完整证据与chunk ID，检查行范围/hash、预算、稀疏词项、向量行数；partial状态原样保留。推理/重排失败不发布新bundle，旧版本仍可读。
+- 新增5项集成覆盖缓存恢复不重新分块、源码篡改（含重算外层hash）、重排失败不发布、graph变化与stats变化区别。最初新增测试把模块源码误声明为Function，修正fixture后114项全量pytest通过；ruff check/format和diff-check通过。
+- 真实公开仓库新实验strong-retrieval-bundle-0430.json：四查询/两次磁盘复读成功，排名相同、分数差0。Click/HTTPX复读2.05/1.72秒（此前18.11/16.03），冷构建100.88/53.53秒仍未改善，两语料仍partial。
+- 在恢复声明/context校验补全后，用最终源码单独复读已有缓存，记录strong-retrieval-bundle-recheck-0430.json；四查询/两次复读再次成功，无重新embedding或外发。原始日志保存在artifacts/model-probe。
+- ADR010明确：完成的是强检索内部共同发布。SQLite图快照、产品默认弱检索与运行时pytest目录仍独立，尚未完成全部组件的产品默认发布指针；不能提前标全局联合发布完成。
+- 下一轮：接产品Store/查询profile的发布边界，失败不得替换已发布版本；或推进待人工复核候选与真实覆盖选择对照。晨前预留足够时间重建wheel/Compose、重启API/worker并核验真实UI。

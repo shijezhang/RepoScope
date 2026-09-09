@@ -1,6 +1,7 @@
 """Chunked strong-search contracts exercised without loading model libraries."""
 
 import importlib.metadata
+import json
 import sys
 from pathlib import Path
 from types import ModuleType, SimpleNamespace
@@ -331,3 +332,72 @@ def test_declared_weight_checksum_still_required(fake_models):
         Search(make_snapshot({"process.py": long_source()})).strong_query(QUERY, models)
     assert error.value.code == "model_unavailable"
     assert not observed.loaded
+
+
+def test_bundle_reload_avoids_rechunking_and_retains_partial_state(fake_models, monkeypatch):
+    models, observed = fake_models
+    snapshot = make_snapshot({"process.py": long_source(), "huge.py": 'def huge():\n    value = "' + "x" * 900 + '"'})
+    first = Search(snapshot).strong_query(QUERY, models)
+    documents_before = len(encoded_documents(observed))
+
+    def fail(*args, **kwargs):
+        raise AssertionError("Disk bundle must restore corpus without repeating tokenizer chunk construction")
+
+    monkeypatch.setattr("reposcope.retrieval.search.prepare_corpus", fail)
+    second = Search(snapshot).strong_query(QUERY, models)
+    assert second["vector_cache"]["state"] == "disk_hit"
+    assert second["state"] == first["state"] == "partial"
+    assert second["corpus"] == first["corpus"]
+    assert second["hits"] == first["hits"]
+    assert len(encoded_documents(observed)) == documents_before
+
+
+@pytest.mark.parametrize("repair_checksum", [False, True])
+def test_bundle_rejects_corrupt_source_components(fake_models, repair_checksum):
+    models, observed = fake_models
+    snapshot = make_snapshot({"process.py": long_source()})
+    first = Search(snapshot).strong_query(QUERY, models)
+    artifact = Path(first["vector_cache"]["artifact"])
+    with np.load(artifact, allow_pickle=False) as archive:
+        vectors = archive["vectors"]
+        manifest = json.loads(str(archive["manifest"].item()))
+    manifest["components"]["chunks"][0]["source"] = "corrupt source"
+    if repair_checksum:
+        manifest["components_sha256"] = digest(manifest["components"])
+    np.savez(artifact, vectors=vectors, manifest=json.dumps(manifest))
+    before = len(observed.embedding_batches)
+    with pytest.raises(RepoScopeError) as error:
+        Search(snapshot).strong_query(QUERY, models)
+    assert error.value.code == "vector_cache_invalid"
+    assert len(observed.embedding_batches) == before
+
+
+def test_failed_reranker_does_not_publish_bundle_or_replace_previous_snapshot(fake_models, monkeypatch):
+    models, _ = fake_models
+    snapshot = make_snapshot({"process.py": long_source()})
+    first = Search(snapshot).strong_query(QUERY, models)
+    original_path = Path(first["vector_cache"]["artifact"])
+    original_bytes = original_path.read_bytes()
+
+    def fail(*args, **kwargs):
+        raise RuntimeError("simulated reranker failure")
+
+    monkeypatch.setattr(sys.modules["sentence_transformers"].CrossEncoder, "predict", fail)
+    head = make_snapshot({"process.py": long_source()}, snapshot_id="head")
+    with pytest.raises(RuntimeError, match="simulated reranker"):
+        Search(head).strong_query(QUERY, models)
+    assert original_path.read_bytes() == original_bytes
+    assert list(original_path.parent.glob("*.npz")) == [original_path]
+    assert not list(original_path.parent.glob("*.tmp"))
+
+
+def test_bundle_binds_graph_content_but_not_build_timings(fake_models):
+    models, _ = fake_models
+    snapshot = make_snapshot({"process.py": long_source()})
+    first = Search(snapshot).strong_query(QUERY, models)
+    timed = snapshot.model_copy(update={"stats": {"elapsed": 2.5}})
+    assert Search(timed).strong_query(QUERY, models)["vector_cache"]["state"] == "disk_hit"
+    changed_graph = snapshot.model_copy(update={"unresolved": [{"reason": "new unresolved edge"}]})
+    changed = Search(changed_graph).strong_query(QUERY, models)
+    assert changed["vector_cache"]["state"] == "built"
+    assert changed["vector_cache"]["artifact"] != first["vector_cache"]["artifact"]

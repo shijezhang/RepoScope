@@ -22,7 +22,7 @@ class VectorCache:
     def path(self, binding):
         return self.root / f"{digest(binding)}.npz"
 
-    def load(self, binding, rows):
+    def load(self, binding, rows=None):
         path = self.path(binding)
         if not path.exists():
             return None
@@ -34,10 +34,14 @@ class VectorCache:
                 manifest["binding"] == binding
                 and manifest["state"] == "ready"
                 and vectors.ndim == 2
-                and vectors.shape[0] == rows
+                and (rows is None or vectors.shape[0] == rows)
+                and list(vectors.shape) == manifest["shape"]
                 and vectors.dtype == np.float32
                 and np.isfinite(vectors).all()
                 and hashlib.sha256(vectors.tobytes()).hexdigest() == manifest["vectors_sha256"]
+                and (
+                    "components" not in manifest or digest(manifest["components"]) == manifest.get("components_sha256")
+                )
             )
             if not valid:
                 raise ValueError("Binding, shape, state or checksum mismatch")
@@ -45,7 +49,7 @@ class VectorCache:
         except (OSError, ValueError, KeyError, EOFError, zipfile.BadZipFile) as exc:
             raise RepoScopeError("vector_cache_invalid", f"Invalid vector artifact {path.name}: {exc}") from exc
 
-    def publish(self, binding, vectors):
+    def publish(self, binding, vectors, components=None):
         vectors = np.asarray(vectors, dtype=np.float32)
         if vectors.ndim != 2 or not np.isfinite(vectors).all():
             raise RepoScopeError("vector_cache_invalid", "Cannot publish invalid vectors")
@@ -57,6 +61,12 @@ class VectorCache:
             "update_mode": "full-embedding-per-snapshot",
             "publication": "manifest and vectors in one atomic NPZ",
         }
+        if components is not None:
+            manifest.update(
+                components=components,
+                components_sha256=digest(components),
+                publication="snapshot, corpus, sparse terms and vectors in one atomic NPZ",
+            )
         self.root.mkdir(parents=True, exist_ok=True)
         temporary = None
         try:

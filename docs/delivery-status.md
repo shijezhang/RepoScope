@@ -8,8 +8,8 @@
 | M1 | 主要实现已验证 | 固定Git快照、有限AST图、SQLite、标识符/BM25/RRF、Dense/CrossEncoder真实探针、版本绑定向量cache、实际模型文件核验、CLI | 真实tokenizer分块已接入，语料仍partial；质量标签、解析/全部检索组件联合发布、正式B1质量基线待完成 |
 | M2 | 核心实现已验证 | 双侧diff、删除/改名、类头/模块变更、作用域与重复定义反例、受限图遍历、连续路径与源码证据 | 30条复核开发集、正式图贡献比较 |
 | M3 | 真实链路已验证 | fixture及Click/HTTPX固定池Docker、nodeid/context、覆盖失效、选择/回退、两侧结果与复跑、实际取消/超时回收 | 全仓库稳定池扩展，T-cov完整对照，正式检出率与成本实验 |
-| M4 | 真实探针已执行，验证未达标 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 03:15两个开发fixture均完成模型测试反馈收尾，但比fixed慢；正式对照与更多场景仍待完成 |
-| M5 | 解析增量已验证 | AST复用+引用全重解；12/12 parser v3同head hash一致；向量文件与manifest原子发布及缓存复读 | 最小依赖失效、向量增量、联合发布、稳定加速；当前仅解析增量 |
+| M4 | 开发用例已闭环，正式对照待完成 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 03:15两个开发fixture均完成模型测试反馈收尾，但比fixed慢；正式对照与更多场景仍待完成 |
+| M5 | 解析增量已验证 | AST复用+引用全重解；12/12 parser v3同head hash一致；强检索快照/分块/稀疏词项/向量原子bundle及缓存复读 | 最小依赖失效、向量增量、联合发布、稳定加速；当前仅解析增量 |
 | M6 | 工作台主流程已验证 | 创建/历史、SSE、图/源码、任务与完整度分开、逐测试Base/Head、显式重试/取消、导出；真实Docker UI联调 | 真实模型交互体验、更多中断组合场景 |
 | M7 | 开发证据与文档已交付，正式评测待完成 | 两仓库真实回归、机器结果、选择无收益观察、强检索局限、Compose analysis-only实测、报告/面试/演示/清理；指标脚本拒绝未复核金标 | 正式标注/holdout、B0–B4与消融、置信区间 |
 
@@ -26,6 +26,7 @@
 - 03:15 Agent功能：[agent-night-0315.json](../benchmarks/results/agent-night-0315.json)，两例验证及反馈后结束均完成；更慢，不宣称收益。见ADR007。
 - 夜间Agent进展：[agent-night-0230.json](../benchmarks/results/agent-night-0230.json)，原预算内一例已触发测试；另一例明确length/空JSON。见ADR006，不覆盖原失败。
 - 真实Agent：[agent-validation-assessment.json](../benchmarks/results/agent-validation-assessment.json)，4次请求、8658输入/1497输出tokens，两case均未验证测试；固定流程完成了同池对照。
+- 强检索bundle：[strong-retrieval-bundle-0430.json](../benchmarks/results/strong-retrieval-bundle-0430.json)，4查询/2次复读一致，Click/HTTPX复读约2.05/1.72秒；产品默认发布指针未接线，见ADR010。
 - 分块强检索：[strong-retrieval-chunks-0330.json](../benchmarks/results/strong-retrieval-chunks-0330.json)，4查询/2次磁盘复读通过，超限源码明确partial，成本与覆盖统计见ADR008。
 - 强检索：[strong-retrieval-probe.json](../benchmarks/results/strong-retrieval-probe.json)，4个英文开发query；2次磁盘复读排名相同。质量未标注，HTTPX有不理想结果。
 - 全量/解析增量：[index-consistency.json](../benchmarks/results/index-consistency.json)，12条v3全部ready/equal；每次重放保留独立run目录及Git对象。
@@ -37,7 +38,7 @@
 
 ## 继续验收
 
-1. 依据已保留的真实失败改进上下文预算打包与结构化输出诊断，继续验证Agent反馈；不得将当前两次未完成结果计为成功。
+1. 保留原始Agent失败和独立的新成功实验，扩展同预算反馈验证场景；两条开发fixture闭环不等于正式收益成立。
 2. 独立复核12条、扩展开发集、按变更来源冻结测试集；`benchmarks/runners/metrics.py`会拒绝未复核或跨split同源样本。
 3. 运行强检索、图/覆盖/Agent消融与成本实验，保留负面结果；依据证据决定启用条件与增量投入。
-4. 完成长函数分块、全部索引联合发布与Compose已实际验收analysis-only模式，按实际收益更新简历素材。
+4. 分块已接入强检索；继续完成产品全部索引联合发布，并在晨前用最终源码重新验收wheel、Compose和工作台。
