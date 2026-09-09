@@ -234,6 +234,7 @@ class Controller:
         self.report["metadata"]["agent"] = {
             "model": self.provider.model,
             "usage": self.provider.usage,
+            "provider_diagnostics": getattr(self.provider, "diagnostics", []),
             "seconds": time.monotonic() - started,
             "prompt_version": "lookup-v1",
             "mode": "bounded investigation and validation"
