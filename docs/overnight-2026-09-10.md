@@ -83,3 +83,5 @@
 - 首次总时长97.11/51.80秒，warm0.51/0.61秒；重载18.11/16.03秒。新结果strong-retrieval-chunks-0330.json，旧强检索记录未覆盖。所有推理在本地CPU，没有API外发。
 - 下一轮优先M5：实际模型tokenizer/config文件也应核验并纳入cache binding（当前只强校验weights，revision/hash声明还不足以发现本地tokenizer被改动）；然后设计统一发布边界。勿把当前vector artifact ready误称全语料ready。
 - Corpus重建当前仍较慢，可先持久化可验证chunk/稀疏派生产物，再用bundle同时引用graph/chunks/vector；不要为了速度跳过内容/预算验证。
+
+- 本轮103项全量pytest通过，源码提交3868a23已推送；下一轮核对CI。计数阶段原始日志保留artifacts/model-probe/chunk-probe-0330.log，临时路径已清理。
