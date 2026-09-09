@@ -1,0 +1,16 @@
+{
+  "kind": "minimal provider connectivity check, no repository code",
+  "model": "deepseek-v4-pro",
+  "status": "ok",
+  "returned_tool": "finish",
+  "wall_seconds": 2.412468374997843,
+  "usage": {
+    "input_tokens": 216,
+    "output_tokens": 101,
+    "requests": 1,
+    "failed_requests": 0,
+    "unknown_token_usage": 0
+  },
+  "repository_context_sent": false,
+  "credentials_in_result": false
+}

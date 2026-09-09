@@ -13,7 +13,7 @@ dev = ["pytest>=8,<10", "pytest-cov>=5,<8", "ruff>=0.9,<1"]
 reposcope = "reposcope.cli:app"
 
 [build-system]
-requires = ["setuptools>=75"]
+requires = ["setuptools==84.0.0"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]

@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 55,
+    "passed": 66,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation"
@@ -107,7 +107,7 @@
     "gold_labels": false,
     "max_rss_mb_approx": 837
   },
-  "agent_comparison": "not_run: inference model not configured",
+  "agent_comparison": "paused: exact fixture data export awaiting explicit scope confirmation after automatic approval rejection",
   "production_claim": false,
   "packaging": {
     "sdist": "passed",
@@ -119,5 +119,18 @@
   },
   "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
   "fixed_worker_docker_flow": "completed",
-  "github_ci_previous_checkpoint": "https://github.com/shijezhang/RepoScope/actions/runs/34371607395"
+  "github_ci_previous_checkpoint": "https://github.com/shijezhang/RepoScope/actions/runs/34371607395",
+  "provider_connectivity": {
+    "status": "passed",
+    "model": "deepseek-v4-pro",
+    "repository_context_sent": false
+  },
+  "compose": {
+    "status": "passed",
+    "mode": "analysis-only",
+    "source_files_verified": 22,
+    "source_matches_current": true,
+    "model_called": false,
+    "target_pytest_called": false
+  }
 }

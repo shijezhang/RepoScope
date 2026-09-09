@@ -4,14 +4,14 @@
 
 | 阶段 | 当前状态 | 已实现/验证 | 剩余门槛 |
 |---|---|---|---|
-| M0 | 主要可行性已验证 | Python3.12、两仓库固定SHA、650/1413测试收集、12条变异、Docker、两本地模型revision与资源实测、锁文件/ADR | 首次历史下载及首轮镜像构建成本未完整采集，真实推理模型未配置 |
+| M0 | 主要可行性已验证 | Python3.12、两仓库固定SHA、650/1413测试收集、12条变异、Docker、两本地模型revision与资源实测、锁文件/ADR | 首次历史下载及首轮镜像构建成本未完整采集，真实推理服务已连通，样例外发待确认 |
 | M1 | 主要实现已验证 | 固定Git快照、有限AST图、SQLite、标识符/BM25/RRF、Dense/CrossEncoder真实探针、版本绑定向量cache、CLI | 长函数分块质量，解析/所有检索组件联合发布，正式B1质量基线 |
 | M2 | 核心实现已验证 | 双侧diff、删除/改名、类头/模块变更、作用域与重复定义反例、受限图遍历、连续路径与源码证据 | 30条复核开发集、正式图贡献比较 |
 | M3 | 真实链路已验证 | fixture及Click/HTTPX固定池Docker、nodeid/context、覆盖失效、选择/回退、两侧结果与复跑、实际取消/超时回收 | 全仓库稳定池扩展，T-cov完整对照，正式检出率与成本实验 |
-| M4 | 代码/契约已验证，真实模型待接入 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 真实推理模型、B4/B3同预算对照与收益；不宣称模型Agent实测完成 |
+| M4 | 代码/契约已验证，真实模型待接入 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 具体样例外发确认、B4/B3同预算对照与收益；不宣称模型Agent实测完成 |
 | M5 | 解析增量已验证 | AST复用+引用全重解；12/12 parser v3同head hash一致；向量文件与manifest原子发布及缓存复读 | 最小依赖失效、向量增量、联合发布、稳定加速；当前仅解析增量 |
 | M6 | 工作台主流程已验证 | 创建/历史、SSE、图/源码、任务与完整度分开、逐测试Base/Head、显式重试/取消、导出；真实Docker UI联调 | 真实模型交互体验、更多中断组合场景 |
-| M7 | 开发证据与文档已交付，正式评测待完成 | 两仓库真实回归、机器结果、选择无收益观察、强检索局限、报告/面试/演示/清理；指标脚本拒绝未复核金标 | 正式标注/holdout、B0–B4与消融、置信区间、应用Compose验收 |
+| M7 | 开发证据与文档已交付，正式评测待完成 | 两仓库真实回归、机器结果、选择无收益观察、强检索局限、Compose analysis-only实测、报告/面试/演示/清理；指标脚本拒绝未复核金标 | 正式标注/holdout、B0–B4与消融、置信区间 |
 
 ## 验证入口
 
@@ -19,6 +19,7 @@
 - 前端：TypeScript/Vite与4项Playwright契约通过；契约mock不等于后端精度证明。
 - 真实UI：环境不足报告显式attempt2重试，Docker完成后revision3；Base4通过、Head1通过3失败，展示疑似回归，最终JSON一致，浏览器0错误。[记录](examples/workbench-verification.json) / [截图](examples/workbench.png) / [对照](examples/workbench-results.png)。
 - 两仓库准备：[preparation.json](../benchmarks/results/preparation.json)，650/1413是宿主完整collection数。
+- 应用Compose：[compose-validation.json](../benchmarks/results/compose-validation.json)，独立端口/state、首页200、异步分析、22个源码hash一致；analysis-only模式。
 - 自建样例Docker：[docker-validation.json](../benchmarks/results/docker-validation.json)，包含实际运行中取消、timeout、隔离参数和清理。
 - 两真实仓库Docker：[public-docker-validation.json](../benchmarks/results/public-docker-validation.json)，Click39/HTTPX106是各登记固定池，非全仓库套件。
 - 选择工程对照：[public-selection-engineering.json](../benchmarks/results/public-selection-engineering.json)，39/39、106/106，缩减率0%；未将head失败清单送入选择器。
@@ -32,7 +33,7 @@
 
 ## 继续验收
 
-1. 配置真实推理模型，验证预算内工具决策与测试反馈，按同输入/工具/预算比较固定流程和Agent。
+1. 确认已准备的样例外发范围，验证预算内真实模型工具决策与测试反馈，按同输入/工具/预算比较固定流程和Agent。
 2. 独立复核12条、扩展开发集、按变更来源冻结测试集；`benchmarks/runners/metrics.py`会拒绝未复核或跨split同源样本。
 3. 运行强检索、图/覆盖/Agent消融与成本实验，保留负面结果；依据证据决定启用条件与增量投入。
-4. 完成长函数分块、全部索引联合发布与应用Compose验收，按实际收益更新简历素材。
+4. 完成长函数分块、全部索引联合发布与Compose已实际验收analysis-only模式，按实际收益更新简历素材。

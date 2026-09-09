@@ -275,3 +275,15 @@ def test_expired_analysis_with_test_permission_is_not_replayed(store):
         db.execute("UPDATE jobs SET lease=? WHERE id=?", (time.time() - 1, run_id))
     assert store.claim("next") is None
     assert store.job(run_id)["state"] == "interrupted"
+
+
+def test_installed_application_can_serve_explicit_web_build(store, tmp_path, monkeypatch):
+    web = tmp_path / "web-build"
+    web.mkdir()
+    (web / "index.html").write_text("<!doctype html><title>RepoScope installation test</title>")
+    monkeypatch.setenv("REPOSCOPE_WEB_DIR", str(web))
+    client = TestClient(create_app(store.settings))
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "RepoScope installation test" in response.text
+    assert client.get("/api/health").json()["status"] == "ok"
