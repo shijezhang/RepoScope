@@ -278,5 +278,10 @@
     "commit": "53489cf8f8ceaf5da82637f7298433d1bedfe053",
     "conclusion": "success",
     "url": "https://github.com/shijezhang/RepoScope/actions/runs/34436811288"
+  },
+  "github_ci_current_source": {
+    "commit": "c2d80bf676235c0640401feec7182b37dc4eea06",
+    "conclusion": "success",
+    "url": "https://github.com/shijezhang/RepoScope/actions/runs/34438289154"
   }
 }
