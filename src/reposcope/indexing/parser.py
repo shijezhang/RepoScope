@@ -10,7 +10,7 @@ from reposcope.indexing.resolution_cache import ResolutionCache
 from reposcope.models import Relation, Snapshot, Symbol, digest
 from reposcope.repository.git import git, read_tree
 
-VERSION = "ast312-resolver-v4"
+VERSION = "ast312-resolver-v5"
 
 
 def module_name(path):
@@ -313,6 +313,12 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
             if target.startswith(prefix):
                 root_name = target[len(prefix) :].split(".")[0]
                 if root_name in export_info["bindings"].get("", []):
+                    return []
+                if by_local[(export_path, root_name)] and any(
+                    item["scope"] == "" and item["local"] == root_name for item in export_info["imports"]
+                ):
+                    # Import/definition precedence is not proven across branches
+                    # and rebinding; do not resurrect a shadowed direct export.
                     return []
         if by_full[target]:
             return by_full[target]

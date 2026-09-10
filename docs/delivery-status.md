@@ -9,7 +9,7 @@
 | M2 | 核心实现已验证 | 双侧diff、删除/改名、类头/模块变更、作用域与重复定义反例、受限图遍历、连续路径与源码证据 | 30条复核开发集、正式图贡献比较 |
 | M3 | 真实链路已验证 | fixture及Click/HTTPX固定池Docker、nodeid/context、覆盖失效、选择/回退、两侧结果与复跑、实际取消/超时回收 | 全仓库稳定池扩展，T-cov完整对照，正式检出率与成本实验 |
 | M4 | 开发用例已闭环，正式对照待完成 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 03:15两个开发fixture均完成模型测试反馈收尾，但比fixed慢；正式对照与更多场景仍待完成 |
-| M5 | 解析/向量增量与CLI事务发布已验证 | AST复用+已观测导出依赖失效；12/12开发变更及2条历史修复的parser v4全量/增量一致；强bundle与SQLite发布指针/CAS；完整内容向量复用；真实Click全量对照排名一致、单次3.33倍 | 文件级失效已实现，非表达式级理论最小；运行时测试目录独立；稳定多样本加速未证明 |
+| M5 | 解析/向量增量与CLI事务发布已验证 | AST复用+已观测导出依赖失效；12/12开发变更及2条历史修复的parser v5全量/增量一致；强bundle与SQLite发布指针/CAS；完整内容向量复用；真实Click全量对照排名一致、单次3.33倍 | 文件级失效已实现，非表达式级理论最小；运行时测试目录独立；稳定多样本加速未证明 |
 | M6 | 工作台主流程已验证 | 创建/历史、SSE、图/源码、任务与完整度分开、逐测试Base/Head、显式重试/取消、导出；真实Docker UI联调 | 真实模型交互体验、更多中断组合场景 |
 | M7 | 开发证据与文档已交付，正式评测待完成 | 两仓库真实回归、机器结果、选择无收益观察、强检索局限、Compose analysis-only实测、报告/面试/演示/清理；指标脚本拒绝未复核金标 | 正式标注/holdout、B0–B4与消融、置信区间 |
 
@@ -29,7 +29,7 @@
 - 强检索bundle：[strong-retrieval-bundle-0430.json](../benchmarks/results/strong-retrieval-bundle-0430.json)，4查询/2次复读一致，Click/HTTPX复读约2.05/1.72秒；产品默认发布指针未接线，见ADR010。
 - 分块强检索：[strong-retrieval-chunks-0330.json](../benchmarks/results/strong-retrieval-chunks-0330.json)，4查询/2次磁盘复读通过，超限源码明确partial，成本与覆盖统计见ADR008。
 - 强检索：[strong-retrieval-probe.json](../benchmarks/results/strong-retrieval-probe.json)，4个英文开发query；2次磁盘复读排名相同。质量未标注，HTTPX有不理想结果。
-- 全量/解析增量：[index-consistency.json](../benchmarks/results/index-consistency.json)，12条v3全部ready/equal；每次重放保留独立run目录及Git对象。
+- 历史v3全量/解析增量：[index-consistency.json](../benchmarks/results/index-consistency.json)，12条v3全部ready/equal；每次重放保留独立run目录及Git对象。
 - 历史对象恢复：[recovered-snapshot-objects.json](../benchmarks/results/recovered-snapshot-objects.json)，源码、commit与tree精确核对后恢复，未修改历史报告。
 
 ## 尚未证明的效果
@@ -50,3 +50,7 @@
 ## parser v4 与真实历史来源
 
 文件级依赖失效、138项自测、2条冻结历史修复、B0/B1检索与B2/B3工程对照及独立补充诊断见[本轮报告](progress-v4-2026-09-10.md)。原测试未检出缺陷，补充诊断才复现修复前失败/修复后通过；两类实验不混作正式盲测。
+
+## 本轮最终版本 parser v5
+
+收尾新增反例确认了同名导入覆盖直接导出的旧问题，已修复并升级v5。最终140项自测、12+2条全量/增量一致性及重新打包部署见[最终报告](progress-v5-2026-09-10.md)。v4阶段记录保留为历史，不作为当前源码验收入口。

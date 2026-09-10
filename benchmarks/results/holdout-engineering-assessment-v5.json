@@ -1,0 +1,53 @@
+{
+  "source_result": "benchmarks/results/holdout-engineering-run-8dbaff1cc4294eca9c67d903b301ac09.json",
+  "assessment": "post-run edit-location proxy, not preregistered relevance gold or precision/F1",
+  "cases": [
+    {
+      "case_id": "click-historical-01",
+      "parser_version": "ast312-resolver-v5",
+      "edited_function_proxy": [
+        "src/click/testing.py",
+        "CliRunner.isolation"
+      ],
+      "top10_proxy_rank": {
+        "B0_sparse": 3,
+        "B1_strong": null
+      },
+      "graph_impact_count": 2,
+      "selected_count": 24,
+      "pool_count": 24,
+      "test_count_reduction": 0.0,
+      "original_comparison_comparable": false,
+      "base_counts": {
+        "passed": 24
+      },
+      "head_counts": {
+        "passed": 24
+      }
+    },
+    {
+      "case_id": "httpx-historical-01",
+      "parser_version": "ast312-resolver-v5",
+      "edited_function_proxy": [
+        "httpx/_config.py",
+        "create_ssl_context"
+      ],
+      "top10_proxy_rank": {
+        "B0_sparse": 1,
+        "B1_strong": 2
+      },
+      "graph_impact_count": 1586,
+      "selected_count": 28,
+      "pool_count": 28,
+      "test_count_reduction": 0.0,
+      "original_comparison_comparable": false,
+      "base_counts": {
+        "passed": 28
+      },
+      "head_counts": {
+        "passed": 28
+      }
+    }
+  ],
+  "B4_status": "not_run_outside_approved_external_data_scope"
+}

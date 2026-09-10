@@ -92,3 +92,41 @@ def test_corrupt_resolution_cache_is_rejected(store, git_repo):
         build_snapshot(store, repo, sha)
     assert error.value.code == "resolution_cache_invalid"
     assert semantic_hash(store.snapshot(before.snapshot_id)) == semantic_hash(before)
+
+
+def test_import_overwrites_direct_export_is_not_resolved_to_old_definition(store, git_repo):
+    repo, commit, _ = git_repo
+    sha = commit(
+        {
+            "target.py": "def work():\n    return 1\n",
+            "facade.py": "def work():\n    return 2\nfrom target import work\n",
+            "consumer.py": "from facade import work\ndef caller():\n    return work()\n",
+        }
+    )
+    snapshot = build_snapshot(store, repo, sha)
+    symbols = {symbol.symbol_id: symbol for symbol in snapshot.symbols}
+    wrong = [
+        edge
+        for edge in snapshot.relations
+        if edge.relation_type == "CALLS"
+        and symbols[edge.source_id].qualname == "caller"
+        and symbols[edge.target_id].path == "facade.py"
+    ]
+    assert not wrong, "A direct definition overwritten by an import is not a proven live export"
+
+
+def test_class_import_rebinding_invalidates_cached_member_lookup(store, git_repo):
+    repo, commit, _ = git_repo
+    files = {
+        "target.py": "class C:\n    def work(self):\n        return 1\n",
+        "facade.py": "class C:\n    def work(self):\n        return 2\n",
+        "consumer.py": "from facade import C\ndef caller(value):\n    return C.work(value)\n",
+    }
+    build_snapshot(store, repo, commit(files))
+    sha = commit({"facade.py": files["facade.py"] + "from target import C\n"})
+    incremental = build_snapshot(store, repo, sha)
+    assert semantic_hash(incremental) == semantic_hash(build_snapshot(store, repo, sha, incremental=False))
+    symbols = {symbol.symbol_id: symbol for symbol in incremental.symbols}
+    assert not any(
+        symbols[edge.source_id].qualname == "caller" and edge.relation_type == "CALLS" for edge in incremental.relations
+    )

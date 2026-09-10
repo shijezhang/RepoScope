@@ -32,7 +32,19 @@ class ResolutionCache:
                 module = target[:index]
                 root_name = target[index + 1 :].split(".")[0]
                 for path in self.modules.get(module, []):
-                    shadows.append((path, root_name in self.parsed[path]["bindings"].get("", [])))
+                    info = self.parsed[path]
+                    shadows.append(
+                        (
+                            path,
+                            root_name in info["bindings"].get("", []),
+                            [
+                                self.references[s.symbol_id]
+                                for s in self.by_full.get(module + "." + root_name, [])
+                                if s.path == path
+                            ],
+                            [item for item in info["imports"] if item["scope"] == "" and item["local"] == root_name],
+                        )
+                    )
             module, _, name = target.rpartition(".")
             exports = [
                 (
