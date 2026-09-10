@@ -6,10 +6,11 @@ from collections import defaultdict
 from pathlib import PurePosixPath
 
 from reposcope.config import RepoScopeError
+from reposcope.indexing.resolution_cache import ResolutionCache
 from reposcope.models import Relation, Snapshot, Symbol, digest
 from reposcope.repository.git import git, read_tree
 
-VERSION = "ast312-resolver-v3"
+VERSION = "ast312-resolver-v4"
 
 
 def module_name(path):
@@ -171,7 +172,8 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
     symbols, relations, unresolved, diagnostics = [], [], [], []
     parsed, reused = {}, 0
     by_full, by_local = defaultdict(list), defaultdict(list)
-    metadata = {}
+    metadata, references, logical_symbols = {}, {}, {}
+    modules = defaultdict(list)
     for path, source in sorted(files.items()):
         if cancelled():
             raise RepoScopeError("cancelled", "Snapshot parsing interrupted")
@@ -195,6 +197,7 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
                 continue
         parsed[path] = info
         module = module_name(path)
+        modules[module].append(path)
         defs = [
             {
                 "qualname": "",
@@ -222,6 +225,9 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
                 signature=d["signature"],
                 content_hash=digest("\n".join(source.splitlines()[d["start"] - 1 : d["end"]])),
             )
+            logical = digest([path, *identity, ordinal])
+            references[sym.symbol_id] = logical
+            logical_symbols[logical] = sym
             symbols.append(sym)
             by_full[".".join(x for x in [module, d["qualname"]] if x)].append(sym)
             by_local[(path, d["qualname"])].append(sym)
@@ -249,6 +255,9 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
             for p in by_local[(sym.path, parent)]:
                 if p.start <= sym.start and sym.end <= p.end:
                     edge(p, sym, "CONTAINS", sym.start)
+
+    cache = ResolutionCache(store, parsed, by_full, metadata, references, modules)
+    resolution_reused = 0
 
     def resolve(path, scope, expr):
         info = parsed[path]
@@ -293,6 +302,7 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
         return [], "external or unresolved name"
 
     def export_target(target, visited):
+        cache.observe("export", target)
         if target in visited:
             return []
         visited.add(target)
@@ -320,11 +330,32 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
     for path, info in parsed.items():
         if cancelled():
             raise RepoScopeError("cancelled", "Symbol resolution interrupted")
+        cache.dependencies = {}
+        cache_key = digest([path, files[path], VERSION, "lookup-dependencies-v1"])
+        saved = cache.load(cache_key) if incremental else None
+        if saved is not None:
+            for relation in saved["relations"]:
+                edge(
+                    logical_symbols[relation["source_id"]],
+                    logical_symbols[relation["target_id"]],
+                    relation["relation_type"],
+                    relation["line"],
+                    relation["resolution"],
+                )
+            for unknown in saved["unresolved"]:
+                restored = dict(unknown)
+                if "candidate_ids" in restored:
+                    restored["candidate_ids"] = [logical_symbols[key].symbol_id for key in restored["candidate_ids"]]
+                unresolved.append(restored)
+            resolution_reused += 1
+            continue
+        edge_offset, unresolved_offset = len(relations), len(unresolved)
         for item in info["imports"]:
             sources = [s for s in by_local[(path, item["scope"])] if s.start <= item["line"] <= s.end]
             targets = export_target(item["target"], set())
             if not targets:
                 parent = item["target"].rsplit(".", 1)[0]
+                cache.observe("direct", parent)
                 targets = by_full[parent]
             for source in sources:
                 for target in targets:
@@ -353,6 +384,7 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
                             else "resolved"
                         )
                         edge(source, target, kind, item["line"], level)
+        cache.save(cache_key, relations[edge_offset:], unresolved[unresolved_offset:])
     snap = Snapshot(
         snapshot_id=sid,
         repo_id=repo["repo_id"],
@@ -371,7 +403,9 @@ def build_snapshot(store, repo, sha, incremental=True, cancelled=lambda: False):
             "reused_files": reused,
             "parsed_files": len(parsed) - reused,
             "mode": "parse-incremental" if incremental else "full",
-            "resolution": "all references re-resolved",
+            "resolution": "observed-export-dependency invalidation",
+            "reused_resolution_files": resolution_reused,
+            "resolved_files": len(parsed) - resolution_reused,
             "retrieval": "sparse-ready; dense optional",
         },
     )

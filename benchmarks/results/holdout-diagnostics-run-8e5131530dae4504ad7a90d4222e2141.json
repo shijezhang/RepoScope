@@ -1,0 +1,315 @@
+{
+  "run_id": "run-8e5131530dae4504ad7a90d4222e2141",
+  "kind": "post-hoc diagnostic reproduction, not original holdout evaluation",
+  "state": "passed",
+  "cases": [
+    {
+      "case_id": "click-historical-01",
+      "origin_group": "click:PR2733",
+      "original_base_sha": "9ce8bd84a66526e194668e8d4a05c45dd5b067a4",
+      "original_head_sha": "ffd43e9dc3b90bd698088fc7ebac9dbc6a4444b2",
+      "execution_commits": {
+        "base": "143b6e73c83c6d2c5758e9e2124175a029815495",
+        "head": "600c5e7ffd4095c972f9ffb6146f4c99dc1a4fea"
+      },
+      "shared_test_and_non_python_asset_commit": "ffd43e9dc3b90bd698088fc7ebac9dbc6a4444b2",
+      "production_python_unchanged_from_original_sides": true,
+      "test_asset_sha256": "a07a607e52f05f804198f54923299552b34750ea1dc1e888b3d4b0fc035bbd34",
+      "repository": "artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/click/repository",
+      "executions": {
+        "base": {
+          "execution_id": "diagnostic-base",
+          "started_at": 1789012473.227946,
+          "snapshot_id": "163801e0c7971e08c8ce0fa4ac27e6c5ffae42b632e03053c8f650aa16e8a3f4",
+          "status": "completed",
+          "mode": "run",
+          "nodeids": [
+            "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook"
+          ],
+          "results": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "status": "failed",
+              "phases": [
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "setup",
+                  "status": "passed",
+                  "duration": 0.007105074997525662,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "call",
+                  "status": "failed",
+                  "duration": 0.002108503998897504,
+                  "message": "def test_isolation_restores_ansi_hook():\n        original = _compat.should_strip_ansi\n        with CliRunner().isolation():\n            pass\n>       assert _compat.should_strip_ansi is original\nE       assert <function CliRunner.isolation.<locals>.should_strip_ansi at 0xfb1c28fd09a0> is <function should_strip_ansi at 0xfb1c291e60c0>\nE        +  where <function CliRunner.isolation.<locals>.should_strip_ansi at 0xfb1c28fd09a0> = _compat.should_strip_ansi\n\ntests/test_reposcope_diagnostic.py:11: AssertionError"
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "teardown",
+                  "status": "passed",
+                  "duration": 0.00016467800014652312,
+                  "message": ""
+                }
+              ],
+              "duration": 0.00937825699656969
+            }
+          ],
+          "container": "reposcope-0564938c05f7c095247609d11f0d9bf4",
+          "environment_hash": "94b0b2bdc16b08ea9153793618594f301f7e68b7e153621cf5e2e553c5c6bdd5",
+          "tree_hash": "9550648b8116d36f70f0655e5e3fbb3971f810be",
+          "test_suite_hash": "f0b3f8aaebf73b68bbd791312e4e70b66c308a646497c3a61d8582d4627be2af",
+          "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+          "comparison_hash": "de0d047c9b1d8ba05f4661a0ea13e0f6f7057ec652c75c94fc6c4259d8526221",
+          "command_hash": "4a5962b831abf99243b1b39da9e5d73dc9a6471499c1f094ada6c55cb8db075a",
+          "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.3.4, pluggy-1.5.0\nrootdir: /work\nconfigfile: pyproject.toml\ncollected 1 item\n\ntests/test_reposcope_diagnostic.py F                                     [100%]\n\n=================================== FAILURES ===================================\n______________________ test_isolation_restores_ansi_hook _______________________\n\n    def test_isolation_restores_ansi_hook():\n        original = _compat.should_strip_ansi\n        with CliRunner().isolation():\n            pass\n>       assert _compat.should_strip_ansi is original\nE       assert <function CliRunner.isolation.<locals>.should_strip_ansi at 0xfb1c28fd09a0> is <function should_strip_ansi at 0xfb1c291e60c0>\nE        +  where <function CliRunner.isolation.<locals>.should_strip_ansi at 0xfb1c28fd09a0> = _compat.should_strip_ansi\n\ntests/test_reposcope_diagnostic.py:11: AssertionError\n=========================== short test summary info ============================\nFAILED tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook\n============================== 1 failed in 0.05s ===============================\n",
+          "exit_code": 1,
+          "collection_errors": [],
+          "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/click/state/executions/0564938c05f7c095247609d11f0d9bf49ea39abfb46d38e50f26821b5e644770",
+          "coverage_ids": [
+            "844816365375e42091573afb810e8d695082c4c1fe128b30eca6557f98665e4e",
+            "9d7098b1e321c7238e22b85539059d449285edc003b2c18cf29c0c99f744cbb7",
+            "fd3c2b445f9599dfc666246f16d3bcfb9c5fe3c2cb18bad0d8807284fc8138ef"
+          ],
+          "cleanup_status": "completed",
+          "wall_seconds": 6.032577999983914,
+          "counts": {
+            "failed": 1
+          }
+        },
+        "head": {
+          "execution_id": "diagnostic-head",
+          "started_at": 1789012488.888886,
+          "snapshot_id": "e2a157054791242ec4d109dcc162830d727c8d4c51a239eef3d478d5937fbd46",
+          "status": "completed",
+          "mode": "run",
+          "nodeids": [
+            "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook"
+          ],
+          "results": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "status": "passed",
+              "phases": [
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "setup",
+                  "status": "passed",
+                  "duration": 0.0065417250007158145,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "call",
+                  "status": "passed",
+                  "duration": 0.0013788190008199308,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+                  "phase": "teardown",
+                  "status": "passed",
+                  "duration": 0.00015140899995458312,
+                  "message": ""
+                }
+              ],
+              "duration": 0.008071953001490328
+            }
+          ],
+          "container": "reposcope-2c256ec5b1222845fd1863575e9484f4",
+          "environment_hash": "94b0b2bdc16b08ea9153793618594f301f7e68b7e153621cf5e2e553c5c6bdd5",
+          "tree_hash": "34aabd71ebfa34c649ecde71ded45dd87ad3cfa2",
+          "test_suite_hash": "5c0477ef6ff9a158662cf0331bd5da43cbd98e18214126d344adbdd2d2a80078",
+          "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+          "comparison_hash": "de0d047c9b1d8ba05f4661a0ea13e0f6f7057ec652c75c94fc6c4259d8526221",
+          "command_hash": "4a5962b831abf99243b1b39da9e5d73dc9a6471499c1f094ada6c55cb8db075a",
+          "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.3.4, pluggy-1.5.0\nrootdir: /work\nconfigfile: pyproject.toml\ncollected 1 item\n\ntests/test_reposcope_diagnostic.py .                                     [100%]\n\n============================== 1 passed in 0.04s ===============================\n",
+          "exit_code": 0,
+          "collection_errors": [],
+          "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/click/state/executions/2c256ec5b1222845fd1863575e9484f4e3803643061ab69b9b841a836980e1a1",
+          "coverage_ids": [
+            "e96d09ef027bf4ab52bf24592889cd8aa7e8d109e928ff39dc1456e72bfbed0e",
+            "41620ee46ff4990eb2a40cb2e3537f6afa6dd79b34c666366da5c1bcf0440ce4",
+            "d810c00337de580980299fc31caf387d5c9a1c4b381568fbb7af9f161d90bb09"
+          ],
+          "cleanup_status": "completed",
+          "wall_seconds": 5.367471208970528,
+          "counts": {
+            "passed": 1
+          }
+        }
+      },
+      "comparison": {
+        "comparable": true,
+        "status": "inconclusive",
+        "tests": [
+          {
+            "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+            "base_status": "failed",
+            "head_status": "passed",
+            "finding": "head_passed"
+          }
+        ],
+        "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+      },
+      "reproduced_then_fixed": true
+    },
+    {
+      "case_id": "httpx-historical-01",
+      "origin_group": "httpx:PR3442",
+      "original_base_sha": "8ecb86f0d74ffc52d4663214fae9526bee89358d",
+      "original_head_sha": "89599a9541af14bcf906fc4ed58ccbdf403802ba",
+      "execution_commits": {
+        "base": "4f520fa1866559b22dd876568dbcbe62536730de",
+        "head": "f6ec2c020cad856601e83365e9a9343ab9f27bfe"
+      },
+      "shared_test_and_non_python_asset_commit": "89599a9541af14bcf906fc4ed58ccbdf403802ba",
+      "production_python_unchanged_from_original_sides": true,
+      "test_asset_sha256": "8345421434bb7f3635c688d29ef158c43b6c5658feebbe89c6b77a83719f73db",
+      "repository": "artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/httpx/repository",
+      "executions": {
+        "base": {
+          "execution_id": "diagnostic-base",
+          "started_at": 1789012505.092948,
+          "snapshot_id": "a20ed8985bd1a0803650df08042bd72b22d7dfe62bb49002f3846324684257d1",
+          "status": "completed",
+          "mode": "run",
+          "nodeids": [
+            "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate"
+          ],
+          "results": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+              "status": "failed",
+              "phases": [
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "setup",
+                  "status": "passed",
+                  "duration": 0.01620376799837686,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "call",
+                  "status": "failed",
+                  "duration": 0.004695286999776727,
+                  "message": "tmp_path = PosixPath('/tmp/pytest-of-unknown/pytest-0/test_disabled_server_verificat0')\n\n    @pytest.mark.filterwarnings(\"ignore:.*cert=.*:DeprecationWarning\")\n    def test_disabled_server_verification_does_not_ignore_client_certificate(tmp_path):\n        missing_certificate = str(tmp_path / \"missing-client-cert.pem\")\n>       with pytest.raises(FileNotFoundError):\nE       Failed: DID NOT RAISE <class 'FileNotFoundError'>\n\ntests/test_reposcope_diagnostic.py:10: Failed"
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "teardown",
+                  "status": "passed",
+                  "duration": 0.0013361960009206086,
+                  "message": ""
+                }
+              ],
+              "duration": 0.022235250999074196
+            }
+          ],
+          "container": "reposcope-0564938c05f7c095247609d11f0d9bf4",
+          "environment_hash": "2dd1a7791cb00081654c5acb8b59a030d754a7a54d1a602b1b52bdb5621abb99",
+          "tree_hash": "9e723c97055f767cacb3736666efff85b17d8f44",
+          "test_suite_hash": "e15ac25a4be06d71436913a800e6ecac6f03d55e96231848c570568109cbeffd",
+          "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+          "comparison_hash": "c3215ff7fe266bd024f131d60ca209006592e1d23fe1303a17325308af3884c7",
+          "command_hash": "f765600a7eb5fd1dc5e9b642891f0cac739022799a96c9a7481dbf2ef7fc54f5",
+          "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.3.4, pluggy-1.6.0\nrootdir: /work\nconfigfile: pyproject.toml\ncollected 1 item\n\ntests/test_reposcope_diagnostic.py F                                     [100%]\n\n=================================== FAILURES ===================================\n_____ test_disabled_server_verification_does_not_ignore_client_certificate _____\n\ntmp_path = PosixPath('/tmp/pytest-of-unknown/pytest-0/test_disabled_server_verificat0')\n\n    @pytest.mark.filterwarnings(\"ignore:.*cert=.*:DeprecationWarning\")\n    def test_disabled_server_verification_does_not_ignore_client_certificate(tmp_path):\n        missing_certificate = str(tmp_path / \"missing-client-cert.pem\")\n>       with pytest.raises(FileNotFoundError):\nE       Failed: DID NOT RAISE <class 'FileNotFoundError'>\n\ntests/test_reposcope_diagnostic.py:10: Failed\n=========================== short test summary info ============================\nFAILED tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate\n============================== 1 failed in 0.09s ===============================\n",
+          "exit_code": 1,
+          "collection_errors": [],
+          "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/httpx/state/executions/0564938c05f7c095247609d11f0d9bf49ea39abfb46d38e50f26821b5e644770",
+          "coverage_ids": [
+            "a651e049f50bdfcbd0041d0d7db48362956ba17532ff0065f4b7978f3596d7ab",
+            "828c0de5df263af663af7bd695ab3f6cea16367a1285ebcb840a65fddf159395",
+            "e2ba64d57dc1cd57033e5f85e9a3182718809176f46f188a68dcb6bed7dbd593",
+            "95b2dbc75d3914a974ab897f38fedd9d81499bf93462a1765c5f31fdd0a20a59",
+            "6fc67682e35b07d9cc1c64d93e2ff933dcbb53de5cda1528f565944cbb727efe"
+          ],
+          "cleanup_status": "completed",
+          "wall_seconds": 4.898560624977108,
+          "counts": {
+            "failed": 1
+          }
+        },
+        "head": {
+          "execution_id": "diagnostic-head",
+          "started_at": 1789012519.373726,
+          "snapshot_id": "ed0b7619e2e0d290996af19cb7988547f19a069ff5e4bb5c635739e49375a4a5",
+          "status": "completed",
+          "mode": "run",
+          "nodeids": [
+            "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate"
+          ],
+          "results": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+              "status": "passed",
+              "phases": [
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "setup",
+                  "status": "passed",
+                  "duration": 0.020419251999555854,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "call",
+                  "status": "passed",
+                  "duration": 0.0076770400009991135,
+                  "message": ""
+                },
+                {
+                  "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+                  "phase": "teardown",
+                  "status": "passed",
+                  "duration": 0.0029991549999976996,
+                  "message": ""
+                }
+              ],
+              "duration": 0.031095447000552667
+            }
+          ],
+          "container": "reposcope-2c256ec5b1222845fd1863575e9484f4",
+          "environment_hash": "2dd1a7791cb00081654c5acb8b59a030d754a7a54d1a602b1b52bdb5621abb99",
+          "tree_hash": "43a7cac5b45c7b702e0257f5b56229d7ed6e2430",
+          "test_suite_hash": "52f425958c69d60fad778b650a154affde03c736394f571c3e2c649043cac4f2",
+          "coverage_config_hash": "170cf0600ffd0c8cc483881e7c90b12e65a1dbca31e2e655b62b4e4d7bd3e71c",
+          "comparison_hash": "c3215ff7fe266bd024f131d60ca209006592e1d23fe1303a17325308af3884c7",
+          "command_hash": "f765600a7eb5fd1dc5e9b642891f0cac739022799a96c9a7481dbf2ef7fc54f5",
+          "log": "============================= test session starts ==============================\nplatform linux -- Python 3.12.14, pytest-8.3.4, pluggy-1.6.0\nrootdir: /work\nconfigfile: pyproject.toml\ncollected 1 item\n\ntests/test_reposcope_diagnostic.py .                                     [100%]\n\n============================== 1 passed in 0.14s ===============================\n",
+          "exit_code": 0,
+          "collection_errors": [],
+          "artifact_dir": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/holdout-diagnostics/run-8e5131530dae4504ad7a90d4222e2141/httpx/state/executions/2c256ec5b1222845fd1863575e9484f4e3803643061ab69b9b841a836980e1a1",
+          "coverage_ids": [
+            "46905388efa97eccf60d064623e60860f7c53eacb19319b1e0aefded13480a78",
+            "6751545edcbfee894f761d970e9becc58743198693163880e2e6dd8089b7536f",
+            "6f57ec73438fbdf36abc8bef3c40b772b2c4bc1485bde34ecc27c57a5bbbe6fd",
+            "f9e2c41ea09b05349549d55787494b682a7f392c79036bb1cb8807230ef8d46c",
+            "3c1236208d2e6eeb6214ff70d3329b232f5931e3fae6acf0f372156c898502a0"
+          ],
+          "cleanup_status": "completed",
+          "wall_seconds": 9.804471125011332,
+          "counts": {
+            "passed": 1
+          }
+        }
+      },
+      "comparison": {
+        "comparable": true,
+        "status": "inconclusive",
+        "tests": [
+          {
+            "nodeid": "tests/test_reposcope_diagnostic.py::test_disabled_server_verification_does_not_ignore_client_certificate",
+            "base_status": "failed",
+            "head_status": "passed",
+            "finding": "head_passed"
+          }
+        ],
+        "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+      },
+      "reproduced_then_fixed": true
+    }
+  ]
+}

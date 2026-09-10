@@ -1,0 +1,119 @@
+{
+  "state": "harness_assertion_failed",
+  "reason": "The diagnostic harness incorrectly compared full checkout test_suite_hash across changed source; original non-Python changelog assets also differed",
+  "directory": "artifacts/holdout-diagnostics/run-4a334a0a4c714ccda3c5e871e5cea9df",
+  "executions": [
+    {
+      "execution_id": "diagnostic-collect-base",
+      "mode": "collect",
+      "status": "completed",
+      "snapshot_id": "5062586aed71131a643a316c745fccd954b8cc78154ac7bc5aaa6cecd8022efa",
+      "test_suite_hash": "b83846bac247b418dab6ae09532f1dae131acf1fce1077e801f7231c95591047",
+      "comparison_hash": "fbf952d0c05f0d4c2375082e17d211ee7d8fc6dd93e915273bef9b63a01c97d4",
+      "cleanup_status": "completed",
+      "results": [
+        {
+          "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+          "status": "not_run",
+          "phases": [],
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "execution_id": "diagnostic-base",
+      "mode": "run",
+      "status": "completed",
+      "snapshot_id": "5062586aed71131a643a316c745fccd954b8cc78154ac7bc5aaa6cecd8022efa",
+      "test_suite_hash": "b83846bac247b418dab6ae09532f1dae131acf1fce1077e801f7231c95591047",
+      "comparison_hash": "fbf952d0c05f0d4c2375082e17d211ee7d8fc6dd93e915273bef9b63a01c97d4",
+      "cleanup_status": "completed",
+      "results": [
+        {
+          "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+          "status": "failed",
+          "phases": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "setup",
+              "status": "passed",
+              "duration": 0.007331896002142457,
+              "message": ""
+            },
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "call",
+              "status": "failed",
+              "duration": 0.04724972899930435,
+              "message": "def test_isolation_restores_ansi_hook():\n        original = _compat.should_strip_ansi\n        with CliRunner().isolation():\n            pass\n>       assert _compat.should_strip_ansi is original\nE       assert <function CliRunner.isolation.<locals>.should_strip_ansi at 0xec98434309a0> is <function should_strip_ansi at 0xec98436460c0>\nE        +  where <function CliRunner.isolation.<locals>.should_strip_ansi at 0xec98434309a0> = _compat.should_strip_ansi\n\ntests/test_reposcope_diagnostic.py:11: AssertionError"
+            },
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "teardown",
+              "status": "passed",
+              "duration": 0.0002604410001367796,
+              "message": ""
+            }
+          ],
+          "duration": 0.05484206600158359
+        }
+      ]
+    },
+    {
+      "execution_id": "diagnostic-collect-head",
+      "mode": "collect",
+      "status": "completed",
+      "snapshot_id": "9d80175288bbf2d0ee5265ef250b48633d4a37ebb89cdda23c1df779b8764893",
+      "test_suite_hash": "5c0477ef6ff9a158662cf0331bd5da43cbd98e18214126d344adbdd2d2a80078",
+      "comparison_hash": "de0d047c9b1d8ba05f4661a0ea13e0f6f7057ec652c75c94fc6c4259d8526221",
+      "cleanup_status": "completed",
+      "results": [
+        {
+          "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+          "status": "not_run",
+          "phases": [],
+          "duration": 0
+        }
+      ]
+    },
+    {
+      "execution_id": "diagnostic-head",
+      "mode": "run",
+      "status": "completed",
+      "snapshot_id": "9d80175288bbf2d0ee5265ef250b48633d4a37ebb89cdda23c1df779b8764893",
+      "test_suite_hash": "5c0477ef6ff9a158662cf0331bd5da43cbd98e18214126d344adbdd2d2a80078",
+      "comparison_hash": "de0d047c9b1d8ba05f4661a0ea13e0f6f7057ec652c75c94fc6c4259d8526221",
+      "cleanup_status": "completed",
+      "results": [
+        {
+          "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+          "status": "passed",
+          "phases": [
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "setup",
+              "status": "passed",
+              "duration": 0.013583251002273755,
+              "message": ""
+            },
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "call",
+              "status": "passed",
+              "duration": 0.0025253620005969424,
+              "message": ""
+            },
+            {
+              "nodeid": "tests/test_reposcope_diagnostic.py::test_isolation_restores_ansi_hook",
+              "phase": "teardown",
+              "status": "passed",
+              "duration": 0.000137154998810729,
+              "message": ""
+            }
+          ],
+          "duration": 0.016245768001681427
+        }
+      ]
+    }
+  ]
+}

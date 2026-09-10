@@ -21,6 +21,7 @@ class Store:
             CREATE TABLE IF NOT EXISTS repositories(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS snapshots(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS ast_cache(id TEXT PRIMARY KEY, data TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS resolution_cache(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, kind TEXT, state TEXT, payload TEXT,
               result TEXT, error TEXT, key TEXT UNIQUE, created REAL, updated REAL,
@@ -49,13 +50,13 @@ class Store:
             db.close()
 
     def put(self, table, key, value):
-        assert table in {"repositories", "snapshots", "ast_cache", "evidence", "coverage"}
+        assert table in {"repositories", "snapshots", "ast_cache", "resolution_cache", "evidence", "coverage"}
         data = value.model_dump() if hasattr(value, "model_dump") else value
         with self.connect() as db:
             db.execute(f"INSERT OR REPLACE INTO {table}(id,data) VALUES(?,?)", (key, json.dumps(data)))
 
     def get(self, table, key):
-        assert table in {"repositories", "snapshots", "ast_cache", "evidence", "coverage"}
+        assert table in {"repositories", "snapshots", "ast_cache", "resolution_cache", "evidence", "coverage"}
         with self.connect() as db:
             row = db.execute(f"SELECT data FROM {table} WHERE id=?", (key,)).fetchone()
         if not row:

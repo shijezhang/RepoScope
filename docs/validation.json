@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 125,
+    "passed": 138,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -87,7 +87,9 @@
     "parse_incremental_equal": 12,
     "cases": 12,
     "annotation_status": "unreviewed",
-    "formal_quality_evaluation": "not_run"
+    "formal_quality_evaluation": "not_run",
+    "parser_version": "ast312-resolver-v4",
+    "historical_full_incremental_equal": 2
   },
   "docker_real_execution": {
     "fixture": "passed including cancellation/timeout/coverage",
@@ -129,9 +131,9 @@
     "cli_help": "passed",
     "api_route_count": 17,
     "wheel_matches_source": true,
-    "overnight_note": "Nighttime packaging gap closed after continuation; 30 source hashes verified",
-    "source_files_verified": 30,
-    "result": "benchmarks/results/packaging-published.json"
+    "overnight_note": "Parser v4 package reinstalled; 31 source hashes verified",
+    "source_files_verified": 31,
+    "result": "benchmarks/results/packaging-v4.json"
   },
   "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
   "fixed_worker_docker_flow": "completed",
@@ -144,12 +146,12 @@
   "compose": {
     "status": "passed",
     "mode": "analysis-only",
-    "source_files_verified": 30,
+    "source_files_verified": 31,
     "source_matches_current": true,
     "model_called": false,
     "target_pytest_called": false,
     "frontend_matches_host_build": true,
-    "result": "benchmarks/results/compose-validation-published-recheck.json"
+    "result": "benchmarks/results/compose-validation-v4.json"
   },
   "ci_import_fix": "explicit repository pythonpath for benchmark test imports",
   "overnight_agent_0230": {
@@ -238,7 +240,35 @@
     "stable_speedup_claim": false,
     "result": "benchmarks/results/incremental-retrieval-run-042fc964ccac4749907ff9e8bf5ed71d.json"
   },
-  "github_ci_current_source": {
+  "resolution_incremental": {
+    "parser_version": "ast312-resolver-v4",
+    "level": "file with observed export dependencies",
+    "targeted_tests": 13,
+    "development_equal": 12,
+    "historical_equal": 2,
+    "stable_speedup_claim": false,
+    "result": "benchmarks/results/index-consistency-v4.json"
+  },
+  "historical_holdout_candidates": {
+    "count": 2,
+    "independent_origin_groups": 2,
+    "original_test_counts": [
+      24,
+      28
+    ],
+    "original_assets_comparable": false,
+    "B3_reduction": [
+      0,
+      0
+    ],
+    "external_B4_run": false,
+    "formal_quality_claim": false,
+    "result": "benchmarks/results/holdout-engineering-assessment.json",
+    "supplemental_diagnostics": "benchmarks/results/holdout-diagnostics-run-8e5131530dae4504ad7a90d4222e2141.json",
+    "diagnostics_reproduced_then_fixed": 2
+  },
+  "runtime_v4": "benchmarks/results/runtime-v4.json",
+  "github_ci_previous_source": {
     "commit": "7dfc3fab62538a238be386d2d4a75c11acec56a2",
     "conclusion": "success",
     "url": "https://github.com/shijezhang/RepoScope/actions/runs/34433275946"

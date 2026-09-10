@@ -40,7 +40,7 @@ class Snapshot(BaseModel):
     commit_sha: str
     tree_hash: str
     manifest_hash: str
-    parser_version: str = "ast312-resolver-v3"
+    parser_version: str = "ast312-resolver-v4"
     status: str = "ready"
     files: dict[str, str]
     symbols: list[Symbol]

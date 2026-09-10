@@ -1,0 +1,6 @@
+{
+  "sha256": "2e0d87be380ca11e5e68fac99d46924e455e672e93afc263e5e9424af971a901",
+  "selection": "Two upstream fixes from distinct PRs, no test asset changes, selected before execution; convenience sample, not a representative benchmark",
+  "frozen_before_execution": true,
+  "formal_quality_claim": false
+}
