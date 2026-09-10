@@ -34,3 +34,5 @@
 引用解析仍保守地全量重解，尚未实现最小依赖失效；真实pytest collection/test assets仍在执行profile边界，未与静态索引合并为一个全局事务。强检索真实公开仓库语料仍partial。CLI已有完整版本发布，Web未新增发布管理入口。
 
 没有新增独立holdout、完整B0–B4/消融与置信区间；旧选择工程对照的缩减率0%保持。Agent先前两例已在原预算内完成测试反馈，但更慢；本轮没有额外DeepSeek调用，也没有扩大外发范围。
+
+源码提交：`7dfc3fa`，已推送`zhangshijie/reposcope-upgrade`，未合并main。[GitHub CI通过](https://github.com/shijezhang/RepoScope/actions/runs/34433275946)。测试/lint缓存已清理，历史Git对象、运行目录和全部基准证据保留。

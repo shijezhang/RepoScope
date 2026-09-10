@@ -237,5 +237,10 @@
     "single_case_speedup": 3.334371444647704,
     "stable_speedup_claim": false,
     "result": "benchmarks/results/incremental-retrieval-run-042fc964ccac4749907ff9e8bf5ed71d.json"
+  },
+  "github_ci_current_source": {
+    "commit": "7dfc3fab62538a238be386d2d4a75c11acec56a2",
+    "conclusion": "success",
+    "url": "https://github.com/shijezhang/RepoScope/actions/runs/34433275946"
   }
 }
