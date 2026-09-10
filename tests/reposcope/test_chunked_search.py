@@ -423,3 +423,115 @@ def test_cli_strong_search_uses_explicit_manifest_and_does_not_degrade(fake_mode
     assert rejected.exit_code == 1
     assert "query_budget_exceeded" in rejected.output
     assert '"hits"' not in rejected.output
+
+
+def test_strong_publication_keeps_previous_version_when_next_corpus_is_partial(fake_models, tmp_path):
+    from reposcope.config import Settings
+    from reposcope.graph.store import Store
+    from reposcope.indexing.publication import publish_index, search_published
+
+    models, _ = fake_models
+    store = Store(Settings(home=tmp_path / "state"))
+    base = make_snapshot({"small.py": 'def small():\n    return "needle"'})
+    published = publish_index(store, base, models=models)
+    assert published["activated"]
+    head = make_snapshot({"small.py": 'def small():\n    value = "' + "x" * 900 + '"'}, snapshot_id="head")
+    partial = publish_index(store, head, models=models)
+    assert partial["state"] == "partial" and not partial["activated"]
+    found = search_published(store, base.repo_id, QUERY, models=models)
+    assert found["publication_id"] == published["publication_id"]
+    assert found["snapshot_id"] == base.snapshot_id
+    assert found["vector_cache"]["state"] == "disk_hit"
+
+
+def test_published_query_rejects_changed_model_without_reembedding(fake_models, tmp_path):
+    from reposcope.config import Settings
+    from reposcope.graph.store import Store
+    from reposcope.indexing.publication import publish_index, search_published
+
+    models, observed = fake_models
+    store = Store(Settings(home=tmp_path / "state"))
+    snapshot = make_snapshot({"small.py": 'def small():\n    return "needle"'})
+    publish_index(store, snapshot, models=models)
+    before = len(observed.embedding_batches)
+    (Path(models["embedding"]) / "config.json").write_text('{"changed":true}')
+    with pytest.raises(RepoScopeError) as error:
+        search_published(store, snapshot.repo_id, QUERY, models=models)
+    assert error.value.code == "index_profile_mismatch"
+    assert len(observed.embedding_batches) == before
+
+
+def test_publication_pointer_compare_and_swap_and_profile_isolation(tmp_path):
+    from reposcope.config import Settings
+    from reposcope.graph.store import Store
+    from reposcope.indexing.publication import publish_index, search_published
+
+    store = Store(Settings(home=tmp_path / "state"))
+    base = make_snapshot({"small.py": 'def small():\n    return "needle"'})
+    first = publish_index(store, base)
+    old = store.active_index(base.repo_id, "default")
+    head = make_snapshot(base.files, snapshot_id="head")
+    second = publish_index(store, head)
+    with pytest.raises(RepoScopeError) as error:
+        store.activate_index(old, first["publication_id"])
+    assert error.value.code == "index_publication_conflict"
+    assert search_published(store, base.repo_id, QUERY)["publication_id"] == second["publication_id"]
+    with pytest.raises(RepoScopeError) as error:
+        search_published(store, base.repo_id, QUERY, profile="another-profile")
+    assert error.value.code == "index_not_published"
+    incomplete = head.model_copy(update={"status": "partial"})
+    with pytest.raises(RepoScopeError):
+        publish_index(store, incomplete)
+    assert store.active_index(base.repo_id, "default")["publication_id"] == second["publication_id"]
+
+
+def test_new_snapshot_reuses_unchanged_content_vectors_and_matches_full_build(fake_models, tmp_path):
+    models, _ = fake_models
+    files = {"process.py": long_source(), "small.py": 'def small():\n    return "needle"'}
+    base = make_snapshot(files)
+    Search(base).strong_query(QUERY, models)
+    head = make_snapshot({**files, "small.py": 'def small():\n    return "needle changed"'}, snapshot_id="head")
+    incremental = Search(head).strong_query(QUERY, models)
+    assert incremental["vector_cache"]["reused_embedding_chunks"] > 0
+    assert incremental["vector_cache"]["encoded_embedding_chunks"] == 1
+    full = Search(head).strong_query(QUERY, {**models, "cache_dir": str(tmp_path / "full")})
+    assert full["vector_cache"]["reused_embedding_chunks"] == 0
+    assert full["hits"] == incremental["hits"]
+    with np.load(incremental["vector_cache"]["artifact"], allow_pickle=False) as a:
+        with np.load(full["vector_cache"]["artifact"], allow_pickle=False) as b:
+            assert np.array_equal(a["vectors"], b["vectors"])
+
+
+def test_corrupt_content_embedding_is_not_reused(fake_models):
+    import sqlite3
+
+    models, _ = fake_models
+    base = make_snapshot({"process.py": long_source()})
+    Search(base).strong_query(QUERY, models)
+    with sqlite3.connect(Path(models["cache_dir"]) / "embedding-rows.sqlite3") as db:
+        db.execute("UPDATE embeddings SET checksum='corrupt'")
+    with pytest.raises(RepoScopeError) as error:
+        Search(make_snapshot(base.files, snapshot_id="head")).strong_query(QUERY, models)
+    assert error.value.code == "vector_cache_invalid"
+
+
+@pytest.mark.parametrize("change", ["delete", "rename", "signature", "insert"])
+def test_content_reuse_matches_full_for_structural_file_changes(fake_models, tmp_path, change):
+    models, _ = fake_models
+    files = {"alpha.py": 'def alpha():\n    return "needle"', "beta.py": "def beta():\n    return 2"}
+    Search(make_snapshot(files)).strong_query(QUERY, models)
+    head_files = dict(files)
+    if change == "delete":
+        del head_files["alpha.py"]
+    elif change == "rename":
+        head_files["renamed.py"] = head_files.pop("alpha.py")
+    elif change == "signature":
+        head_files["alpha.py"] = 'def alpha(value=1):\n    return "needle"'
+    else:
+        head_files["gamma.py"] = 'def gamma():\n    return "needle extra"'
+    head = make_snapshot(head_files, snapshot_id="head")
+    reused = Search(head).strong_query(QUERY, models)
+    full = Search(head).strong_query(QUERY, {**models, "cache_dir": str(tmp_path / "full")})
+    assert reused["vector_cache"]["reused_embedding_chunks"] > 0
+    assert reused["hits"] == full["hits"]
+    assert all(hit["symbol"]["snapshot_id"] == "head" for hit in reused["hits"])

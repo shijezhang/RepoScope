@@ -6,6 +6,7 @@ import typer
 from reposcope.config import RepoScopeError, Settings
 from reposcope.graph.store import Store
 from reposcope.indexing.parser import build_snapshot, semantic_hash
+from reposcope.indexing.publication import publish_index, search_published
 from reposcope.jobs.submission import submit_tests
 from reposcope.models import TestRunInput, digest
 from reposcope.reports.render import export, validate_report
@@ -87,6 +88,31 @@ def callers(snapshot_id: str, symbol_id: str):
             indent=2,
         )
     )
+
+
+@app.command("publish-index")
+def publish_index_command(repo_id: str, commit: str = "HEAD", profile: str = "default", models: Path | None = None):
+    s = store()
+    repo = s.get("repositories", repo_id)
+    snap = build_snapshot(s, repo, resolve(Path(repo["path"]), commit))
+    result = publish_index(s, snap, profile, json.loads(models.read_text()) if models else None)
+    typer.echo(json.dumps(result, indent=2))
+    if not result["activated"]:
+        raise typer.Exit(1)
+
+
+@app.command("search-published")
+def search_published_command(
+    repo_id: str,
+    query: str,
+    profile: str = "default",
+    models: Path | None = None,
+    limit: int = typer.Option(20, min=1, max=100),
+):
+    result = search_published(
+        store(), repo_id, query, profile, json.loads(models.read_text()) if models else None, limit
+    )
+    typer.echo(json.dumps(result, indent=2))
 
 
 @app.command("analyze")

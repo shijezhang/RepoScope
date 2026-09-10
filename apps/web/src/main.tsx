@@ -104,6 +104,13 @@ function App() {
     void refresh();
   }, []);
   useEffect(() => {
+    if (run && runs.some((item) => item.run_id === run.run_id && item.status !== run.status)) {
+      setRuns((old) => old.map((item) =>
+        item.run_id === run.run_id ? { ...item, status: run.status } : item,
+      ));
+    }
+  }, [run, runs]);
+  useEffect(() => {
     if (!runId) return;
     let alive = true;
     let finished = false;

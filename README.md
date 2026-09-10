@@ -47,6 +47,16 @@ uv run reposcope test RUN_ID --attempt 2 --reason "Environment prepared"
 uv run --frozen --extra models reposcope search SNAPSHOT_ID "query" --models benchmarks/manifests/models.json
 ```
 
+需要让查询使用某个检索配置的完整已发布版本时：
+
+```bash
+uv run --frozen reposcope publish-index REPO_ID --commit HEAD --profile default
+uv run --frozen reposcope search-published REPO_ID "query" --profile default
+# 两条命令均可显式加 --models LOCAL_MANIFEST 使用强检索配置
+```
+
+发布失败或语料为partial时保留上一版本；已有任务继续引用自己的固定SHA。静态测试符号目录不代替Docker中的真实pytest收集。
+
 API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-Event-ID`；JSON、Markdown、HTML 来自同一报告 revision。测试只在显式请求后执行。
 
 ## 执行环境

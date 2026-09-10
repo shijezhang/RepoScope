@@ -1,0 +1,15 @@
+{
+  "publication": {
+    "state": "ready",
+    "activated": true,
+    "publication_id": "c388c4a7933b983216f6de49008c55b7621ef6ee5e78fddf4e9b764674048b74",
+    "previous_publication_id": null,
+    "snapshot_id": "c3a7e2d2158b28aabb1807f448ed469af0fc437049dc108e680b6136fca07f0e",
+    "profile": "default"
+  },
+  "query_publication_id": "c388c4a7933b983216f6de49008c55b7621ef6ee5e78fddf4e9b764674048b74",
+  "query_commit_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+  "hits": 1,
+  "mode": "real-cli-sparse",
+  "status": "passed"
+}

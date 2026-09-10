@@ -1,0 +1,69 @@
+{
+  "run_id": "run-4fd74d5e7d4445fd8083695aabb90397",
+  "directory": "artifacts/publication-validation/run-4fd74d5e7d4445fd8083695aabb90397",
+  "base_sha": "d19ce4a6d3a1f19556dcbf02552d64791148e641",
+  "head_sha": "f469202ba1a9b540b2f3e9d9d3b954fb999976fa",
+  "first_publication": {
+    "state": "ready",
+    "activated": true,
+    "publication_id": "a7915ddd5b529876d94a96df590d01b0dcb9f20ed37611ff76301ba4624d5707",
+    "previous_publication_id": null,
+    "snapshot_id": "7bf6e55b2d177a5a79e66447f9635b30fce0fc729f9188a6dda337329e9b6e30",
+    "profile": "default"
+  },
+  "partial_candidate": {
+    "state": "partial",
+    "activated": false,
+    "previous_publication_id": "a7915ddd5b529876d94a96df590d01b0dcb9f20ed37611ff76301ba4624d5707",
+    "snapshot_id": "4bc8985375cf22abb8c88c541bff1b9cd42eac0272dc6a1dc63efad7319e7d42",
+    "corpus": {
+      "state": "partial",
+      "symbols_total": 4,
+      "parents_with_ready_chunks": 4,
+      "fully_indexed_parents": 2,
+      "ready_chunks": 6,
+      "oversized_chunks": 2,
+      "oversized": [
+        {
+          "chunk_id": "02922a0e07e740db0642159571dc11a0b360dd21514e9e81d746631e3b15c31f",
+          "parent_symbol_id": "3b26e5ab23efc10ce12c8a33fee175ed491dfba7611c1294d74cbff0cc347285",
+          "path": "calc.py",
+          "start": 2,
+          "end": 2,
+          "token_count": 2029,
+          "limitations": [
+            "single_line_exceeds_budget"
+          ]
+        },
+        {
+          "chunk_id": "877377dfd555ebf94a48ac0ef0ce414722af629088cf0dc966a4bc04ad20cf40",
+          "parent_symbol_id": "325d8a2d4f86901de8133eac54bc2d76c1af385b9baf78c76567414c7af7946b",
+          "path": "calc.py",
+          "start": 2,
+          "end": 2,
+          "token_count": 2034,
+          "limitations": [
+            "single_line_exceeds_budget"
+          ]
+        }
+      ],
+      "chunk_version": "symbol-lines-v1",
+      "overlap_lines": 2
+    }
+  },
+  "query_publication_id": "a7915ddd5b529876d94a96df590d01b0dcb9f20ed37611ff76301ba4624d5707",
+  "query_commit_sha": "d19ce4a6d3a1f19556dcbf02552d64791148e641",
+  "cache": {
+    "state": "disk_hit",
+    "artifact": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/publication-validation/run-4fd74d5e7d4445fd8083695aabb90397/vectors/534449dbc561aae1d64e3765ccd31ae8449c8442399c833a6e80e4e72ae0da16.npz",
+    "publication": "snapshot-corpus-vectors-v1",
+    "corpus_state": "ready",
+    "snapshot_id": "7bf6e55b2d177a5a79e66447f9635b30fce0fc729f9188a6dda337329e9b6e30",
+    "update_mode": "full-embedding-per-snapshot"
+  },
+  "wall_seconds": 34.71999541699188,
+  "status": "passed",
+  "models_local_only": true,
+  "target_tests_run": false,
+  "quality_claim": false
+}

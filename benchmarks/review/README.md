@@ -13,3 +13,5 @@ uv run --frozen python -m benchmarks.runners.review_packet --output benchmarks/r
 ```
 
 `benchmarks/runners/metrics.py`仍拒绝本包；不能为了让评分运行而批量将unreviewed改为reviewed。
+
+用户后续指定由Codex复核；现已完成[逐条复核报告](2026-09-10/codex-review.md)与12条真实Docker对照。原始空白标注不覆盖，机器复核结果保存在单独文件。

@@ -98,4 +98,4 @@ class IndexBundle(VectorCache):
         }
         if vectors.shape[0] != len(components["chunks"]):
             raise RepoScopeError("vector_cache_invalid", "Cannot publish mismatched corpus/vector rows")
-        return self.publish(binding, vectors, components)
+        return self.publish(binding, vectors, components, immutable=True)

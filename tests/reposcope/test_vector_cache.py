@@ -39,3 +39,17 @@ def test_failed_publication_preserves_previous_ready_artifact(tmp_path, monkeypa
     vectors, _ = cache.load(binding, 1)
     assert vectors.tolist() == [[1.0, 0.0]]
     assert not list(tmp_path.glob("*.tmp"))
+
+
+def test_immutable_bundle_publication_never_replaces_owned_bytes(tmp_path):
+    cache = VectorCache(tmp_path)
+    binding = {"snapshot_id": "immutable"}
+    vectors = np.array([[1.0, 0.0]], dtype=np.float32)
+    cache.publish(binding, vectors, {"source": "one"}, immutable=True)
+    original = cache.path(binding).read_bytes()
+    cache.publish(binding, vectors, {"source": "one"}, immutable=True)
+    assert cache.path(binding).read_bytes() == original
+    with pytest.raises(RepoScopeError):
+        cache.publish(binding, vectors, {"source": "two"}, immutable=True)
+    assert cache.path(binding).read_bytes() == original
+    assert not list(tmp_path.glob("*.tmp"))

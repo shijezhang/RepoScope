@@ -13,6 +13,7 @@ from rank_bm25 import BM25Okapi
 from reposcope.config import RepoScopeError
 from reposcope.models import digest
 from reposcope.retrieval.corpus import chunk_evidence, limits, prepare_corpus, token_count
+from reposcope.retrieval.embedding_cache import EmbeddingCache
 from reposcope.retrieval.index_bundle import BUNDLE_VERSION, IndexBundle, snapshot_content
 from reposcope.retrieval.model_files import verify_model_files
 
@@ -64,7 +65,7 @@ class Search:
             for sid, score, sources in rrf({"identifier": exact, "bm25": sparse})[:limit]
         ]
 
-    def strong_query(self, query, models, limit=20):
+    def strong_query(self, query, models, limit=20, *, expected_artifact=None):
         """Pinned local Dense + sparse + RRF + reranker; never silently degrades."""
         started = time.perf_counter()
         if self.snapshot.status != "ready":
@@ -137,6 +138,10 @@ class Search:
             "vector_format": "normalized-float32-chunks-v2",
         }
         cache = IndexBundle(models.get("cache_dir", Path(os.getenv("REPOSCOPE_HOME", "artifacts/state")) / "vectors"))
+        if expected_artifact is not None and cache.path(binding).resolve() != Path(expected_artifact).resolve():
+            raise RepoScopeError(
+                "index_profile_mismatch", "Current model/runtime identity differs from published index"
+            )
         corpus_started = time.perf_counter()
         cached = None
         if "corpus" not in runtime:
@@ -156,17 +161,33 @@ class Search:
                 "retrieval_corpus_unavailable", "No complete source chunk fits the pinned model budgets"
             )
         index_started = time.perf_counter()
+        row_cache = EmbeddingCache(cache.root, binding)
+        reused_chunks = 0
+        encoded_chunks = 0
         if "vectors" in runtime:
             vectors, cache_state = runtime["vectors"], "memory_hit"
         elif cached is not None:
             vectors, cache_state = cached[1], "disk_hit"
         else:
-            vectors = embedding.encode(
-                texts,
-                normalize_embeddings=True,
-                batch_size=models.get("batch_size", 16),
-                show_progress_bar=False,
-            )
+            rows = row_cache.load(texts)
+            missing = [index for index, row in enumerate(rows) if row is None]
+            reused_chunks = len(rows) - len(missing)
+            encoded_chunks = len(missing)
+            if missing:
+                encoded = embedding.encode(
+                    [texts[index] for index in missing],
+                    normalize_embeddings=True,
+                    batch_size=models.get("batch_size", 16),
+                    show_progress_bar=False,
+                )
+                if len(encoded) != len(missing):
+                    raise RepoScopeError("vector_cache_invalid", "Embedding returned incorrect row count")
+                for index, vector in zip(missing, encoded):
+                    rows[index] = vector
+            try:
+                vectors = np.stack(rows)
+            except ValueError as exc:
+                raise RepoScopeError("vector_cache_invalid", "Content embedding dimensions differ") from exc
             cache_state = "built"
         vectors = np.asarray(vectors, dtype=np.float32)
         if vectors.ndim != 2 or vectors.shape[0] != len(chunks) or not np.isfinite(vectors).all():
@@ -227,6 +248,8 @@ class Search:
         query_seconds = time.perf_counter() - query_started
         # Publish only after both embedding inference and reranking actually
         # succeed. Manifest and vectors become visible in one atomic replace.
+        if cache_state in {"built", "disk_hit"}:
+            row_cache.publish(texts, vectors)
         if cache_state == "built":
             cache.publish_corpus(binding, self.snapshot, corpus, vectors, tokenize)
         runtime["vectors"] = vectors
@@ -251,7 +274,9 @@ class Search:
                 "publication": BUNDLE_VERSION,
                 "corpus_state": corpus["stats"]["state"],
                 "snapshot_id": self.snapshot.snapshot_id,
-                "update_mode": "full-embedding-per-snapshot",
+                "update_mode": "content-reuse-per-snapshot",
+                "reused_embedding_chunks": reused_chunks,
+                "encoded_embedding_chunks": encoded_chunks,
             },
             "limits": {
                 **budget,

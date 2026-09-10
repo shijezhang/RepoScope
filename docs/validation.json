@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 115,
+    "passed": 125,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -20,7 +20,7 @@
   },
   "frontend": {
     "typescript_vite_build": "passed",
-    "playwright_contract_passed": 4,
+    "playwright_contract_passed": 5,
     "contract_mocks": true,
     "narrow_width_px": 640
   },
@@ -128,8 +128,10 @@
     "clean_locked_install": "passed",
     "cli_help": "passed",
     "api_route_count": 17,
-    "wheel_matches_source": false,
-    "overnight_note": "Source changed after prior wheel/Compose checks; rebuild and verify final snapshot before morning handoff"
+    "wheel_matches_source": true,
+    "overnight_note": "Nighttime packaging gap closed after continuation; 30 source hashes verified",
+    "source_files_verified": 30,
+    "result": "benchmarks/results/packaging-published.json"
   },
   "agent_feedback_contract": "passed with explicit test authorization; synthetic decision provider is not a real-model result",
   "fixed_worker_docker_flow": "completed",
@@ -142,10 +144,12 @@
   "compose": {
     "status": "passed",
     "mode": "analysis-only",
-    "source_files_verified": 22,
-    "source_matches_current": false,
+    "source_files_verified": 30,
+    "source_matches_current": true,
     "model_called": false,
-    "target_pytest_called": false
+    "target_pytest_called": false,
+    "frontend_matches_host_build": true,
+    "result": "benchmarks/results/compose-validation-published-recheck.json"
   },
   "ci_import_fix": "explicit repository pythonpath for benchmark test imports",
   "overnight_agent_0230": {
@@ -196,6 +200,42 @@
     "cases": 12,
     "diff_hashes_verified": 12,
     "annotation_status": "unreviewed",
-    "formal_metrics_rejected": true
+    "formal_metrics_rejected": true,
+    "codex_reviewed_cases": 12,
+    "independent_human_gold": false,
+    "review": "benchmarks/review/2026-09-10/codex-review.md",
+    "real_docker_cases": 12,
+    "head_assertion_failure_cases": 6,
+    "head_collection_failure_cases": 2,
+    "all_containers_cleaned": true
+  },
+  "live_browser_final": {
+    "run_id": "dc8e352bea4143949e7598c7fa864fc1",
+    "report_revision": 2,
+    "real_docker_base_passed": 4,
+    "real_docker_head_passed": 1,
+    "real_docker_head_failed": 3,
+    "history_sync_verified_run": "b62bc625d38245838a0d4edcc30693af",
+    "console_errors": [],
+    "model_called": false,
+    "result": "benchmarks/results/workbench-final.json",
+    "final_api_worker_restarted": true
+  },
+  "published_indexes": {
+    "cli_publication": "passed",
+    "atomic_pointer_compare_and_swap": "passed",
+    "partial_preserves_previous": "real-model passed",
+    "runtime_test_collection_in_same_transaction": false,
+    "result": "benchmarks/results/publication-validation.json"
+  },
+  "vector_incremental": {
+    "reused_chunks": 3251,
+    "encoded_chunks": 7,
+    "full_chunks": 3258,
+    "rank_equal": true,
+    "max_abs_delta": 1.3131648302078247e-07,
+    "single_case_speedup": 3.334371444647704,
+    "stable_speedup_claim": false,
+    "result": "benchmarks/results/incremental-retrieval-run-042fc964ccac4749907ff9e8bf5ed71d.json"
   }
 }

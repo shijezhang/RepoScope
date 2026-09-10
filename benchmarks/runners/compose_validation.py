@@ -25,7 +25,10 @@ def main():
     parser.add_argument("--python-image", required=True)
     parser.add_argument("--port", type=int, default=8081)
     parser.add_argument("--skip-build", action="store_true")
+    parser.add_argument("--output", default="compose-validation.json")
     args = parser.parse_args()
+    if Path(args.output).name != args.output or not args.output.endswith(".json"):
+        parser.error("Output must be a JSON filename")
     with socket.socket() as sock:
         sock.bind(("127.0.0.1", args.port))
     case = locate_case("fixture-01")
@@ -245,7 +248,7 @@ def main():
         result["artifact_directory"] = str(directory.relative_to(ROOT))
         result["finished_at"] = time.time()
         (directory / "result.json").write_text(json.dumps(result, indent=2) + "\n")
-        (ROOT / "benchmarks/results/compose-validation.json").write_text(json.dumps(result, indent=2) + "\n")
+        (ROOT / "benchmarks/results" / args.output).write_text(json.dumps(result, indent=2) + "\n")
     assert result["cleanup"] == "completed", result
     print(
         json.dumps(

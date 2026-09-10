@@ -49,7 +49,7 @@ class VectorCache:
         except (OSError, ValueError, KeyError, EOFError, zipfile.BadZipFile) as exc:
             raise RepoScopeError("vector_cache_invalid", f"Invalid vector artifact {path.name}: {exc}") from exc
 
-    def publish(self, binding, vectors, components=None):
+    def publish(self, binding, vectors, components=None, *, immutable=False):
         vectors = np.asarray(vectors, dtype=np.float32)
         if vectors.ndim != 2 or not np.isfinite(vectors).all():
             raise RepoScopeError("vector_cache_invalid", "Cannot publish invalid vectors")
@@ -75,7 +75,18 @@ class VectorCache:
                 np.savez(output, vectors=vectors, manifest=json.dumps(manifest, sort_keys=True))
                 output.flush()
                 os.fsync(output.fileno())
-            os.replace(temporary, self.path(binding))
+            if immutable:
+                try:
+                    os.link(temporary, self.path(binding))
+                except FileExistsError:
+                    _, existing = self.load(binding, vectors.shape[0])
+                    if existing["vectors_sha256"] != manifest["vectors_sha256"] or existing.get(
+                        "components_sha256"
+                    ) != manifest.get("components_sha256"):
+                        raise RepoScopeError("vector_cache_invalid", "A different artifact already owns this binding")
+                    return existing
+            else:
+                os.replace(temporary, self.path(binding))
         finally:
             if temporary is not None:
                 temporary.unlink(missing_ok=True)
