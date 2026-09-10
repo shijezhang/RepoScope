@@ -41,6 +41,12 @@ uv run reposcope status RUN_ID
 uv run reposcope test RUN_ID --attempt 2 --reason "Environment prepared"
 ```
 
+本地强检索可显式提供已准备的固定模型清单（路径相对当前工作目录）；需要安装 `models` extra。它使用本地模型和强检索bundle，输出语料完整度、证据及缓存状态，模型不可用或query超限时直接失败。
+
+```bash
+uv run --frozen --extra models reposcope search SNAPSHOT_ID "query" --models benchmarks/manifests/models.json
+```
+
 API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-Event-ID`；JSON、Markdown、HTML 来自同一报告 revision。测试只在显式请求后执行。
 
 ## 执行环境

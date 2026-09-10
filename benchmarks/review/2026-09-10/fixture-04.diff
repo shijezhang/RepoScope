@@ -1,0 +1,13 @@
+diff --git a/api.py b/api.py
+index 0fd81ad..c9d16db 100644
+--- a/api.py
++++ b/api.py
+@@ -12,7 +12,7 @@ def old_order(value):
+ def plugin(value):
+     import calc
+ 
+-    return getattr(calc, "total")(value)
++    return getattr(calc, "legacy")(value)
+ 
+ 
+ class Special(Base):

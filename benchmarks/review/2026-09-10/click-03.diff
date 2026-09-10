@@ -1,0 +1,12 @@
+diff --git a/src/click/types.py b/src/click/types.py
+index a70fd58..68a83d8 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -22,6 +22,7 @@ if t.TYPE_CHECKING:
+ 
+ 
+ class ParamType:
++    # Benchmark documentation-only clarification.
+     """Represents the type of a parameter. Validates and converts values
+     from the command line or Python into the correct type.
+ 

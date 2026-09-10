@@ -1,0 +1,13 @@
+diff --git a/src/click/types.py b/src/click/types.py
+index a70fd58..9d8a5e7 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -453,7 +453,7 @@ class _NumberRangeBase(_NumberParamTypeBase):
+ 
+         rv = super().convert(value, param, ctx)
+         lt_min: bool = self.min is not None and (
+-            operator.le if self.min_open else operator.lt
++            operator.lt if self.min_open else operator.le
+         )(rv, self.min)
+         gt_max: bool = self.max is not None and (
+             operator.ge if self.max_open else operator.gt

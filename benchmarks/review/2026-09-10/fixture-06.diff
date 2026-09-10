@@ -1,0 +1,16 @@
+diff --git a/calc.py b/calc.py
+index 915298b..46471f6 100644
+--- a/calc.py
++++ b/calc.py
+@@ -3,9 +3,9 @@ def total(amount):
+ 
+ 
+ def legacy(value):
+-    return total(value)
++    return total(value + 1)
+ 
+ 
+ class Base:
+     def price(self, value):
+-        return total(value)
++        return total(value + 1)

@@ -1,0 +1,13 @@
+diff --git a/calc.py b/calc.py
+index 915298b..7a0b95a 100644
+--- a/calc.py
++++ b/calc.py
+@@ -2,7 +2,7 @@ def total(amount):
+     return amount if amount >= 0 else 0
+ 
+ 
+-def legacy(value):
++def renamed(value):
+     return total(value)
+ 
+ 

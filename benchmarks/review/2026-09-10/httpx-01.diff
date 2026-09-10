@@ -1,0 +1,13 @@
+diff --git a/httpx/_status_codes.py b/httpx/_status_codes.py
+index 133a623..6ea0f84 100644
+--- a/httpx/_status_codes.py
++++ b/httpx/_status_codes.py
+@@ -54,7 +54,7 @@ class codes(IntEnum):
+         """
+         Returns `True` for 2xx status codes, `False` otherwise.
+         """
+-        return 200 <= value <= 299
++        return 201 <= value <= 299
+ 
+     @classmethod
+     def is_redirect(cls, value: int) -> bool:

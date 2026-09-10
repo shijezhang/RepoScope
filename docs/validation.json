@@ -4,7 +4,7 @@
   "python": "3.12.13",
   "backend": {
     "command": "uv run --frozen pytest",
-    "passed": 114,
+    "passed": 115,
     "failed": 0,
     "warnings": 2,
     "warning_scope": "Starlette/httpx TestClient deprecation",
@@ -184,5 +184,18 @@
     "result": "benchmarks/results/strong-retrieval-bundle-0430.json",
     "disk_reloads_equal": 2,
     "product_global_publication": false
+  },
+  "strong_cli": {
+    "result": "benchmarks/results/strong-cli-0500.json",
+    "ranking_equal_to_python_api": true,
+    "wall_seconds": 59.593900458014105,
+    "external_inference": false
+  },
+  "review_packet": {
+    "directory": "benchmarks/review/2026-09-10",
+    "cases": 12,
+    "diff_hashes_verified": 12,
+    "annotation_status": "unreviewed",
+    "formal_metrics_rejected": true
   }
 }

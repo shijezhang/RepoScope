@@ -401,3 +401,25 @@ def test_bundle_binds_graph_content_but_not_build_timings(fake_models):
     changed = Search(changed_graph).strong_query(QUERY, models)
     assert changed["vector_cache"]["state"] == "built"
     assert changed["vector_cache"]["artifact"] != first["vector_cache"]["artifact"]
+
+
+def test_cli_strong_search_uses_explicit_manifest_and_does_not_degrade(fake_models, monkeypatch, tmp_path):
+    from typer.testing import CliRunner
+
+    from reposcope.cli import app
+
+    models, _ = fake_models
+    snapshot = make_snapshot({"process.py": long_source()})
+    monkeypatch.setattr("reposcope.cli.store", lambda: SimpleNamespace(snapshot=lambda _: snapshot))
+    manifest = tmp_path / "models.json"
+    manifest.write_text(json.dumps(models))
+    runner = CliRunner()
+    strong = runner.invoke(app, ["search", "base", QUERY, "--models", str(manifest), "--limit", "2"])
+    assert strong.exit_code == 0, strong.output
+    assert json.loads(strong.stdout)["vector_cache"]["state"] == "built"
+    weak = runner.invoke(app, ["search", "base", QUERY])
+    assert weak.exit_code == 0 and isinstance(json.loads(weak.stdout), list)
+    rejected = runner.invoke(app, ["search", "base", "query exceeds budget", "--models", str(manifest)])
+    assert rejected.exit_code == 1
+    assert "query_budget_exceeded" in rejected.output
+    assert '"hits"' not in rejected.output

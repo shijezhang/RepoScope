@@ -1,0 +1,13 @@
+diff --git a/src/click/types.py b/src/click/types.py
+index a70fd58..b9ac739 100644
+--- a/src/click/types.py
++++ b/src/click/types.py
+@@ -125,7 +125,7 @@ class ParamType:
+         then leading and trailing whitespace is ignored.  Otherwise, leading
+         and trailing splitters usually lead to empty items being included.
+         """
+-        return (rv or "").split(self.envvar_list_splitter)
++        return [rv or ""]
+ 
+     def fail(
+         self,

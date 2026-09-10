@@ -105,3 +105,12 @@
 - 在恢复声明/context校验补全后，用最终源码单独复读已有缓存，记录strong-retrieval-bundle-recheck-0430.json；四查询/两次复读再次成功，无重新embedding或外发。原始日志保存在artifacts/model-probe。
 - ADR010明确：完成的是强检索内部共同发布。SQLite图快照、产品默认弱检索与运行时pytest目录仍独立，尚未完成全部组件的产品默认发布指针；不能提前标全局联合发布完成。
 - 下一轮：接产品Store/查询profile的发布边界，失败不得替换已发布版本；或推进待人工复核候选与真实覆盖选择对照。晨前预留足够时间重建wheel/Compose、重启API/worker并核验真实UI。
+
+### 05:00轮：CLI强检索入口与人工复核材料
+
+- 已确认7300700 CI通过。检查接线发现强检索此前只能由基准脚本调用，CLI仍固定弱检索；新增search --models LOCAL_MANIFEST，显式选择本地强检索，默认弱检索兼容。query预算/模型失败返回非零和具体错误，不静默降级。
+- 新增CLI集成测试，115项全量pytest通过；ruff check/format、diff-check通过。真实Click CLI调用disk_hit，前五项与Python接口一致、语料partial；完整进程59.59秒，不能把此前同进程约2秒复读当成CLI启动时延。结果strong-cli-0500.json。
+- 新增review_packet导出器与12条固定SHA源码复核包benchmarks/review/2026-09-10。使用可用历史Git对象、原始diff和hash；不含系统预测或变异假设。所有gold/test标签留null、status unreviewed，不自动生成或批准金标。
+- 12个diff hash与唯一case ID已核验，正式metrics仍拒绝未复核包。按repo/base保守origin_group，全部development，未伪造holdout。工具拒绝覆盖既有复核目录。
+- 清理本次一次性CLI探针脚本，保留命令、模型清单指针和原始运行日志/结果。未调用DeepSeek或改审批工具协议。
+- 产品全局默认发布指针仍未接线；不要把CLI显式强检索或内部bundle记为M5全部完成。下一轮优先开始最终wheel/Compose/本机服务核验，预留晨前修复时间；也可继续一个边界清晰的发布接线任务。

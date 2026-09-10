@@ -1,0 +1,13 @@
+diff --git a/httpx/_status_codes.py b/httpx/_status_codes.py
+index 133a623..60e184e 100644
+--- a/httpx/_status_codes.py
++++ b/httpx/_status_codes.py
+@@ -82,7 +82,7 @@ class codes(IntEnum):
+         """
+         Returns `True` for 4xx or 5xx status codes, `False` otherwise.
+         """
+-        return 400 <= value <= 599
++        return 500 <= value <= 599
+ 
+     # informational
+     CONTINUE = 100, "Continue"

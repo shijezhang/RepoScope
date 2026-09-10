@@ -1,0 +1,7 @@
+{
+  "cases": 12,
+  "annotation_status": "unreviewed",
+  "labels_generated": false,
+  "inputs": "fixed Git diffs; no system predictions or mutation hypotheses included",
+  "split_policy": "same repo/base grouped conservatively; all current cases remain development"
+}
