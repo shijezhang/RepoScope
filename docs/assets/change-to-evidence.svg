@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="440" viewBox="0 0 1200 440" role="img" aria-labelledby="title desc">
+  <title id="title">RepoScope：从变更到证据</title>
+  <desc id="desc">固定 Base 和 Head 提交，定位变化符号，追踪潜在影响，按需执行 Docker 双侧测试。所有结论返回到带有 SHA、快照和证据哈希的报告。</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8" fill="none" stroke="#698498" stroke-width="1.5"/></marker>
+  </defs>
+  <rect width="1200" height="440" rx="20" fill="#f3f7fa"/>
+  <g font-family="-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif">
+    <text x="44" y="51" fill="#244863" font-size="15" font-weight="700" letter-spacing="2">REPOSCOPE / CHANGE → EVIDENCE</text>
+    <text x="44" y="97" fill="#122e44" font-size="30" font-weight="700">每一条判断，都能回到证据</text>
+    <text x="44" y="128" fill="#526c80" font-size="17">固定版本 · 追踪影响 · 按需验证</text>
+    <g fill="#fff" stroke="#d6e1e9" stroke-width="1.5">
+      <rect x="44" y="162" width="246" height="154" rx="12"/>
+      <rect x="333" y="162" width="246" height="154" rx="12"/>
+      <rect x="622" y="162" width="246" height="154" rx="12"/>
+      <rect x="911" y="162" width="245" height="154" rx="12"/>
+    </g>
+    <g fill="#2a7293" font-size="13" font-weight="700">
+      <text x="64" y="190">01 / SNAPSHOT</text><text x="353" y="190">02 / DIFF</text><text x="642" y="190">03 / IMPACT</text><text x="931" y="190">04 / VERIFY · 可选</text>
+    </g>
+    <g fill="#122e44" font-size="22" font-weight="700">
+      <text x="64" y="228">固定两侧提交</text><text x="353" y="228">定位符号变化</text><text x="642" y="228">追踪潜在影响</text><text x="931" y="228">对照测试结果</text>
+    </g>
+    <g fill="#526c80" font-size="16">
+      <text x="64" y="261">Base SHA ↔ Head SHA</text><text x="64" y="288">读取已提交的代码快照</text>
+      <text x="353" y="261">函数 · 类 · 模块</text><text x="353" y="288">同时保留新增与删除证据</text>
+      <text x="642" y="261">调用路径 + 源码位置</text><text x="642" y="288">候选与未知关系明确呈现</text>
+      <text x="931" y="261">Docker / pytest</text><text x="931" y="288">核对两侧环境与测试资产</text>
+    </g>
+    <g stroke="#698498" stroke-width="1.6" marker-end="url(#arrow)">
+      <path d="M299 239H323"/><path d="M588 239H612"/><path d="M877 239H901" stroke-dasharray="4 3"/>
+    </g>
+    <rect x="44" y="346" width="1112" height="57" rx="10" fill="#163e59"/>
+    <text x="66" y="382" fill="#fff" font-size="19" font-weight="600">可核验报告</text>
+    <text x="218" y="382" fill="#c6dbe8" font-size="16">commit SHA + snapshot + evidence hash</text>
+    <text x="795" y="382" fill="#fff" font-size="16">工作台浏览 / JSON · Markdown · HTML</text>
+  </g>
+</svg>
