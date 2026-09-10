@@ -1,0 +1,12 @@
+diff --git a/httpx/_status_codes.py b/httpx/_status_codes.py
+index 133a623..20fc8d1 100644
+--- a/httpx/_status_codes.py
++++ b/httpx/_status_codes.py
+@@ -6,6 +6,7 @@ __all__ = ["codes"]
+ 
+ 
+ class codes(IntEnum):
++    # Benchmark documentation-only clarification.
+     """HTTP status codes and reason phrases
+ 
+     Status codes from the following RFCs are all observed:

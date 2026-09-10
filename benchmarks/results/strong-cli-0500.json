@@ -1,0 +1,35 @@
+{
+  "command": [
+    "/Users/bytedance/vscode_workspace/graphRAG/artifacts/environments/models/bin/python",
+    "-m",
+    "reposcope.cli",
+    "search",
+    "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+    "Validate a command line parameter against an integer range with inclusive and exclusive boundaries.",
+    "--models",
+    "/Users/bytedance/vscode_workspace/graphRAG/artifacts/model-probe/cli-models.json",
+    "--limit",
+    "5"
+  ],
+  "wall_seconds": 59.593900458014105,
+  "exit_code": 0,
+  "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+  "state": "partial",
+  "cache": {
+    "state": "disk_hit",
+    "artifact": "artifacts/model-probe/chunk-vectors/97a5b270fd2ebe6e8582d1f01651789822e8bfea3781a6653348189c2bfc72d7.npz",
+    "publication": "snapshot-corpus-vectors-v1",
+    "corpus_state": "partial",
+    "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+    "update_mode": "full-embedding-per-snapshot"
+  },
+  "ranking_equal_to_python_api": true,
+  "symbol_ids": [
+    "740fece0fd74682059c409f6098a066da3e63b9789093d100abb0457241438f7",
+    "f0500ca0c52679f3f984cafe84fd59dc235e465ac9ca30f4ffa7c32092b9666c",
+    "ae04fb0ce7374f1fa55b51ab0b1178c3e9f79d46030fe85d53d6a514e988ca71",
+    "9733ac3597ed69d7a2d72a8b980177d208d028aec22761b0c23a625c108e5505",
+    "1574ed8459549d7fcede0ee334712f383cf44f9e611186c7f0ffa94f4264a5e3"
+  ],
+  "api_called": false
+}

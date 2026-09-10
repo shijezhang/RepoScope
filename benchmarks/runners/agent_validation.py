@@ -126,7 +126,15 @@ def main():
     parser.add_argument(
         "--fixed-only", action="store_true", help="Run Docker deterministic arms without loading provider configuration"
     )
+    parser.add_argument("--scope-seal-from", help="Reuse an approved checkpoint scope for a NEW bounded experiment")
+    parser.add_argument("--output", help="Result JSON filename under benchmarks/results; defaults to this run ID")
     args = parser.parse_args()
+    if args.scope_seal_from and (args.resume or not re.fullmatch(r"run-[0-9a-f]{32}", args.scope_seal_from)):
+        parser.error("Use a valid prior scope checkpoint only for a new experiment")
+    if args.output and (
+        Path(args.output).name != args.output or not args.output.endswith(".json") or args.output.startswith(".")
+    ):
+        parser.error("Output must be a JSON filename")
     run_id = args.resume or "run-" + uuid.uuid4().hex
     if not re.fullmatch(r"run-[0-9a-f]{32}", run_id):
         parser.error("Invalid run checkpoint")
@@ -146,6 +154,11 @@ def main():
             "question": QUESTION,
         }
         checkpoint.write_text(json.dumps(frozen, indent=2) + "\n")
+    if args.scope_seal_from:
+        old_seal = ROOT / "artifacts/agent-validation-state" / args.scope_seal_from / "review-scope.json"
+        (root / "review-scope.json").write_text(old_seal.read_text())
+        frozen["scope_inherited_from"] = args.scope_seal_from
+        checkpoint.write_text(json.dumps(frozen, indent=2) + "\n")
     if not args.fixed_only:
         preview = json.loads((ROOT / "docs/examples/agent-data-preview.json").read_text())
         seal = json.loads((root / "review-scope.json").read_text())
@@ -159,12 +172,14 @@ def main():
         "budget": frozen["budget"],
         "profile": frozen["profile"],
         "profile_hash": frozen["profile_hash"],
+        "scope_inherited_from": frozen.get("scope_inherited_from"),
+        "scope_verification_before_run": guard if not args.fixed_only else None,
         "question": frozen["question"],
         "arms": [],
         "case_comparisons": [],
         "fairness": "Same base/head, profile, task, and maximum budget; independent Store and no preloaded coverage per arm",
     }
-    output = ROOT / "benchmarks/results/agent-validation.json"
+    output = ROOT / "benchmarks/results" / (args.output or f"agent-{run_id}.json")
 
     def save():
         data = json.dumps(result, indent=2) + "\n"

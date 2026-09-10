@@ -1,0 +1,44 @@
+[
+  {
+    "case_id": "click-historical-01",
+    "repo_id": "click",
+    "repository": "artifacts/repositories/click",
+    "base_sha": "9ce8bd84a66526e194668e8d4a05c45dd5b067a4",
+    "head_sha": "ffd43e9dc3b90bd698088fc7ebac9dbc6a4444b2",
+    "origin_group": "click:PR2733",
+    "split": "holdout",
+    "annotation_status": "unreviewed",
+    "source_kind": "real historical upstream fix",
+    "changed_paths": [
+      "CHANGES.rst",
+      "src/click/testing.py"
+    ],
+    "test_paths": [
+      "tests/test_testing.py"
+    ],
+    "query": "Restore ANSI stripping behavior after leaving CLI runner isolation.",
+    "gold_impacts": null,
+    "regression_failures": null
+  },
+  {
+    "case_id": "httpx-historical-01",
+    "repo_id": "httpx",
+    "repository": "artifacts/repositories/httpx",
+    "base_sha": "8ecb86f0d74ffc52d4663214fae9526bee89358d",
+    "head_sha": "89599a9541af14bcf906fc4ed58ccbdf403802ba",
+    "origin_group": "httpx:PR3442",
+    "split": "holdout",
+    "annotation_status": "unreviewed",
+    "source_kind": "real historical upstream fix",
+    "changed_paths": [
+      "CHANGELOG.md",
+      "httpx/_config.py"
+    ],
+    "test_paths": [
+      "tests/test_config.py"
+    ],
+    "query": "Configure client certificates when TLS certificate verification is disabled.",
+    "gold_impacts": null,
+    "regression_failures": null
+  }
+]

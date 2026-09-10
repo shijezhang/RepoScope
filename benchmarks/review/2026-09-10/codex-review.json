@@ -1,0 +1,797 @@
+{
+  "review_scope": "user-requested Codex source review; not independent human gold",
+  "cases": [
+    {
+      "case_id": "click-01",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "最小边界的开闭比较反转。clamp=False时，值等于min的接受/拒绝与原契约相反；最大边界分支未改。clamp=True须另分开闭边界审查，不能断言所有clamp输入都改变。",
+      "proposed_impacts": [
+        "src/click/types.py:_NumberRangeBase.convert",
+        "src/click/types.py:IntRange",
+        "src/click/types.py:FloatRange"
+      ],
+      "limitations": [
+        "整数/浮点范围转换消费者可能受影响；不把整个模块都标为行为改变。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "src/click/types.py",
+          "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+          "head_sha": "0ccf529f8dfa7b4c938a6f858840960661ee830d",
+          "base_source_sha256": "043e50aaae21fbc91ac0198e2332659aae31cd38407f8c02bda38b652043371d",
+          "head_source_sha256": "49901010efb3ac3e324769c0f0b95d0ec0e5203ccb8dbf54e2374123ffac5ac3",
+          "ast_equal_without_positions": false
+        }
+      ],
+      "diff_sha256": "a1c40e1ce002181fcdc72c4ebd2fee598004938e113add753014cfcd921d9dc3",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "head_sha": "0ccf529f8dfa7b4c938a6f858840960661ee830d",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 188
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "9768b599f48749124f2f0e07fdaf93baa26158ceb30a2e3b3a652095e786a7d9"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 183,
+            "failed": 5
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "97b24887dcd89fb0f78ae29b863682aad7efadc56d999293ad8ebf5b75e6cf3f"
+        }
+      },
+      "observed_failure_nodeids": [
+        "tests/test_types.py::test_range[type1-5-5]",
+        "tests/test_types.py::test_range[type7-0-1]",
+        "tests/test_types.py::test_range_fail[type3-0-0<x<=5]",
+        "tests/test_types.py::test_range_fail[type5-0.5-x>0.5]",
+        "tests/test_options.py::test_counting"
+      ],
+      "observed_head_summary": "passed=183, failed=5"
+    },
+    {
+      "case_id": "click-02",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "split_envvar_value改为单元素列表，停止按空白或指定分隔符拆分。例如foo bar由两项变为一项；空串原本可得到空列表，现得到含空串的列表。Parameter/Option的多值环境变量路径直接调用此方法。",
+      "proposed_impacts": [
+        "src/click/types.py:ParamType.split_envvar_value",
+        "src/click/core.py:Parameter.value_from_envvar",
+        "src/click/core.py:Option.value_from_envvar"
+      ],
+      "limitations": [
+        "单值nargs=1且非multiple路径并非都调用拆分；不能据此断言所有参数解析受影响。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "src/click/core.py",
+          "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+          "head_sha": "9cd90885b1a00c36d6e3957e5e9cb888de325e9e",
+          "base_source_sha256": "4359c455d72d670bc83ce96de2f7c7928d136271c2784e3450412e97c5a9cafb",
+          "head_source_sha256": "4359c455d72d670bc83ce96de2f7c7928d136271c2784e3450412e97c5a9cafb",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "src/click/types.py",
+          "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+          "head_sha": "9cd90885b1a00c36d6e3957e5e9cb888de325e9e",
+          "base_source_sha256": "043e50aaae21fbc91ac0198e2332659aae31cd38407f8c02bda38b652043371d",
+          "head_source_sha256": "162ffb706e6f1bd1621e77184b8e727b8cc329d358f60157ebd0b18a177167ab",
+          "ast_equal_without_positions": false
+        }
+      ],
+      "diff_sha256": "c9de02d6bb1de17ef232d7ccaca1a4f513f8bcfd4484be645457880d35c72f2b",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "head_sha": "9cd90885b1a00c36d6e3957e5e9cb888de325e9e",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 188
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "9768b599f48749124f2f0e07fdaf93baa26158ceb30a2e3b3a652095e786a7d9"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 183,
+            "failed": 5
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "9f205b232646d112a8e728805f3212407b20e6a18f29d02617dcea3b3db23458"
+        }
+      },
+      "observed_failure_nodeids": [
+        "tests/test_options.py::test_multiple_envvar",
+        "tests/test_options.py::test_nargs_envvar",
+        "tests/test_arguments.py::test_nargs_envvar[2-a b-expect2]",
+        "tests/test_arguments.py::test_nargs_envvar[2-a b c-Takes 2 values but 3 were given.]",
+        "tests/test_arguments.py::test_nargs_envvar[-1-a b c-expect4]"
+      ],
+      "observed_head_summary": "passed=183, failed=5"
+    },
+    {
+      "case_id": "click-03",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "comment-only",
+      "reason": "仅新增类内注释；去除位置属性的AST应完全相同，类docstring仍是首条语句。普通运行语义未变，源码位置、inspect/traceback等源码观察不在该无行为变化结论范围内。",
+      "proposed_impacts": [],
+      "limitations": [
+        "这是行为无影响候选；源码hash与行号变化仍真实存在。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "src/click/types.py",
+          "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+          "head_sha": "14f39a8dc05482f50c6235814eca7e69076a7602",
+          "base_source_sha256": "043e50aaae21fbc91ac0198e2332659aae31cd38407f8c02bda38b652043371d",
+          "head_source_sha256": "43f7889e475a3d870ba3dec05cb5e56bc5bec85f72f6b9429b6edc4a3f711a40",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "1a3866f28b1684823515ec3a9917d6ca5b29fd875afb07e3725ab123ff2cdd03",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+      "head_sha": "14f39a8dc05482f50c6235814eca7e69076a7602",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 188
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "9768b599f48749124f2f0e07fdaf93baa26158ceb30a2e3b3a652095e786a7d9"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 188
+          },
+          "collection_errors": [],
+          "environment_hash": "e7ff683c412e95d5c8aadd83a15e86c21f408c28839276cf288f4156cc935d7c",
+          "test_suite_hash": "38e62470ed322ebc61bdbe8c84ed77d7e2838dacb16cbefd9214feb52cf0a480"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "passed=188"
+    },
+    {
+      "case_id": "httpx-01",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "codes.is_success(200)从True变为False，201–299判断未改。Response.is_success直接委托；Response.raise_for_status对已有request的HTTP 200不再提前返回，继续落到HTTPStatusError路径。",
+      "proposed_impacts": [
+        "httpx/_status_codes.py:codes.is_success",
+        "httpx/_models.py:Response.is_success",
+        "httpx/_models.py:Response.raise_for_status"
+      ],
+      "limitations": [
+        "不能把所有2xx都判为改变；仅200边界改变。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "httpx/_models.py",
+          "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+          "head_sha": "46707d46abf2c8794b816e46fd8326ba234cd005",
+          "base_source_sha256": "e3ffc6bb2bf580bc6e6428708a6f247d036220e709f5a72b785392babbd97e6b",
+          "head_source_sha256": "e3ffc6bb2bf580bc6e6428708a6f247d036220e709f5a72b785392babbd97e6b",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "httpx/_status_codes.py",
+          "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+          "head_sha": "46707d46abf2c8794b816e46fd8326ba234cd005",
+          "base_source_sha256": "0d89fedae7c180c797cb9b3cc77fd307bc2302e00031ec136a43eb9b9ad712c7",
+          "head_source_sha256": "11efc68af2f87256e2f97c5cf04420bc8a5b52dcbc071d6025d0c0aad473505a",
+          "ast_equal_without_positions": false
+        }
+      ],
+      "diff_sha256": "37a5543b344cf8c387bdf373767d3fcbc261069e45d1a5b910b035f68eb4b061",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "head_sha": "46707d46abf2c8794b816e46fd8326ba234cd005",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 106
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "ff18351d7da005bf6e7e97bb5eb150b5fe2d47d13ff595084c50781bbeabe8da"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 105,
+            "failed": 1
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "4c0456f3d69e82b4974f74ead7a2ed05f06050b2be4e31a60b0f0ac447faa13b"
+        }
+      },
+      "observed_failure_nodeids": [
+        "tests/models/test_responses.py::test_raise_for_status"
+      ],
+      "observed_head_summary": "passed=105, failed=1"
+    },
+    {
+      "case_id": "httpx-02",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "codes.is_error的下界400变成500，4xx被误判非错误；Response.is_error直接受影响。raise_for_status使用is_success而非is_error，这个变异不能直接证明它的行为改变。",
+      "proposed_impacts": [
+        "httpx/_status_codes.py:codes.is_error",
+        "httpx/_models.py:Response.is_error"
+      ],
+      "limitations": [
+        "5xx判断保持；不把raise_for_status加入本变异的已确认行为影响。",
+        "失败测试虽然名为test_raise_for_status，内部包含response.is_error断言；测试名不能证明raise_for_status实现行为变化。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "httpx/_models.py",
+          "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+          "head_sha": "261d24e05c7712da9d71c99a45eb954e8f994cf6",
+          "base_source_sha256": "e3ffc6bb2bf580bc6e6428708a6f247d036220e709f5a72b785392babbd97e6b",
+          "head_source_sha256": "e3ffc6bb2bf580bc6e6428708a6f247d036220e709f5a72b785392babbd97e6b",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "httpx/_status_codes.py",
+          "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+          "head_sha": "261d24e05c7712da9d71c99a45eb954e8f994cf6",
+          "base_source_sha256": "0d89fedae7c180c797cb9b3cc77fd307bc2302e00031ec136a43eb9b9ad712c7",
+          "head_source_sha256": "6aa52fa58894580fe0daa445d900c73a5335610281fb2ff97418aa7a2b4273da",
+          "ast_equal_without_positions": false
+        }
+      ],
+      "diff_sha256": "28faead059ee17ea3ceadb824c81f1350fab1f0cc418a61c49b572ed31bdd962",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "head_sha": "261d24e05c7712da9d71c99a45eb954e8f994cf6",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 106
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "ff18351d7da005bf6e7e97bb5eb150b5fe2d47d13ff595084c50781bbeabe8da"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 105,
+            "failed": 1
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "81a4aaf552d4c30de145e8fe0ef446b90caf08d11a4c9e7cabc51abc9af27ef8"
+        }
+      },
+      "observed_failure_nodeids": [
+        "tests/models/test_responses.py::test_raise_for_status"
+      ],
+      "observed_head_summary": "passed=105, failed=1"
+    },
+    {
+      "case_id": "httpx-03",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "comment-only",
+      "reason": "只新增codes类内注释；忽略位置属性的AST应相同，枚举成员和类docstring不变。普通状态码判断行为未变。",
+      "proposed_impacts": [],
+      "limitations": [
+        "仍有源码位置变化，未覆盖源码反射场景。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "httpx/_status_codes.py",
+          "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+          "head_sha": "8d1823bad5381871301437aa4cbb402ec14992d0",
+          "base_source_sha256": "0d89fedae7c180c797cb9b3cc77fd307bc2302e00031ec136a43eb9b9ad712c7",
+          "head_source_sha256": "08cc295d6312e7a16692337206a0f7e7f620fc00dbf1fa282b4d64b8c65f5c11",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "2f9630211c4c81ca670d813e4f2536e75ebc08b91d8e2cbc3ab766a9e68f451f",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "26d48e0634e6ee9cdc0533996db289ce4b430177",
+      "head_sha": "8d1823bad5381871301437aa4cbb402ec14992d0",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 106
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "ff18351d7da005bf6e7e97bb5eb150b5fe2d47d13ff595084c50781bbeabe8da"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 106
+          },
+          "collection_errors": [],
+          "environment_hash": "21a655ced2ef9cfbfa37a3a163f1964a751e66daeb32bbb1545bf49a50b69cbf",
+          "test_suite_hash": "992a7f67302f07af58158a727a520e152cd92306ac61dc26f16f5083e97ccdf6"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "passed=106"
+    },
+    {
+      "case_id": "fixture-01",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "total对非负整数多加1，负整数仍0。order、legacy/old_order、Base.price/Special.price和plugin的返回路径都到达total；positive/legacy/plugin断言预期受影响，negative(-2)应保持。",
+      "proposed_impacts": [
+        "calc.py:total",
+        "calc.py:legacy",
+        "calc.py:Base.price",
+        "api.py:order",
+        "api.py:old_order",
+        "api.py:Special.price",
+        "api.py:plugin"
+      ],
+      "limitations": [
+        "plugin为源码可人工读出的动态路径；产品静态图仍必须保留unknown，不能伪造确定边。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "f150d37a75f0994a0dff5a8062acda54b310fbb3053db18e142d61a49da50e9b",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "eb4d8ab746bb3ddbd883ef69d19ac1705168f5add7e67cf68dede10fb665d3cb",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "failed": 3,
+            "passed": 1
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "d0220de6a1a29d8dbba55e4638db391cde0be6e80cda846605a701b2a2368fc8"
+        }
+      },
+      "observed_failure_nodeids": [
+        "test_calc.py::test_positive",
+        "test_calc.py::test_legacy",
+        "test_calc.py::test_plugin"
+      ],
+      "observed_head_summary": "failed=3, passed=1"
+    },
+    {
+      "case_id": "fixture-02",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "import-breakage",
+      "reason": "删除legacy但api.py仍from calc import Base, legacy, total。正常导入api会因缺失legacy失败，test_calc导入api也失败；应记collection/import error，不能记成四条断言失败。calc.total和Base.price本身未改。",
+      "proposed_impacts": [
+        "calc.py:legacy (base-only deleted)",
+        "api.py:<module>",
+        "test_calc.py:<module>"
+      ],
+      "limitations": [
+        "没有head侧legacy符号，删除证据只能引用base。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1180c1492f7231f7f8e635a129f5a5375e16a2eb",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1180c1492f7231f7f8e635a129f5a5375e16a2eb",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "01b70a1c9f9d38c7f4686f66ea4fca35b5725f1974d40d568751a302430adc4d",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1180c1492f7231f7f8e635a129f5a5375e16a2eb",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "5fc96ac294d7e68449cc9cdc17191c3af293f96ea5dc5e3e1d2b450768a52971",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "1180c1492f7231f7f8e635a129f5a5375e16a2eb",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "collection_failed",
+          "counts": null,
+          "collection_errors": [
+            "ImportError while importing test module '/work/test_calc.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_calc.py:1: in <module>\n    from api import old_order, order, plugin\napi.py:1: in <module>\n    from calc import Base, legacy, total\nE   ImportError: cannot import name 'legacy' from 'calc' (/work/calc.py)"
+          ],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "4854af0eb87748085e06185972a09e35f9e5b33f43f0472ea1d7ce2f484a3343"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "collection_failed"
+    },
+    {
+      "case_id": "fixture-03",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "import-breakage",
+      "reason": "legacy改名renamed而api仍按旧名称导入，正常导入api及测试收集失败。新renamed函数保留原函数体，但没有为旧名称提供兼容别名。",
+      "proposed_impacts": [
+        "calc.py:legacy (base-only)",
+        "calc.py:renamed (head-only)",
+        "api.py:<module>",
+        "test_calc.py:<module>"
+      ],
+      "limitations": [
+        "重命名不能靠相似函数体让旧导入自动有效。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "171cf7594744016cda32480db8852984c89feb61",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "171cf7594744016cda32480db8852984c89feb61",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "b5602b14bf7a875fab267765b3fb29ba0e5aeb22cba8e71f1fa95e4cb30dee43",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "171cf7594744016cda32480db8852984c89feb61",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "73d51e26f08d53c6f29afdc9ddf0f28a28d3c3244af9eb448fa128349bca63f3",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "171cf7594744016cda32480db8852984c89feb61",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "collection_failed",
+          "counts": null,
+          "collection_errors": [
+            "ImportError while importing test module '/work/test_calc.py'.\nHint: make sure your test modules/packages have valid Python names.\nTraceback:\n/usr/local/lib/python3.12/importlib/__init__.py:90: in import_module\n    return _bootstrap._gcd_import(name[level:], package, level)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\ntest_calc.py:1: in <module>\n    from api import old_order, order, plugin\napi.py:1: in <module>\n    from calc import Base, legacy, total\nE   ImportError: cannot import name 'legacy' from 'calc' (/work/calc.py)"
+          ],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "cdc3037e939eb07dc210d7181a8b57d4e67c60c10668d4bb4f819e5dc429d7cd"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "collection_failed"
+    },
+    {
+      "case_id": "fixture-04",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "dynamic-target-change",
+      "reason": "getattr目标由total变成legacy；当前legacy仅return total(value)，在现有正常调用和整数输入下返回值保持。因此结构/调用目标变化存在，但现有四测试无失败不等于所有动态环境安全。",
+      "proposed_impacts": [
+        "api.py:plugin (structural target change)"
+      ],
+      "limitations": [
+        "monkeypatch、动态替换或反射观察可能区分两者；不把这个受限等价结论写成全局无影响。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "079584ae22e38ddc217fe2a1b7f96f0f062e759995bc4a2c856daef7a364f5ea",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "1a522a319e821eb6299d106c19f8f010f5a05c54cb84af592ddf4524f028ab6b",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "0339bbf9e14e0b0ff23664832908d0ffd105b2dc22b85404f7202a87f841bc29"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "passed=4"
+    },
+    {
+      "case_id": "fixture-05",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "module-binding-addition",
+      "reason": "新增模块属性FEATURE_FLAG=True，现有函数体和返回路径不变。外部读取该属性、dir或通配导入可观察到变化，故不能简单当作注释型无行为影响。",
+      "proposed_impacts": [
+        "api.py:<module> (new FEATURE_FLAG binding)"
+      ],
+      "limitations": [
+        "现有测试不验证该新增属性；通过不构成无变化证明。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1fad98afbcd0c3c560c84b5745d44bb2321c48e5",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "203e3f0d4eedf461e8ffe44bd7b301b14728abe5645f23ae53c3f701a7a4e350",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1fad98afbcd0c3c560c84b5745d44bb2321c48e5",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "1fad98afbcd0c3c560c84b5745d44bb2321c48e5",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "84ed53b0ba5f6688e5c71d28f206f24eb68c06ba9f69e8a1c750948251d95585",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "1fad98afbcd0c3c560c84b5745d44bb2321c48e5",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "b0c9331c434a06bd87f921aae48c0467542f80b4af3f5b5167c67ac47f865eec"
+        }
+      },
+      "observed_failure_nodeids": [],
+      "observed_head_summary": "passed=4"
+    },
+    {
+      "case_id": "fixture-06",
+      "reviewer": "Codex",
+      "review_status": "codex_reviewed_source_and_docker",
+      "formal_annotation_status": "unreviewed",
+      "classification": "behavior-change",
+      "reason": "两处修改分别位于legacy与Base.price，均先value+1再调用total。对非负整数返回值增加1，old_order和Special.price经对应调用路径受影响；order和plugin仍直接调用未改的total。",
+      "proposed_impacts": [
+        "calc.py:legacy",
+        "calc.py:Base.price",
+        "api.py:old_order",
+        "api.py:Special.price"
+      ],
+      "limitations": [
+        "现有四测试没有覆盖Base.price/Special.price分支；继承链的行为判断来自源码，不能冒称测试已验证。",
+        "本次单次执行不排除flaky；所选测试未覆盖的路径仍只依据源码。"
+      ],
+      "evidence": [
+        {
+          "path": "api.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "7a63b7879ad729b8d64148b58b7aed212e1a8843",
+          "base_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "head_source_sha256": "b211ab51924e52b5f0f26ebfa94f4dc8f1a63753b0c3ca37680e6929b42bf489",
+          "ast_equal_without_positions": true
+        },
+        {
+          "path": "calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "7a63b7879ad729b8d64148b58b7aed212e1a8843",
+          "base_source_sha256": "e5e0021cd238e1b593365e6ab671f7916c20c2985741612bc79c8a95c7aaeb4e",
+          "head_source_sha256": "f4e2e9ce06e2445e0955257df5ceb79c1c3572ccd10b28e4288d2f476770dbc2",
+          "ast_equal_without_positions": false
+        },
+        {
+          "path": "test_calc.py",
+          "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+          "head_sha": "7a63b7879ad729b8d64148b58b7aed212e1a8843",
+          "base_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "head_source_sha256": "48f7ac6bb8b2b882e5517f930f7b84fc939f62cef91a1b8ad031a4e551f46905",
+          "ast_equal_without_positions": true
+        }
+      ],
+      "diff_sha256": "6b81e86ecde4b778ab795a4c86cc94fb4a33b5293097fc7e6c159cc4f4b86ee8",
+      "gold_impacts": null,
+      "test_evidence_file": "benchmarks/results/review-execution-run-9337ead858594201929459a903712032.json",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "7a63b7879ad729b8d64148b58b7aed212e1a8843",
+      "test_observations": {
+        "base": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 4
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "9fa433ea0663449eb335a207f63502ae1249a993a8b6eca3e4c9550b4189745d"
+        },
+        "head": {
+          "collection_status": "completed",
+          "counts": {
+            "passed": 3,
+            "failed": 1
+          },
+          "collection_errors": [],
+          "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+          "test_suite_hash": "b656cf6392c3d8c8b18853ea4ce84d5279ae62c38cfded88eb4ead226ca4c98d"
+        }
+      },
+      "observed_failure_nodeids": [
+        "test_calc.py::test_legacy"
+      ],
+      "observed_head_summary": "passed=3, failed=1"
+    }
+  ],
+  "reviewed_cases": 12,
+  "all_containers_cleaned": true
+}

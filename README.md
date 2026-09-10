@@ -2,7 +2,7 @@
 
 **代码变更影响分析与回归验证工作台。** 输入本地 Python Git 仓库的两个提交，查看两侧符号变化、潜在调用方、证据路径和测试验证状态。
 
-当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照、CLI/API/工作台、两仓库 Docker 对照、解析增量和本地强检索实测已落地；推理服务已接入并完成两个真实Agent探针，但两者未完成测试验证；正式标注与效果评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
+当前交付为可运行开发版 `0.2.0`，不是升级计划所有阶段均已验收的正式版本。固定快照、CLI/API/工作台、两仓库 Docker 对照、解析增量和本地强检索实测已落地；推理服务已接入，首轮两个真实Agent探针未完成测试验证（后续夜间改进见交付清单）；正式标注与效果评测仍待完成。逐项状态见 [交付清单](docs/delivery-status.md)。
 
 ![真实分析工作台](docs/examples/workbench.png)
 
@@ -41,6 +41,22 @@ uv run reposcope status RUN_ID
 uv run reposcope test RUN_ID --attempt 2 --reason "Environment prepared"
 ```
 
+本地强检索可显式提供已准备的固定模型清单（路径相对当前工作目录）；需要安装 `models` extra。它使用本地模型和强检索bundle，输出语料完整度、证据及缓存状态，模型不可用或query超限时直接失败。
+
+```bash
+uv run --frozen --extra models reposcope search SNAPSHOT_ID "query" --models benchmarks/manifests/models.json
+```
+
+需要让查询使用某个检索配置的完整已发布版本时：
+
+```bash
+uv run --frozen reposcope publish-index REPO_ID --commit HEAD --profile default
+uv run --frozen reposcope search-published REPO_ID "query" --profile default
+# 两条命令均可显式加 --models LOCAL_MANIFEST 使用强检索配置
+```
+
+发布失败或语料为partial时保留上一版本；已有任务继续引用自己的固定SHA。静态测试符号目录不代替Docker中的真实pytest收集。
+
 API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-Event-ID`；JSON、Markdown、HTML 来自同一报告 revision。测试只在显式请求后执行。
 
 ## 执行环境
@@ -68,7 +84,7 @@ API 文档在 `/docs`。分析创建支持 `Idempotency-Key`；SSE 支持 `Last-
 
 默认结构化 diff 分析不依赖模型。标识符/BM25/RRF 可直接运行；`Search.strong_query` 要求本地存在明确 revision 的 Embedding 与 Reranker，缺失时明确失败。已用固定MiniLM Embedding/CrossEncoder实际完成4个开发查询与资源测量，详情见 [ADR004](docs/decisions/004-local-strong-retrieval.md)；尚未完成正式B1质量比较。
 
-可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。默认只补查证据，最多6轮、12次工具、60秒补查预算；只有显式开启 `allow_tests` 才能在预算内选择一次Base/Head验证并读取反馈，不自行执行shell或修改代码。固定流程也支持相同授权与执行器。相同查询去重，出错保留确定性报告；现有DeepSeek兼容配置已接入，两个已授权Agent开发探针分别因上下文预算和输出校验停止，均未执行测试；保留负面结果，默认使用固定流程，不宣称Agent收益。
+可选 `agent=true` 使用兼容 OpenAI 的结构化决策，通过 `REPOSCOPE_LLM_BASE_URL`、`REPOSCOPE_LLM_MODEL`、`REPOSCOPE_LLM_API_KEY` 配置。默认只补查证据，最多6轮、12次工具、60秒补查预算；只有显式开启 `allow_tests` 才能在预算内选择一次Base/Head验证并读取反馈，不自行执行shell或修改代码。固定流程也支持相同授权与执行器。相同查询去重，出错保留确定性报告；现有DeepSeek兼容配置已接入，首轮两个已授权Agent开发探针分别因上下文预算和输出校验停止，均未执行测试；保留负面结果，默认使用固定流程，不宣称Agent收益。
 
 ## 开发与文档
 

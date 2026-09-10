@@ -46,6 +46,22 @@ const report = {
   completeness: { static: true },
 };
 
+test("live detail status replaces stale queued history without manual refresh", async ({ page }) => {
+  await page.route("**/api/**", (route) => {
+    const path = new URL(route.request().url()).pathname;
+    if (path === "/api/repositories") return route.fulfill({ json: [] });
+    if (path === "/api/analyses") return route.fulfill({ json: [{ run_id: "contract-run", status: "queued" }] });
+    if (path.endsWith("/events")) return route.fulfill({ contentType: "text/event-stream", body: "" });
+    if (path === "/api/analyses/contract-run") return route.fulfill({ json: { run_id: "contract-run", status: "completed", report } });
+    return route.fulfill({ status: 404, json: {} });
+  });
+  await page.goto("/?run=contract-run");
+  await expect(page.getByRole("heading", { name: /变更影响报告 已完成/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: "contract-run 已完成" })).toBeVisible();
+  await page.getByRole("button", { name: "刷新历史", exact: true }).click();
+  await expect(page.getByRole("button", { name: "contract-run 已完成" })).toBeVisible();
+});
+
 test("empty state and failed request have actionable feedback", async ({
   page,
 }) => {

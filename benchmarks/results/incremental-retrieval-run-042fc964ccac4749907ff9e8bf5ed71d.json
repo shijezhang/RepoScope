@@ -1,0 +1,602 @@
+{
+  "run_id": "run-042fc964ccac4749907ff9e8bf5ed71d",
+  "case_id": "click-02",
+  "base_sha": "934813e4d421071a1b3db3973c02fe2721359a6e",
+  "head_sha": "9cd90885b1a00c36d6e3957e5e9cb888de325e9e",
+  "query": "Split an environment variable into multiple command line option values.",
+  "state": "passed",
+  "stages": {
+    "base_seed": {
+      "seconds": 136.8446915410459,
+      "cache": {
+        "state": "disk_hit",
+        "artifact": "artifacts/model-probe/chunk-vectors/97a5b270fd2ebe6e8582d1f01651789822e8bfea3781a6653348189c2bfc72d7.npz",
+        "publication": "snapshot-corpus-vectors-v1",
+        "corpus_state": "partial",
+        "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+        "update_mode": "content-reuse-per-snapshot",
+        "reused_embedding_chunks": 0,
+        "encoded_embedding_chunks": 0
+      },
+      "state": "partial",
+      "hits": [
+        {
+          "symbol": {
+            "symbol_id": "e7a045582553bfbb29d497c5b68957caf14e957187df013acdf807f83916aade",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType.split_envvar_value",
+            "kind": "Method",
+            "start": 120,
+            "end": 128,
+            "signature": "self, rv: str",
+            "content_hash": "351520723c6325a383fc39e68a6303a969865429416893a0a377c087a01df1c4"
+          },
+          "score": 1.2846403121948242,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "8ee03e87e5b0fc8a091e1857314c2bc8a496e10521475f6cc4d6f421778867a5",
+            "parent_symbol_id": "e7a045582553bfbb29d497c5b68957caf14e957187df013acdf807f83916aade",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/types.py",
+            "start": 120,
+            "end": 128,
+            "content_hash": "351520723c6325a383fc39e68a6303a969865429416893a0a377c087a01df1c4",
+            "parent_content_hash": "351520723c6325a383fc39e68a6303a969865429416893a0a377c087a01df1c4",
+            "source": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:\n        \"\"\"Given a value from an environment variable this splits it up\n        into small chunks depending on the defined envvar list splitter.\n\n        If the splitter is set to `None`, which means that whitespace splits,\n        then leading and trailing whitespace is ignored.  Otherwise, leading\n        and trailing splitters usually lead to empty items being included.\n        \"\"\"\n        return (rv or \"\").split(self.envvar_list_splitter)",
+            "signature": "self, rv: str",
+            "declaration": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:",
+            "token_count": 190
+          },
+          "reranker_pair_tokens": 202
+        },
+        {
+          "symbol": {
+            "symbol_id": "b08fe03e02f145f9807735f2de414afff6829a8a59bfbfb96a7b253570900562",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/core.py",
+            "module": "click.core",
+            "qualname": "Option",
+            "kind": "Class",
+            "start": 2452,
+            "end": 2971,
+            "signature": "Parameter",
+            "content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec"
+          },
+          "score": 0.99996417760849,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "52305a3780fac12aec3662f5fae29934d47b4839529c7cf005f356f761456e89",
+            "parent_symbol_id": "b08fe03e02f145f9807735f2de414afff6829a8a59bfbfb96a7b253570900562",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/core.py",
+            "start": 2452,
+            "end": 2470,
+            "content_hash": "c6595681d41d2e09a626de147bd094d77407d2ce0b7b1c2a5625c6c6c2a63360",
+            "parent_content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec",
+            "source": "class Option(Parameter):\n    \"\"\"Options are usually optional values on the command line and\n    have some extra features that arguments don't have.\n\n    All other parameters are passed onwards to the parameter constructor.\n\n    :param show_default: Show the default value for this option in its\n        help text. Values are not shown by default, unless\n        :attr:`Context.show_default` is ``True``. If this value is a\n        string, it shows that string in parentheses instead of the\n        actual value. This is particularly useful for dynamic options.\n        For single option boolean flags, the default remains hidden if\n        its value is ``False``.\n    :param show_envvar: Controls if an environment variable should be\n        shown on the help page. Normally, environment variables are not\n        shown.\n    :param prompt: If set to ``True`` or a non empty string then the\n        user will be prompted for input. If set to ``True`` the prompt\n        will be the option name capitalized.",
+            "signature": "Parameter",
+            "declaration": "class Option(Parameter):",
+            "token_count": 245
+          },
+          "reranker_pair_tokens": 257
+        },
+        {
+          "symbol": {
+            "symbol_id": "d8276f0011e71e0581144030b59b83f9e4fbdb349761941790a7ac219047e75b",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType",
+            "kind": "Class",
+            "start": 24,
+            "end": 154,
+            "signature": "",
+            "content_hash": "b84f887449a6d6ade3da8a17a624f59b38d3a33f1342f8fddd34b0b24d3d79cb"
+          },
+          "score": 0.03409804031252861,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "7bd8fd2e6027f1ccedae45a7a9075d6d33628460f6a2247860c3ea54fa7c4044",
+            "parent_symbol_id": "d8276f0011e71e0581144030b59b83f9e4fbdb349761941790a7ac219047e75b",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "src/click/types.py",
+            "start": 46,
+            "end": 65,
+            "content_hash": "9e0742f74a969371d5d3f9541ea67d8a4283ef24832f2855b55fc1a9f9e10c55",
+            "parent_content_hash": "b84f887449a6d6ade3da8a17a624f59b38d3a33f1342f8fddd34b0b24d3d79cb",
+            "source": "    name: str\n\n    #: if a list of this type is expected and the value is pulled from a\n    #: string environment variable, this is what splits it up.  `None`\n    #: means any whitespace.  For all parameters the general rule is that\n    #: whitespace splits them up.  The exception are paths and files which\n    #: are split by ``os.path.pathsep`` by default (\":\" on Unix and \";\" on\n    #: Windows).\n    envvar_list_splitter: t.ClassVar[t.Optional[str]] = None\n\n    def to_info_dict(self) -> t.Dict[str, t.Any]:\n        \"\"\"Gather information that could be useful for a tool generating\n        user-facing documentation.\n\n        Use :meth:`click.Context.to_info_dict` to traverse the entire\n        CLI structure.\n\n        .. versionadded:: 8.0\n        \"\"\"\n        # The class name without the \"ParamType\" suffix.",
+            "signature": "",
+            "declaration": "class ParamType:",
+            "token_count": 253
+          },
+          "reranker_pair_tokens": 265
+        },
+        {
+          "symbol": {
+            "symbol_id": "dfaae3950d93da6a1bf901f348746e05aa2c88abf548de2df868943f675d16d7",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "tests/test_options.py",
+            "module": "tests.test_options",
+            "qualname": "test_option_help_preserve_paragraphs.cmd",
+            "kind": "Function",
+            "start": 575,
+            "end": 587,
+            "signature": "config",
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa"
+          },
+          "score": -2.791780471801758,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "0e3ebbb06bb4d301118bd22a3fb6743f04ee7a1ec61077c736255b931a46bd89",
+            "parent_symbol_id": "dfaae3950d93da6a1bf901f348746e05aa2c88abf548de2df868943f675d16d7",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "tests/test_options.py",
+            "start": 575,
+            "end": 587,
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "parent_content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "source": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):\n        pass",
+            "signature": "config",
+            "declaration": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):",
+            "token_count": 219
+          },
+          "reranker_pair_tokens": 231
+        },
+        {
+          "symbol": {
+            "symbol_id": "b6cdaa4fd78e9f5c86f2b6df6c47cb849df767427ff8f22bd8cfa1e0a876cb52",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "examples/repo/repo.py",
+            "module": "examples.repo.repo",
+            "qualname": "",
+            "kind": "Module",
+            "start": 1,
+            "end": 166,
+            "signature": "",
+            "content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f"
+          },
+          "score": -3.029902696609497,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "91c02a43ebd6cd72d515aa5ef511688d41b5597d73863f9d5644cf73511713f3",
+            "parent_symbol_id": "b6cdaa4fd78e9f5c86f2b6df6c47cb849df767427ff8f22bd8cfa1e0a876cb52",
+            "snapshot_id": "15fc1845f97c790b85a341afbac7518d225d04b53ad4b7cee2e7c03031fdf2c3",
+            "path": "examples/repo/repo.py",
+            "start": 34,
+            "end": 53,
+            "content_hash": "e3baf2db1015800edc7c0e5297428de67be8a7ce007158c352770febc1e115d4",
+            "parent_content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f",
+            "source": "@click.option(\n    \"--config\",\n    nargs=2,\n    multiple=True,\n    metavar=\"KEY VALUE\",\n    help=\"Overrides a config key/value pair.\",\n)\n@click.option(\"--verbose\", \"-v\", is_flag=True, help=\"Enables verbose mode.\")\n@click.version_option(\"1.0\")\n@click.pass_context\ndef cli(ctx, repo_home, config, verbose):\n    \"\"\"Repo is a command line tool that showcases how to build complex\n    command line interfaces with Click.\n\n    This tool is supposed to look like a distributed version control\n    system to show how something like this can be structured.\n    \"\"\"\n    # Create a repo object and remember it as as the context object.  From\n    # this point onwards other commands can refer to it by using the\n    # @pass_repo decorator.",
+            "signature": "",
+            "declaration": "",
+            "token_count": 241
+          },
+          "reranker_pair_tokens": 253
+        }
+      ],
+      "timings": {
+        "model_verification_seconds": 0.4047443749732338,
+        "model_load_seconds": 0.8016878339694813,
+        "index_seconds": 0.005449250049423426,
+        "corpus_seconds": 1.991820707975421,
+        "query_seconds": 1.914518874953501
+      }
+    },
+    "incremental": {
+      "seconds": 49.048274541972205,
+      "cache": {
+        "state": "built",
+        "artifact": "artifacts/model-probe/chunk-vectors/41b3f1381bbb8c4fcb0cbf9b824f3ad8bfd2b9d80e88111883d9028b7a060990.npz",
+        "publication": "snapshot-corpus-vectors-v1",
+        "corpus_state": "partial",
+        "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+        "update_mode": "content-reuse-per-snapshot",
+        "reused_embedding_chunks": 3251,
+        "encoded_embedding_chunks": 7
+      },
+      "state": "partial",
+      "hits": [
+        {
+          "symbol": {
+            "symbol_id": "b49bf95cfc50af340e81439c8e5c7b29a0d1a523a709f23ca09bf7a01b2b5deb",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType.split_envvar_value",
+            "kind": "Method",
+            "start": 120,
+            "end": 128,
+            "signature": "self, rv: str",
+            "content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42"
+          },
+          "score": 1.1691114902496338,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "5b0a8bfee8195adf79ff19cdc3d382353119e4a6adabb0ccda685bd40a298569",
+            "parent_symbol_id": "b49bf95cfc50af340e81439c8e5c7b29a0d1a523a709f23ca09bf7a01b2b5deb",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "start": 120,
+            "end": 128,
+            "content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42",
+            "parent_content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42",
+            "source": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:\n        \"\"\"Given a value from an environment variable this splits it up\n        into small chunks depending on the defined envvar list splitter.\n\n        If the splitter is set to `None`, which means that whitespace splits,\n        then leading and trailing whitespace is ignored.  Otherwise, leading\n        and trailing splitters usually lead to empty items being included.\n        \"\"\"\n        return [rv or \"\"]",
+            "signature": "self, rv: str",
+            "declaration": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:",
+            "token_count": 176
+          },
+          "reranker_pair_tokens": 188
+        },
+        {
+          "symbol": {
+            "symbol_id": "f0ffcfab799e7bba6414c7fd86682ef7d7a213fc00346e65fd9c075b618db6be",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/core.py",
+            "module": "click.core",
+            "qualname": "Option",
+            "kind": "Class",
+            "start": 2452,
+            "end": 2971,
+            "signature": "Parameter",
+            "content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec"
+          },
+          "score": 0.99996417760849,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "97a6c8be0a52e2955f04f8be877d1de8e7485c70bb3ec7c98ef2c70346e3e1c7",
+            "parent_symbol_id": "f0ffcfab799e7bba6414c7fd86682ef7d7a213fc00346e65fd9c075b618db6be",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/core.py",
+            "start": 2452,
+            "end": 2470,
+            "content_hash": "c6595681d41d2e09a626de147bd094d77407d2ce0b7b1c2a5625c6c6c2a63360",
+            "parent_content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec",
+            "source": "class Option(Parameter):\n    \"\"\"Options are usually optional values on the command line and\n    have some extra features that arguments don't have.\n\n    All other parameters are passed onwards to the parameter constructor.\n\n    :param show_default: Show the default value for this option in its\n        help text. Values are not shown by default, unless\n        :attr:`Context.show_default` is ``True``. If this value is a\n        string, it shows that string in parentheses instead of the\n        actual value. This is particularly useful for dynamic options.\n        For single option boolean flags, the default remains hidden if\n        its value is ``False``.\n    :param show_envvar: Controls if an environment variable should be\n        shown on the help page. Normally, environment variables are not\n        shown.\n    :param prompt: If set to ``True`` or a non empty string then the\n        user will be prompted for input. If set to ``True`` the prompt\n        will be the option name capitalized.",
+            "signature": "Parameter",
+            "declaration": "class Option(Parameter):",
+            "token_count": 245
+          },
+          "reranker_pair_tokens": 257
+        },
+        {
+          "symbol": {
+            "symbol_id": "4a0e413d5fe0373f5cf4d28f380bacc8728062819348aaf71ad3a0627009722e",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType",
+            "kind": "Class",
+            "start": 24,
+            "end": 154,
+            "signature": "",
+            "content_hash": "c269c4898f473b149d87f039f2855c9b24d8228cc47413f87302a45d6422f6c1"
+          },
+          "score": 0.03409804031252861,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "ed7f278670f166490bd40e56e8fc827b7f4973308a24a9c319620960e446f6ba",
+            "parent_symbol_id": "4a0e413d5fe0373f5cf4d28f380bacc8728062819348aaf71ad3a0627009722e",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "start": 46,
+            "end": 65,
+            "content_hash": "9e0742f74a969371d5d3f9541ea67d8a4283ef24832f2855b55fc1a9f9e10c55",
+            "parent_content_hash": "c269c4898f473b149d87f039f2855c9b24d8228cc47413f87302a45d6422f6c1",
+            "source": "    name: str\n\n    #: if a list of this type is expected and the value is pulled from a\n    #: string environment variable, this is what splits it up.  `None`\n    #: means any whitespace.  For all parameters the general rule is that\n    #: whitespace splits them up.  The exception are paths and files which\n    #: are split by ``os.path.pathsep`` by default (\":\" on Unix and \";\" on\n    #: Windows).\n    envvar_list_splitter: t.ClassVar[t.Optional[str]] = None\n\n    def to_info_dict(self) -> t.Dict[str, t.Any]:\n        \"\"\"Gather information that could be useful for a tool generating\n        user-facing documentation.\n\n        Use :meth:`click.Context.to_info_dict` to traverse the entire\n        CLI structure.\n\n        .. versionadded:: 8.0\n        \"\"\"\n        # The class name without the \"ParamType\" suffix.",
+            "signature": "",
+            "declaration": "class ParamType:",
+            "token_count": 253
+          },
+          "reranker_pair_tokens": 265
+        },
+        {
+          "symbol": {
+            "symbol_id": "84bb02d30bd5c1ba39a839455762e32dc929b67fd6864bf96b45d46d4d25ce29",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "tests/test_options.py",
+            "module": "tests.test_options",
+            "qualname": "test_option_help_preserve_paragraphs.cmd",
+            "kind": "Function",
+            "start": 575,
+            "end": 587,
+            "signature": "config",
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa"
+          },
+          "score": -2.791780471801758,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "cb3d044dafc2472bd76dc86634b9ae423ba486ae4d15eb9410712c0df9a50eda",
+            "parent_symbol_id": "84bb02d30bd5c1ba39a839455762e32dc929b67fd6864bf96b45d46d4d25ce29",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "tests/test_options.py",
+            "start": 575,
+            "end": 587,
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "parent_content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "source": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):\n        pass",
+            "signature": "config",
+            "declaration": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):",
+            "token_count": 219
+          },
+          "reranker_pair_tokens": 231
+        },
+        {
+          "symbol": {
+            "symbol_id": "f6d625e942284aef09b8b005f5ba70f1b38b8232f9419b9b0fb86373ea27912c",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "examples/repo/repo.py",
+            "module": "examples.repo.repo",
+            "qualname": "",
+            "kind": "Module",
+            "start": 1,
+            "end": 166,
+            "signature": "",
+            "content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f"
+          },
+          "score": -3.029902696609497,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "d0bfb6601ed8c017a4ad94552c33e2e3588bb2b23543025f0e8c8d100b0f6606",
+            "parent_symbol_id": "f6d625e942284aef09b8b005f5ba70f1b38b8232f9419b9b0fb86373ea27912c",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "examples/repo/repo.py",
+            "start": 34,
+            "end": 53,
+            "content_hash": "e3baf2db1015800edc7c0e5297428de67be8a7ce007158c352770febc1e115d4",
+            "parent_content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f",
+            "source": "@click.option(\n    \"--config\",\n    nargs=2,\n    multiple=True,\n    metavar=\"KEY VALUE\",\n    help=\"Overrides a config key/value pair.\",\n)\n@click.option(\"--verbose\", \"-v\", is_flag=True, help=\"Enables verbose mode.\")\n@click.version_option(\"1.0\")\n@click.pass_context\ndef cli(ctx, repo_home, config, verbose):\n    \"\"\"Repo is a command line tool that showcases how to build complex\n    command line interfaces with Click.\n\n    This tool is supposed to look like a distributed version control\n    system to show how something like this can be structured.\n    \"\"\"\n    # Create a repo object and remember it as as the context object.  From\n    # this point onwards other commands can refer to it by using the\n    # @pass_repo decorator.",
+            "signature": "",
+            "declaration": "",
+            "token_count": 241
+          },
+          "reranker_pair_tokens": 253
+        }
+      ],
+      "timings": {
+        "model_verification_seconds": 0.33014591597020626,
+        "model_load_seconds": 0.20167083299020305,
+        "index_seconds": 0.5726051669917069,
+        "corpus_seconds": 42.292816833010875,
+        "query_seconds": 1.3819724170025438
+      }
+    },
+    "full": {
+      "seconds": 163.54516604199307,
+      "cache": {
+        "state": "built",
+        "artifact": "/Users/bytedance/vscode_workspace/graphRAG/artifacts/incremental-retrieval/run-042fc964ccac4749907ff9e8bf5ed71d/full-vectors/41b3f1381bbb8c4fcb0cbf9b824f3ad8bfd2b9d80e88111883d9028b7a060990.npz",
+        "publication": "snapshot-corpus-vectors-v1",
+        "corpus_state": "partial",
+        "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+        "update_mode": "content-reuse-per-snapshot",
+        "reused_embedding_chunks": 0,
+        "encoded_embedding_chunks": 3258
+      },
+      "state": "partial",
+      "hits": [
+        {
+          "symbol": {
+            "symbol_id": "b49bf95cfc50af340e81439c8e5c7b29a0d1a523a709f23ca09bf7a01b2b5deb",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType.split_envvar_value",
+            "kind": "Method",
+            "start": 120,
+            "end": 128,
+            "signature": "self, rv: str",
+            "content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42"
+          },
+          "score": 1.1691114902496338,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "5b0a8bfee8195adf79ff19cdc3d382353119e4a6adabb0ccda685bd40a298569",
+            "parent_symbol_id": "b49bf95cfc50af340e81439c8e5c7b29a0d1a523a709f23ca09bf7a01b2b5deb",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "start": 120,
+            "end": 128,
+            "content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42",
+            "parent_content_hash": "db6fdc3a444dbe126cfa2e9c20477c4034b020622bbf8902d5212f67cea33d42",
+            "source": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:\n        \"\"\"Given a value from an environment variable this splits it up\n        into small chunks depending on the defined envvar list splitter.\n\n        If the splitter is set to `None`, which means that whitespace splits,\n        then leading and trailing whitespace is ignored.  Otherwise, leading\n        and trailing splitters usually lead to empty items being included.\n        \"\"\"\n        return [rv or \"\"]",
+            "signature": "self, rv: str",
+            "declaration": "    def split_envvar_value(self, rv: str) -> t.Sequence[str]:",
+            "token_count": 176
+          },
+          "reranker_pair_tokens": 188
+        },
+        {
+          "symbol": {
+            "symbol_id": "f0ffcfab799e7bba6414c7fd86682ef7d7a213fc00346e65fd9c075b618db6be",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/core.py",
+            "module": "click.core",
+            "qualname": "Option",
+            "kind": "Class",
+            "start": 2452,
+            "end": 2971,
+            "signature": "Parameter",
+            "content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec"
+          },
+          "score": 0.99996417760849,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "97a6c8be0a52e2955f04f8be877d1de8e7485c70bb3ec7c98ef2c70346e3e1c7",
+            "parent_symbol_id": "f0ffcfab799e7bba6414c7fd86682ef7d7a213fc00346e65fd9c075b618db6be",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/core.py",
+            "start": 2452,
+            "end": 2470,
+            "content_hash": "c6595681d41d2e09a626de147bd094d77407d2ce0b7b1c2a5625c6c6c2a63360",
+            "parent_content_hash": "102d321fdde2aa138419b546e8f6aa11f130e244467b5f39aa58723297b3abec",
+            "source": "class Option(Parameter):\n    \"\"\"Options are usually optional values on the command line and\n    have some extra features that arguments don't have.\n\n    All other parameters are passed onwards to the parameter constructor.\n\n    :param show_default: Show the default value for this option in its\n        help text. Values are not shown by default, unless\n        :attr:`Context.show_default` is ``True``. If this value is a\n        string, it shows that string in parentheses instead of the\n        actual value. This is particularly useful for dynamic options.\n        For single option boolean flags, the default remains hidden if\n        its value is ``False``.\n    :param show_envvar: Controls if an environment variable should be\n        shown on the help page. Normally, environment variables are not\n        shown.\n    :param prompt: If set to ``True`` or a non empty string then the\n        user will be prompted for input. If set to ``True`` the prompt\n        will be the option name capitalized.",
+            "signature": "Parameter",
+            "declaration": "class Option(Parameter):",
+            "token_count": 245
+          },
+          "reranker_pair_tokens": 257
+        },
+        {
+          "symbol": {
+            "symbol_id": "4a0e413d5fe0373f5cf4d28f380bacc8728062819348aaf71ad3a0627009722e",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "module": "click.types",
+            "qualname": "ParamType",
+            "kind": "Class",
+            "start": 24,
+            "end": 154,
+            "signature": "",
+            "content_hash": "c269c4898f473b149d87f039f2855c9b24d8228cc47413f87302a45d6422f6c1"
+          },
+          "score": 0.03409804031252861,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "ed7f278670f166490bd40e56e8fc827b7f4973308a24a9c319620960e446f6ba",
+            "parent_symbol_id": "4a0e413d5fe0373f5cf4d28f380bacc8728062819348aaf71ad3a0627009722e",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "src/click/types.py",
+            "start": 46,
+            "end": 65,
+            "content_hash": "9e0742f74a969371d5d3f9541ea67d8a4283ef24832f2855b55fc1a9f9e10c55",
+            "parent_content_hash": "c269c4898f473b149d87f039f2855c9b24d8228cc47413f87302a45d6422f6c1",
+            "source": "    name: str\n\n    #: if a list of this type is expected and the value is pulled from a\n    #: string environment variable, this is what splits it up.  `None`\n    #: means any whitespace.  For all parameters the general rule is that\n    #: whitespace splits them up.  The exception are paths and files which\n    #: are split by ``os.path.pathsep`` by default (\":\" on Unix and \";\" on\n    #: Windows).\n    envvar_list_splitter: t.ClassVar[t.Optional[str]] = None\n\n    def to_info_dict(self) -> t.Dict[str, t.Any]:\n        \"\"\"Gather information that could be useful for a tool generating\n        user-facing documentation.\n\n        Use :meth:`click.Context.to_info_dict` to traverse the entire\n        CLI structure.\n\n        .. versionadded:: 8.0\n        \"\"\"\n        # The class name without the \"ParamType\" suffix.",
+            "signature": "",
+            "declaration": "class ParamType:",
+            "token_count": 253
+          },
+          "reranker_pair_tokens": 265
+        },
+        {
+          "symbol": {
+            "symbol_id": "84bb02d30bd5c1ba39a839455762e32dc929b67fd6864bf96b45d46d4d25ce29",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "tests/test_options.py",
+            "module": "tests.test_options",
+            "qualname": "test_option_help_preserve_paragraphs.cmd",
+            "kind": "Function",
+            "start": 575,
+            "end": 587,
+            "signature": "config",
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa"
+          },
+          "score": -2.791780471801758,
+          "sources": [
+            "dense",
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "cb3d044dafc2472bd76dc86634b9ae423ba486ae4d15eb9410712c0df9a50eda",
+            "parent_symbol_id": "84bb02d30bd5c1ba39a839455762e32dc929b67fd6864bf96b45d46d4d25ce29",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "tests/test_options.py",
+            "start": 575,
+            "end": 587,
+            "content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "parent_content_hash": "ebd0e16c51b6c0f7301297dfec1982110c36b6b132981458640746338b81daaa",
+            "source": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):\n        pass",
+            "signature": "config",
+            "declaration": "    @click.command()\n    @click.option(\n        \"-C\",\n        \"--config\",\n        type=click.Path(),\n        help=\"\"\"Configuration file to use.\n\n        If not given, the environment variable CONFIG_FILE is consulted\n        and used if set. If neither are given, a default configuration\n        file is loaded.\"\"\",\n    )\n    def cmd(config):",
+            "token_count": 219
+          },
+          "reranker_pair_tokens": 231
+        },
+        {
+          "symbol": {
+            "symbol_id": "f6d625e942284aef09b8b005f5ba70f1b38b8232f9419b9b0fb86373ea27912c",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "examples/repo/repo.py",
+            "module": "examples.repo.repo",
+            "qualname": "",
+            "kind": "Module",
+            "start": 1,
+            "end": 166,
+            "signature": "",
+            "content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f"
+          },
+          "score": -3.029902696609497,
+          "sources": [
+            "bm25_identifier",
+            "reranker"
+          ],
+          "chunk": {
+            "chunk_id": "d0bfb6601ed8c017a4ad94552c33e2e3588bb2b23543025f0e8c8d100b0f6606",
+            "parent_symbol_id": "f6d625e942284aef09b8b005f5ba70f1b38b8232f9419b9b0fb86373ea27912c",
+            "snapshot_id": "3ba7ffc2c4e3d61c5396f14be7c47e2062ab0f7d4bece93e28effd3b54a7b6f9",
+            "path": "examples/repo/repo.py",
+            "start": 34,
+            "end": 53,
+            "content_hash": "e3baf2db1015800edc7c0e5297428de67be8a7ce007158c352770febc1e115d4",
+            "parent_content_hash": "11e22d78e709f7ff26e050a50c8a9bd5ad3eb9d44695f64b6e65755b42d14d2f",
+            "source": "@click.option(\n    \"--config\",\n    nargs=2,\n    multiple=True,\n    metavar=\"KEY VALUE\",\n    help=\"Overrides a config key/value pair.\",\n)\n@click.option(\"--verbose\", \"-v\", is_flag=True, help=\"Enables verbose mode.\")\n@click.version_option(\"1.0\")\n@click.pass_context\ndef cli(ctx, repo_home, config, verbose):\n    \"\"\"Repo is a command line tool that showcases how to build complex\n    command line interfaces with Click.\n\n    This tool is supposed to look like a distributed version control\n    system to show how something like this can be structured.\n    \"\"\"\n    # Create a repo object and remember it as as the context object.  From\n    # this point onwards other commands can refer to it by using the\n    # @pass_repo decorator.",
+            "signature": "",
+            "declaration": "",
+            "token_count": 241
+          },
+          "reranker_pair_tokens": 253
+        }
+      ],
+      "timings": {
+        "model_verification_seconds": 0.2566198749700561,
+        "model_load_seconds": 0.2763075410039164,
+        "index_seconds": 123.00549258297542,
+        "corpus_seconds": 30.374915541964583,
+        "query_seconds": 6.083053582988214
+      }
+    }
+  },
+  "quality_claim": false,
+  "vector_max_abs_delta": 1.3131648302078247e-07,
+  "vectors_equal_within_1e_5": true,
+  "ranking_equal": true,
+  "speedup": 3.334371444647704
+}

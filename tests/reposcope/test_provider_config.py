@@ -8,7 +8,7 @@ from reposcope.llm.config import provider_settings
 
 @pytest.fixture(autouse=True)
 def clean_provider_environment(monkeypatch):
-    for field in ("CONFIG", "BASE_URL", "MODEL", "API_KEY"):
+    for field in ("CONFIG", "BASE_URL", "MODEL", "API_KEY", "THINKING"):
         monkeypatch.delenv("REPOSCOPE_LLM_" + field, raising=False)
 
 
@@ -100,3 +100,82 @@ def test_existing_env_wrapper_uses_explicit_service_fields(tmp_path, monkeypatch
     config = provider_settings()
     assert config["base_url"] == "https://provider.example"
     assert config["model"] == "chosen-model" and config["api_key"] == "fixture-key"
+
+
+def test_truncated_output_diagnostic_excludes_content_and_reasoning(monkeypatch):
+    import httpx
+
+    from reposcope.llm.provider import Provider
+
+    monkeypatch.setenv("REPOSCOPE_LLM_BASE_URL", "https://provider.example/v1")
+    monkeypatch.setenv("REPOSCOPE_LLM_MODEL", "fixture-model")
+    monkeypatch.setenv("REPOSCOPE_LLM_API_KEY", "fixture-secret")
+    client = httpx.Client
+    response = {
+        "choices": [
+            {
+                "finish_reason": "length",
+                "message": {"content": '{"tool":', "reasoning_content": "must not be persisted"},
+            }
+        ],
+        "usage": {"prompt_tokens": 10, "completion_tokens": 600},
+    }
+    monkeypatch.setattr(
+        httpx,
+        "Client",
+        lambda **kwargs: client(
+            transport=httpx.MockTransport(lambda request: httpx.Response(200, json=response)), **kwargs
+        ),
+    )
+    provider = Provider()
+    with pytest.raises(RepoScopeError) as error:
+        provider.decide({}, {})
+    assert error.value.code == "model_output_invalid"
+    diagnostic = provider.diagnostics[0]
+    assert diagnostic["finish_reason"] == "length"
+    assert diagnostic["validation_errors"][0]["type"] == "json_invalid"
+    assert diagnostic["content_characters"] == 8
+    assert "must not be persisted" not in json.dumps(diagnostic)
+    assert "fixture-secret" not in json.dumps(diagnostic)
+
+
+def test_explicit_short_decision_mode_preserves_model_and_output_limit(monkeypatch):
+    import httpx
+
+    from reposcope.llm.provider import Provider
+
+    monkeypatch.setenv("REPOSCOPE_LLM_BASE_URL", "https://api.deepseek.com")
+    monkeypatch.setenv("REPOSCOPE_LLM_MODEL", "deepseek-v4-pro")
+    monkeypatch.setenv("REPOSCOPE_LLM_API_KEY", "fixture-key")
+    monkeypatch.setenv("REPOSCOPE_LLM_THINKING", "disabled")
+    observed = []
+
+    def handler(request):
+        observed.append(json.loads(request.content))
+        return httpx.Response(
+            200,
+            json={
+                "choices": [{"finish_reason": "stop", "message": {"content": '{"tool":"finish","summary":"Done"}'}}],
+                "usage": {"prompt_tokens": 10, "completion_tokens": 10},
+            },
+        )
+
+    client = httpx.Client
+    monkeypatch.setattr(httpx, "Client", lambda **kwargs: client(transport=httpx.MockTransport(handler), **kwargs))
+    provider = Provider()
+    assert provider.decide({}, {}).tool == "finish"
+    assert observed[0]["model"] == "deepseek-v4-pro"
+    assert observed[0]["max_tokens"] == 600
+    assert observed[0]["thinking"] == {"type": "disabled"}
+    assert provider.diagnostics[0]["request_options"] == {"thinking": {"type": "disabled"}}
+
+
+def test_vendor_specific_mode_is_not_sent_to_another_provider(monkeypatch):
+    from reposcope.llm.provider import Provider
+
+    monkeypatch.setenv("REPOSCOPE_LLM_BASE_URL", "https://provider.example/v1")
+    monkeypatch.setenv("REPOSCOPE_LLM_MODEL", "other-model")
+    monkeypatch.setenv("REPOSCOPE_LLM_API_KEY", "fixture-key")
+    monkeypatch.setenv("REPOSCOPE_LLM_THINKING", "disabled")
+    with pytest.raises(RepoScopeError, match="supported DeepSeek"):
+        Provider()

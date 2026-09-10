@@ -1,0 +1,11 @@
+# ADR011：检索配置的完整版本发布
+
+`publish-index`为repo/profile构建完整候选，再通过SQLite事务把不可变publication记录与active指针一起提交。记录包含固定SHA的源码、图、稀疏词项和静态测试符号；强检索另绑定已完成bundle的绝对路径/hash及模型配置hash。失败或corpus partial不切换旧版本。构建开始记录previous publication，提交采用compare-and-swap，防止慢旧构建覆盖已完成的新版本。
+
+`search-published`单次SQL读取active记录后固定该版本；查询期间的新发布不改变这次使用的snapshot。它校验record内容hash、稀疏词项、bundle文件hash，以及实际模型/运行库对应的artifact身份，再执行检索。模型身份变化会在编码前拒绝，不临时重建另一个版本来冒充已发布索引。各profile相互隔离。
+
+强bundle通过原子hard-link建立，已有同身份文件不被重写；重复相同内容复用已有文件，不同内容冲突失败。临时文件最终清理。内容寻址embedding row cache是可独立验证的加速派生物，不是active版本；它不能使失败候选成为默认查询结果。
+
+原`index`/`search SNAPSHOT_ID`仍用于显式快照分析和partial探索；工作台与Agent继续固定任务的base/head，不被后来默认发布改变。静态test_symbols不等于真实pytest collection：收集结果仍受执行profile、测试资产hash和snapshot约束。这次验收覆盖图/文本/向量的CLI发布路径，不声称已将所有运行时测试目录并入一次全局构建，也未增加Web发布管理界面。
+
+真实模型探针publication-validation.json验证：小型完整快照成功发布；下一commit的超长行导致partial，active保持旧publication，查询仍返回base SHA。全量测试覆盖配置隔离、CAS冲突、模型漂移、损坏cache和历史文件不被改写。

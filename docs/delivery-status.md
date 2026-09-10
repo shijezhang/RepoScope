@@ -5,27 +5,31 @@
 | 阶段 | 当前状态 | 已实现/验证 | 剩余门槛 |
 |---|---|---|---|
 | M0 | 主要可行性已验证 | Python3.12、两仓库固定SHA、650/1413测试收集、12条变异、Docker、两本地模型revision与资源实测、锁文件/ADR | 首次历史下载及首轮镜像构建成本未完整采集 |
-| M1 | 主要实现已验证 | 固定Git快照、有限AST图、SQLite、标识符/BM25/RRF、Dense/CrossEncoder真实探针、版本绑定向量cache、CLI | 长函数分块质量，解析/所有检索组件联合发布，正式B1质量基线 |
+| M1 | 主要实现已验证 | 固定Git快照、有限AST图、SQLite、标识符/BM25/RRF、Dense/CrossEncoder真实探针、版本绑定向量cache、实际模型文件核验、CLI显式强检索入口 | 真实tokenizer分块已接入，语料仍partial；质量标签与正式B1质量基线待完成；CLI已有按配置发布，运行时测试目录仍独立 |
 | M2 | 核心实现已验证 | 双侧diff、删除/改名、类头/模块变更、作用域与重复定义反例、受限图遍历、连续路径与源码证据 | 30条复核开发集、正式图贡献比较 |
 | M3 | 真实链路已验证 | fixture及Click/HTTPX固定池Docker、nodeid/context、覆盖失效、选择/回退、两侧结果与复跑、实际取消/超时回收 | 全仓库稳定池扩展，T-cov完整对照，正式检出率与成本实验 |
-| M4 | 真实探针已执行，验证未达标 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 两个Agent均未执行测试：上下文预算守卫与输出校验停止；需改善上下文打包/失败诊断，再做正式对照 |
-| M5 | 解析增量已验证 | AST复用+引用全重解；12/12 parser v3同head hash一致；向量文件与manifest原子发布及缓存复读 | 最小依赖失效、向量增量、联合发布、稳定加速；当前仅解析增量 |
+| M4 | 开发用例已闭环，正式对照待完成 | 结构化工具、快照校验、预算/去重、持久轨迹、降级；默认只读，显式授权后一次验证及反馈；固定流程同执行器 | 03:15两个开发fixture均完成模型测试反馈收尾，但比fixed慢；正式对照与更多场景仍待完成 |
+| M5 | 解析/向量增量与CLI事务发布已验证 | AST复用+已观测导出依赖失效；12/12开发变更及2条历史修复的parser v5全量/增量一致；强bundle与SQLite发布指针/CAS；完整内容向量复用；真实Click全量对照排名一致、单次3.33倍 | 文件级失效已实现，非表达式级理论最小；运行时测试目录独立；稳定多样本加速未证明 |
 | M6 | 工作台主流程已验证 | 创建/历史、SSE、图/源码、任务与完整度分开、逐测试Base/Head、显式重试/取消、导出；真实Docker UI联调 | 真实模型交互体验、更多中断组合场景 |
 | M7 | 开发证据与文档已交付，正式评测待完成 | 两仓库真实回归、机器结果、选择无收益观察、强检索局限、Compose analysis-only实测、报告/面试/演示/清理；指标脚本拒绝未复核金标 | 正式标注/holdout、B0–B4与消融、置信区间 |
 
 ## 验证入口
 
 - 最终命令与数量：[validation.json](validation.json)。后端测试覆盖版本/作用域/删除/路径篡改、API幂等/SSE/取消、Agent预算/授权/反馈、runner回收、重放保留历史、向量cache与指标边界。
-- 前端：TypeScript/Vite与4项Playwright契约通过；契约mock不等于后端精度证明。
+- 前端：TypeScript/Vite与5项Playwright契约通过；契约mock不等于后端精度证明。
 - 真实UI：环境不足报告显式attempt2重试，Docker完成后revision3；Base4通过、Head1通过3失败，展示疑似回归，最终JSON一致，浏览器0错误。[记录](examples/workbench-verification.json) / [截图](examples/workbench.png) / [对照](examples/workbench-results.png)。
 - 两仓库准备：[preparation.json](../benchmarks/results/preparation.json)，650/1413是宿主完整collection数。
 - 应用Compose：[compose-validation.json](../benchmarks/results/compose-validation.json)，独立端口/state、首页200、异步分析、22个源码hash一致；analysis-only模式。
 - 自建样例Docker：[docker-validation.json](../benchmarks/results/docker-validation.json)，包含实际运行中取消、timeout、隔离参数和清理。
 - 两真实仓库Docker：[public-docker-validation.json](../benchmarks/results/public-docker-validation.json)，Click39/HTTPX106是各登记固定池，非全仓库套件。
 - 选择工程对照：[public-selection-engineering.json](../benchmarks/results/public-selection-engineering.json)，39/39、106/106，缩减率0%；未将head失败清单送入选择器。
+- 03:15 Agent功能：[agent-night-0315.json](../benchmarks/results/agent-night-0315.json)，两例验证及反馈后结束均完成；更慢，不宣称收益。见ADR007。
+- 夜间Agent进展：[agent-night-0230.json](../benchmarks/results/agent-night-0230.json)，原预算内一例已触发测试；另一例明确length/空JSON。见ADR006，不覆盖原失败。
 - 真实Agent：[agent-validation-assessment.json](../benchmarks/results/agent-validation-assessment.json)，4次请求、8658输入/1497输出tokens，两case均未验证测试；固定流程完成了同池对照。
+- 强检索bundle：[strong-retrieval-bundle-0430.json](../benchmarks/results/strong-retrieval-bundle-0430.json)，4查询/2次复读一致，Click/HTTPX复读约2.05/1.72秒；产品默认发布指针未接线，见ADR010。
+- 分块强检索：[strong-retrieval-chunks-0330.json](../benchmarks/results/strong-retrieval-chunks-0330.json)，4查询/2次磁盘复读通过，超限源码明确partial，成本与覆盖统计见ADR008。
 - 强检索：[strong-retrieval-probe.json](../benchmarks/results/strong-retrieval-probe.json)，4个英文开发query；2次磁盘复读排名相同。质量未标注，HTTPX有不理想结果。
-- 全量/解析增量：[index-consistency.json](../benchmarks/results/index-consistency.json)，12条v3全部ready/equal；每次重放保留独立run目录及Git对象。
+- 历史v3全量/解析增量：[index-consistency.json](../benchmarks/results/index-consistency.json)，12条v3全部ready/equal；每次重放保留独立run目录及Git对象。
 - 历史对象恢复：[recovered-snapshot-objects.json](../benchmarks/results/recovered-snapshot-objects.json)，源码、commit与tree精确核对后恢复，未修改历史报告。
 
 ## 尚未证明的效果
@@ -34,7 +38,19 @@
 
 ## 继续验收
 
-1. 依据已保留的真实失败改进上下文预算打包与结构化输出诊断，继续验证Agent反馈；不得将当前两次未完成结果计为成功。
-2. 独立复核12条、扩展开发集、按变更来源冻结测试集；`benchmarks/runners/metrics.py`会拒绝未复核或跨split同源样本。
+1. 保留原始Agent失败和独立的新成功实验，扩展同预算反馈验证场景；两条开发fixture闭环不等于正式收益成立。
+2. 使用[源码复核包](../benchmarks/review/README.md)完成Codex源码与Docker复核12条后，扩展开发集、按变更来源冻结测试集；`benchmarks/runners/metrics.py`会拒绝未复核或跨split同源样本。
 3. 运行强检索、图/覆盖/Agent消融与成本实验，保留负面结果；依据证据决定启用条件与增量投入。
-4. 完成长函数分块、全部索引联合发布与Compose已实际验收analysis-only模式，按实际收益更新简历素材。
+4. wheel、Compose、工作台最终源码验收已补齐；CLI发布指针与向量内容复用已落地。继续评估运行时测试目录的独立边界和最小依赖失效投入。
+
+## 本次继续推进
+
+已完成的部署补验、125项后端/5项前端测试、CLI事务发布、向量增量实测和12条Codex复核，统一见[继续推进报告](continuation-2026-09-10.md)。机器复核有真实执行证据，但仍不是独立人工金标。
+
+## parser v4 与真实历史来源
+
+文件级依赖失效、138项自测、2条冻结历史修复、B0/B1检索与B2/B3工程对照及独立补充诊断见[本轮报告](progress-v4-2026-09-10.md)。原测试未检出缺陷，补充诊断才复现修复前失败/修复后通过；两类实验不混作正式盲测。
+
+## 本轮最终版本 parser v5
+
+收尾新增反例确认了同名导入覆盖直接导出的旧问题，已修复并升级v5。最终140项自测、12+2条全量/增量一致性及重新打包部署见[最终报告](progress-v5-2026-09-10.md)。v4阶段记录保留为历史，不作为当前源码验收入口。

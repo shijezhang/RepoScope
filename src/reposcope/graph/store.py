@@ -21,6 +21,7 @@ class Store:
             CREATE TABLE IF NOT EXISTS repositories(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS snapshots(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS ast_cache(id TEXT PRIMARY KEY, data TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS resolution_cache(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS evidence(id TEXT PRIMARY KEY, data TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS jobs(id TEXT PRIMARY KEY, kind TEXT, state TEXT, payload TEXT,
               result TEXT, error TEXT, key TEXT UNIQUE, created REAL, updated REAL,
@@ -30,6 +31,9 @@ class Store:
             CREATE TABLE IF NOT EXISTS tool_calls(id TEXT PRIMARY KEY, run_id TEXT, data TEXT);
             CREATE TABLE IF NOT EXISTS coverage(id TEXT PRIMARY KEY, data TEXT);
             CREATE TABLE IF NOT EXISTS recovery(job_id TEXT PRIMARY KEY, state TEXT, data TEXT);
+            CREATE TABLE IF NOT EXISTS index_publications(id TEXT PRIMARY KEY, data TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS active_indexes(repo_id TEXT, profile TEXT, publication_id TEXT NOT NULL,
+              PRIMARY KEY(repo_id,profile));
             """)
 
     @contextmanager
@@ -46,13 +50,13 @@ class Store:
             db.close()
 
     def put(self, table, key, value):
-        assert table in {"repositories", "snapshots", "ast_cache", "evidence", "coverage"}
+        assert table in {"repositories", "snapshots", "ast_cache", "resolution_cache", "evidence", "coverage"}
         data = value.model_dump() if hasattr(value, "model_dump") else value
         with self.connect() as db:
             db.execute(f"INSERT OR REPLACE INTO {table}(id,data) VALUES(?,?)", (key, json.dumps(data)))
 
     def get(self, table, key):
-        assert table in {"repositories", "snapshots", "ast_cache", "evidence", "coverage"}
+        assert table in {"repositories", "snapshots", "ast_cache", "resolution_cache", "evidence", "coverage"}
         with self.connect() as db:
             row = db.execute(f"SELECT data FROM {table} WHERE id=?", (key,)).fetchone()
         if not row:
@@ -66,6 +70,34 @@ class Store:
 
     def snapshot(self, sid):
         return Snapshot.model_validate(self.get("snapshots", sid))
+
+    def active_index(self, repo_id, profile):
+        with self.connect() as db:
+            row = db.execute(
+                "SELECT p.data FROM active_indexes a JOIN index_publications p ON a.publication_id=p.id "
+                "WHERE a.repo_id=? AND a.profile=?",
+                (repo_id, profile),
+            ).fetchone()
+        return json.loads(row[0]) if row else None
+
+    def activate_index(self, record, previous_id):
+        if record["publication_id"] != digest({k: v for k, v in record.items() if k != "publication_id"}):
+            raise RepoScopeError("index_publication_invalid", "Publication content hash mismatch")
+        with self.connect() as db:
+            db.execute("BEGIN IMMEDIATE")
+            row = db.execute(
+                "SELECT publication_id FROM active_indexes WHERE repo_id=? AND profile=?",
+                (record["repo_id"], record["profile"]),
+            ).fetchone()
+            if (row[0] if row else None) != previous_id:
+                raise RepoScopeError("index_publication_conflict", "Published version changed during this build")
+            db.execute(
+                "INSERT OR IGNORE INTO index_publications VALUES(?,?)", (record["publication_id"], json.dumps(record))
+            )
+            db.execute(
+                "INSERT OR REPLACE INTO active_indexes VALUES(?,?,?)",
+                (record["repo_id"], record["profile"], record["publication_id"]),
+            )
 
     def enqueue(self, kind, payload, key=None):
         now, jid = time.time(), uuid.uuid4().hex

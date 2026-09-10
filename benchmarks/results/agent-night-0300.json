@@ -1,0 +1,1144 @@
+{
+  "run_id": "run-3efbebc3f3a044a5b052a879e9934a7d",
+  "state": "completed",
+  "scope": "Two unreviewed development fixtures; not a gold evaluation or causal quality claim",
+  "budget": {
+    "job_seconds": 180,
+    "agent_seconds": 60,
+    "model_decisions": 6,
+    "tool_calls": 12,
+    "tokens": 12000,
+    "base_head_validations": 1,
+    "test_seconds": 120
+  },
+  "profile": {
+    "image": "sha256:f8f79ca52e3acbd15007628491597ce67846037dc04dbb404b04d12536deea9f",
+    "python": "python",
+    "timeout": 120,
+    "memory": "512m",
+    "cpus": 1,
+    "pids_limit": 128,
+    "test_paths": [
+      "test_calc.py"
+    ]
+  },
+  "profile_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+  "scope_inherited_from": "run-68deaa06d5cd4072892470a1d8740b3d",
+  "scope_verification_before_run": {
+    "destination": "https://api.deepseek.com",
+    "model": "deepseek-v4-pro",
+    "preview_sha256": "ed97e10d66d4eb2eaaae516941f5e645dde3bc1ef45ba0b076a108610dc199b8",
+    "source_hashes_verified": true
+  },
+  "question": "Review the supplied Python change and use the authorized base/head test comparison when it would resolve a meaningful uncertainty. State whether existing tests detect a change and preserve unresolved dynamic behavior. Do not equate passing tests with proof of safety.",
+  "arms": [
+    {
+      "case_id": "fixture-01",
+      "arm": "fixed",
+      "run_id": "6de0bc5b645e48b890cafc92900c7315",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 5.564831916010007,
+      "time_measurement": "worker wall clock",
+      "model": null,
+      "usage": {
+        "requests": 0,
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "agent_metadata": {},
+      "tool_calls": [],
+      "validation_count": 1,
+      "comparisons": [
+        {
+          "base": {
+            "status": "completed",
+            "results": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.01047276000099373,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0016715940000722185,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00023500999850512017,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.01237936399957107
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00014341799942485522,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0016847500010044314,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00024297999880218413,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0020711479992314707
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00014814099995419383,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.001587802998983534,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00018891900072048884,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0019248629996582167
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00013662899982591625,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0015284290002455236,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00017576199934410397,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0018408199994155439
+              }
+            ],
+            "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+            "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+            "cleanup_status": "completed"
+          },
+          "head": {
+            "status": "completed",
+            "results": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "status": "failed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.010797223998451955,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "call",
+                    "status": "failed",
+                    "duration": 0.0022392999999283347,
+                    "message": "def test_legacy():\n>       assert old_order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = old_order(10)\n\ntest_calc.py:13: AssertionError"
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00029418899976008106,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.01333071299814037
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00014872100109641906,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0019239079992985353,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00019425400023465045,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.002266883000629605
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "status": "failed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00014394800018635578,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "call",
+                    "status": "failed",
+                    "duration": 0.0015215459989121882,
+                    "message": "def test_plugin():\n>       assert plugin(10) == 10\nE       assert 11 == 10\nE        +  where 11 = plugin(10)\n\ntest_calc.py:17: AssertionError"
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00015999799870769493,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.001825491997806239
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "status": "failed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.0001306429985561408,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "call",
+                    "status": "failed",
+                    "duration": 0.0016015029996196972,
+                    "message": "def test_positive():\n>       assert order(10) == 10\nE       assert 11 == 10\nE        +  where 11 = order(10)\n\ntest_calc.py:5: AssertionError"
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00015957499999785796,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.001891720998173696
+              }
+            ],
+            "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+            "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+            "cleanup_status": "completed"
+          },
+          "comparison": {
+            "comparable": true,
+            "status": "suspected_regression",
+            "tests": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "base_status": "passed",
+                "head_status": "failed",
+                "finding": "suspected_regression"
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "base_status": "passed",
+                "head_status": "passed",
+                "finding": "passed_both"
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "base_status": "passed",
+                "head_status": "failed",
+                "finding": "suspected_regression"
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "base_status": "passed",
+                "head_status": "failed",
+                "finding": "suspected_regression"
+              }
+            ],
+            "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+          }
+        }
+      ],
+      "test_status": "completed",
+      "selected_nodeids": [
+        "test_calc.py::test_legacy",
+        "test_calc.py::test_negative",
+        "test_calc.py::test_plugin",
+        "test_calc.py::test_positive"
+      ],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Selected tests passing does not prove all behavior safe; base/head failures need flakiness review"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
+    },
+    {
+      "case_id": "fixture-01",
+      "arm": "agent",
+      "run_id": "01aa6ebc6f3e4c2aa6de2caaaa940b12",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "31223fde0a33dd03278f31c4b93011c7c16ae192",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 4.178885791974608,
+      "time_measurement": "worker wall clock",
+      "model": "deepseek-v4-pro",
+      "usage": {
+        "input_tokens": 4673,
+        "output_tokens": 131,
+        "requests": 2,
+        "failed_requests": 0,
+        "unknown_token_usage": 0
+      },
+      "agent_metadata": {
+        "model": "deepseek-v4-pro",
+        "usage": {
+          "input_tokens": 4673,
+          "output_tokens": 131,
+          "requests": 2,
+          "failed_requests": 0,
+          "unknown_token_usage": 0
+        },
+        "provider_diagnostics": [
+          {
+            "request_number": 1,
+            "request_upper_bound": 6488,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 208
+          },
+          {
+            "request_number": 2,
+            "request_upper_bound": 8948,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 196
+          }
+        ],
+        "seconds": 3.1104727500351146,
+        "prompt_version": "lookup-v3-available-tools",
+        "completion_reason": "no_new_evidence",
+        "decision_after_test_feedback": false,
+        "request_options": {
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "context_packing": [
+          {
+            "remaining_tokens": 12000,
+            "request_upper_bound": 6488,
+            "omitted_impacts": 0,
+            "omitted_results": 0,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": []
+          },
+          {
+            "remaining_tokens": 10227,
+            "request_upper_bound": 8948,
+            "omitted_impacts": 0,
+            "omitted_results": 0,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": [
+              "get_test_candidates"
+            ]
+          }
+        ],
+        "mode": "bounded investigation and validation",
+        "test_validation_submitted": false
+      },
+      "tool_calls": [
+        {
+          "id": "66387db1c45068d7948d6fc3dc3a0cfa2df245d2f096d758aea209346c630606",
+          "tool": "get_test_candidates",
+          "arguments": {
+            "run_id": "01aa6ebc6f3e4c2aa6de2caaaa940b12"
+          },
+          "summary": "Collect test candidates for the run to determine if existing tests detect the change.",
+          "result": {
+            "plan_id": "dc4cd18667c5dedc17a61fbb3c254493d949c63584192eefe25cdc8a91b92617",
+            "nodeids": [],
+            "status": "collection_required",
+            "strategy": "all",
+            "reasons": [
+              "Coverage unavailable: collect and run the full registered test pool"
+            ],
+            "snapshot_id": "330f644557fcff6502b20cc5f820fc7f639dd543da0d81b8444b6613acfa9b20",
+            "uncovered": [
+              "75c2d18b2486d1e1c5b86ee0d8b55b16dc90542ab025d4fe653efe90794aa5c2",
+              "0d0f713bc83f99c6f24fcb3462b646f13b1fde4b0b60ca8f70061b73df87cecf",
+              "189e8af8ce92aaa58532bd4bcbd7e66baa137534c66e379ffabce97193e2f149",
+              "847e12d8118439559a9b1ad39e235824ee42527df72bfbf477266d47fa318408",
+              "a074459665d6b751dccd60980f7524acf39288fefea2aeffad7ca2a58121b102",
+              "1673a294ffc71a8cd0f2c07daacd60f8b715b24e282d2d31965293886c18455e",
+              "79fcffa2d4ac739c13355551132b4aa2a66733a44f97f3740017786080735161",
+              "bcf09a0dca4b64718426712cb6ae7fc3b721383ec8f8e311edaa023ca5a09331",
+              "a341ab7276a8d4c0af3dd657919a722c1a2315c4090244402d5bbe1ce36c5b74",
+              "4a5d9fa8ec563922a386bad03c5d34cd4ab1f3371d05b8277ffb36770f7fefa3",
+              "95208ad6ae67e1f057b9f2ee250e03456178ad7730ffb054e5017b261ced8230",
+              "eb057a735176d01f7b8f164ef73836f0939c1f0cc450de1256016eb8dd54e0c3",
+              "0881b8b6c420fff1abc7e96d56d44c88c61b4ccbb1196a6dffbd145fc0493ba6",
+              "d7321dad8d3be3f510a3f747f10124c82c06a6d9021d78a10c227e5efb980d7c",
+              "fcdcf4b5f8f9a2408f30fae54b7678063ed6bd9484eb797df19217604cb1d6fd",
+              "4984d37f44132b76dc30f7d37d6e16513730c422ba830627949ba585c7fb54e1",
+              "873bbbe51c2196402bb3581e3604e5a7b305b17fb0264979dcb9996ada71d840",
+              "8daba1706c2d8ccb5473f0e0e744ceada45729567a65971938db7165c6b30fac",
+              "ea403371a0444377654002e1e3c76ab857b9162e486beeb96ca3b35c3bad3720",
+              "0eb520e9d80f7b739f60ed1dbc0fbec99a7d58b5b588c44ce66d9487c2fca640",
+              "5552872224f6cb15a83f7551d0f37e997aea18472ae2b077f50dbf668346c12a",
+              "b6cbb587495bcb168809eb87d3fefe4c9cce8697559422a7a67e80d4525f8d74",
+              "0bcca82a2227d9a22fef0bfbb4942c1dd8e7ef38f3a369241ad26562e423763b",
+              "b742be59dda9c9427b5446d50e30705b8d1b6fcb3cccf722ee6abfc4aad6241e",
+              "ce311b97ba9896d5774b502822681b30c18406e2c00e551f83a80d99795a634c",
+              "acf6282dd7d632d8624455aaf99795d11f55f9527642a5952b265ab3a171e940",
+              "7ee149bba8160f77d8c8726e233c21741111a1b96491eb502ecd09dcfe86bfb9",
+              "c97c562f87a52215e247ab554ec4843ec14479ab2f163d17d86e138051ab6a83"
+            ]
+          }
+        }
+      ],
+      "validation_count": 0,
+      "comparisons": [],
+      "test_status": "collection_required",
+      "selected_nodeids": [],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "Tests have not been collected or executed for this plan",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Repeated lookup stopped"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
+    },
+    {
+      "case_id": "fixture-04",
+      "arm": "fixed",
+      "run_id": "76632033db374c0ab3945400a32d45e8",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 4.610177916998509,
+      "time_measurement": "worker wall clock",
+      "model": null,
+      "usage": {
+        "requests": 0,
+        "input_tokens": 0,
+        "output_tokens": 0
+      },
+      "agent_metadata": {},
+      "tool_calls": [],
+      "validation_count": 1,
+      "comparisons": [
+        {
+          "base": {
+            "status": "completed",
+            "results": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.0129145939990849,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.001996040000449284,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00023386099928757176,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.015144494998821756
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00016457999845442828,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.001750119001371786,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00014358000044012442,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0020582790002663387
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00013341799967747647,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.001632471999982954,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.0001483449996158015,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.001914234999276232
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00012561699986690655,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0017675770013738656,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00015585099936288316,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0020490450006036554
+              }
+            ],
+            "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+            "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+            "cleanup_status": "completed"
+          },
+          "head": {
+            "status": "completed",
+            "results": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.010055265000119107,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0018107020005118102,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_legacy",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.0002654529998835642,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.012131420000514481
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.0001473200009058928,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0017066750006051734,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_negative",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00019086399879597593,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.002044859000307042
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00014127899885352235,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0015195689993561246,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_plugin",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.00017097199997806456,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0018318199981877115
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "status": "passed",
+                "phases": [
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "setup",
+                    "status": "passed",
+                    "duration": 0.00012894599967694376,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "call",
+                    "status": "passed",
+                    "duration": 0.0014895389995217556,
+                    "message": ""
+                  },
+                  {
+                    "nodeid": "test_calc.py::test_positive",
+                    "phase": "teardown",
+                    "status": "passed",
+                    "duration": 0.000160202000188292,
+                    "message": ""
+                  }
+                ],
+                "duration": 0.0017786869993869914
+              }
+            ],
+            "environment_hash": "af152c2fcf3d5f04ffaa99b924180279f69294044a935d826bbc32ee4da18141",
+            "comparison_hash": "9a9f37fb3f108a54818645959a6e7ff55207dc806df7a3f8e2ae230b17df1294",
+            "cleanup_status": "completed"
+          },
+          "comparison": {
+            "comparable": true,
+            "status": "inconclusive",
+            "tests": [
+              {
+                "nodeid": "test_calc.py::test_legacy",
+                "base_status": "passed",
+                "head_status": "passed",
+                "finding": "passed_both"
+              },
+              {
+                "nodeid": "test_calc.py::test_negative",
+                "base_status": "passed",
+                "head_status": "passed",
+                "finding": "passed_both"
+              },
+              {
+                "nodeid": "test_calc.py::test_plugin",
+                "base_status": "passed",
+                "head_status": "passed",
+                "finding": "passed_both"
+              },
+              {
+                "nodeid": "test_calc.py::test_positive",
+                "base_status": "passed",
+                "head_status": "passed",
+                "finding": "passed_both"
+              }
+            ],
+            "reason": "Single execution cannot exclude flakiness; base/head comparison requires matching test assets, configuration and environment"
+          }
+        }
+      ],
+      "test_status": "completed",
+      "selected_nodeids": [
+        "test_calc.py::test_legacy",
+        "test_calc.py::test_negative",
+        "test_calc.py::test_plugin",
+        "test_calc.py::test_positive"
+      ],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Selected tests passing does not prove all behavior safe; base/head failures need flakiness review"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
+    },
+    {
+      "case_id": "fixture-04",
+      "arm": "agent",
+      "run_id": "3650c974960348f89033ec6bee5ba97c",
+      "job_status": "completed",
+      "base_sha": "f68014c0a2919d82333ab6b2e5c9027af8773ea1",
+      "head_sha": "aebd5c279a69fa36b4c7932b3949d84e31bca36d",
+      "budget": {
+        "job_seconds": 180,
+        "agent_seconds": 60,
+        "model_decisions": 6,
+        "tool_calls": 12,
+        "tokens": 12000,
+        "base_head_validations": 1,
+        "test_seconds": 120
+      },
+      "wall_seconds": 6.970937083999161,
+      "time_measurement": "worker wall clock",
+      "model": "deepseek-v4-pro",
+      "usage": {
+        "input_tokens": 7260,
+        "output_tokens": 294,
+        "requests": 4,
+        "failed_requests": 1,
+        "unknown_token_usage": 0
+      },
+      "agent_metadata": {
+        "model": "deepseek-v4-pro",
+        "usage": {
+          "input_tokens": 7260,
+          "output_tokens": 294,
+          "requests": 4,
+          "failed_requests": 1,
+          "unknown_token_usage": 0
+        },
+        "provider_diagnostics": [
+          {
+            "request_number": 1,
+            "request_upper_bound": 6524,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 218
+          },
+          {
+            "request_number": 2,
+            "request_upper_bound": 7095,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 216
+          },
+          {
+            "request_number": 3,
+            "request_upper_bound": 7666,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 222
+          },
+          {
+            "request_number": 4,
+            "request_upper_bound": 5723,
+            "request_options": {
+              "thinking": {
+                "type": "disabled"
+              }
+            },
+            "finish_reason": "stop",
+            "content_characters": 158,
+            "validation_errors": [
+              {
+                "type": "missing",
+                "location": [
+                  "summary"
+                ]
+              }
+            ]
+          }
+        ],
+        "seconds": 6.076480791030917,
+        "prompt_version": "lookup-v3-available-tools",
+        "completion_reason": "model_output_invalid",
+        "decision_after_test_feedback": false,
+        "request_options": {
+          "thinking": {
+            "type": "disabled"
+          }
+        },
+        "context_packing": [
+          {
+            "remaining_tokens": 12000,
+            "request_upper_bound": 6524,
+            "omitted_impacts": 0,
+            "omitted_results": 0,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": []
+          },
+          {
+            "remaining_tokens": 10177,
+            "request_upper_bound": 7095,
+            "omitted_impacts": 0,
+            "omitted_results": 0,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": [
+              "read_evidence"
+            ]
+          },
+          {
+            "remaining_tokens": 8134,
+            "request_upper_bound": 7666,
+            "omitted_impacts": 0,
+            "omitted_results": 0,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": [
+              "read_evidence",
+              "read_evidence"
+            ]
+          },
+          {
+            "remaining_tokens": 5864,
+            "request_upper_bound": 5723,
+            "omitted_impacts": 6,
+            "omitted_results": 2,
+            "omitted_limitations": 0,
+            "available_tools": [
+              "find_paths",
+              "find_symbol",
+              "finish",
+              "get_neighbors",
+              "get_test_candidates",
+              "get_test_result",
+              "read_evidence",
+              "run_tests",
+              "search_code"
+            ],
+            "included_result_tools": [
+              "read_evidence"
+            ]
+          }
+        ],
+        "mode": "bounded investigation and validation",
+        "test_validation_submitted": false
+      },
+      "tool_calls": [
+        {
+          "id": "4de8fa2654422621a64df455535926099e76ea28f0ac83a1fd323658ec649946",
+          "tool": "read_evidence",
+          "arguments": {
+            "evidence_id": "5f9a819d7fc3a9efbd155bef398c99ab5fd1ef5d4da1a98047a6a44c8f9a3f3b"
+          },
+          "summary": "Read base plugin evidence to understand original implementation.",
+          "result": {
+            "snapshot_id": "0ccca7e7caaf159f70740bcff92c004dbfd826a1f479f019b9c583b669a6e9ab",
+            "path": "api.py",
+            "start": 12,
+            "end": 15,
+            "source": "def plugin(value):\n    import calc\n\n    return getattr(calc, \"total\")(value)",
+            "content_hash": "fbcc5bec1838729e6e9ab0752259d41147f7756adf651601b048bb46f762bb59"
+          }
+        },
+        {
+          "id": "aaf2b14c2a75a5fe750e3294f001aa0d297958e1e172b594e80c9b3c9aaaeb5a",
+          "tool": "read_evidence",
+          "arguments": {
+            "evidence_id": "03d674d3088fa8f677f1c0346164b10408588d8ed61c0b46b330b855a1298de6"
+          },
+          "summary": "Read head plugin evidence to compare with base implementation.",
+          "result": {
+            "snapshot_id": "32e406c98b4d1b29be78072d33803d19f5861bab05a2fe14a3f7bbd2a59ab44d",
+            "path": "api.py",
+            "start": 12,
+            "end": 15,
+            "source": "def plugin(value):\n    import calc\n\n    return getattr(calc, \"legacy\")(value)",
+            "content_hash": "88aa4ace42a3d49605e34b85e0566141c2af0e4890d9259ff1a41583a2c7ca70"
+          }
+        },
+        {
+          "id": "70d7d05cbc5af44ee73ad029564e586344e095edd91a846ac1834f177a5c52fd",
+          "tool": "get_test_candidates",
+          "arguments": {
+            "run_id": "3650c974960348f89033ec6bee5ba97c"
+          },
+          "summary": "Collect test candidates for the change to see if existing tests cover the modified plugin function.",
+          "result": {
+            "plan_id": "5ebeba70308f3f902250b6c42da2c306ef78e936edd908285d190811d82efdf2",
+            "nodeids": [],
+            "status": "collection_required",
+            "strategy": "all",
+            "reasons": [
+              "Coverage unavailable: collect and run the full registered test pool"
+            ],
+            "snapshot_id": "32e406c98b4d1b29be78072d33803d19f5861bab05a2fe14a3f7bbd2a59ab44d",
+            "uncovered": [
+              "16eccd6672b9c5b9a4252c6563b7901a8bbcd4038e95cbabf4f6bfa7fdbbe115",
+              "0694f25b76e1de92ce1c5e88926d8dbbfc989592f24760b11bacbf94d02d12de",
+              "fa2a9477738943dc66eeaa19573ecf487826934210327503a20f5c78f16d155d",
+              "8459b9598353aec48e3459fdbe99806ae04e269c405db576a47a50d746e83491",
+              "ac07592e999dd8ba4f59eb1a47bb233ea3fce0fdecdea4391a2f43359143e1e8",
+              "4fe734eaf438f5cacecd2ef31aac36119b6306cf41c8e3443e9298b9710ade1f",
+              "db5cac9844a370e818f28139f06c4cb972a1201a7e1d872cde31244b7e5fb0d3",
+              "8c27543dbc53253b9477456cce534e17ce7defbd60384c72897f14c8c6e2f139",
+              "b31b7a4e2b9d130ad04e875010da5be1c2736cd9361130e209d67fe9ddcba6b5",
+              "8ad7e7751cbb9cb9174d4062809bd5255fd92288706deabd13a7eacae0f66355",
+              "bae55ec88a25c2b2786d1919abeb0db18c2209187557ec25b7f4f66309b815e7",
+              "eaa76fc3c472d86526c9e945a61f64a468e2adff310681a33f3884529ecc54ca"
+            ]
+          }
+        }
+      ],
+      "validation_count": 0,
+      "comparisons": [],
+      "test_status": "collection_required",
+      "selected_nodeids": [],
+      "limitations": [
+        "old: 4 unresolved/candidate call sites in affected files",
+        "new: 4 unresolved/candidate call sites in affected files",
+        "Tests have not been collected or executed for this plan",
+        "No valid version-bound coverage imported; test selection must fall back conservatively",
+        "Model output failed structured validation; deterministic report retained"
+      ],
+      "job_error": null,
+      "annotation_status": "unreviewed",
+      "quality_metrics": null
+    }
+  ],
+  "case_comparisons": [
+    {
+      "case_id": "fixture-01",
+      "both_executed_validation": false,
+      "same_selected_test_pool": false,
+      "agent_extra_wall_seconds": -1.3859461240353994,
+      "agent_model_requests": 2,
+      "outcome": "No formal benefit conclusion; inspect preserved execution findings, errors and limitations"
+    },
+    {
+      "case_id": "fixture-04",
+      "both_executed_validation": false,
+      "same_selected_test_pool": false,
+      "agent_extra_wall_seconds": 2.3607591670006514,
+      "agent_model_requests": 4,
+      "outcome": "No formal benefit conclusion; inspect preserved execution findings, errors and limitations"
+    }
+  ],
+  "fairness": "Same base/head, profile, task, and maximum budget; independent Store and no preloaded coverage per arm",
+  "scope_verification_after_run": {
+    "destination": "https://api.deepseek.com",
+    "model": "deepseek-v4-pro",
+    "preview_sha256": "ed97e10d66d4eb2eaaae516941f5e645dde3bc1ef45ba0b076a108610dc199b8",
+    "source_hashes_verified": true
+  }
+}

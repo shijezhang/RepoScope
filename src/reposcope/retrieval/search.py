@@ -1,6 +1,5 @@
 """Snapshot-scoped identifier/BM25 search; explicit optional strong baseline."""
 
-import hashlib
 import importlib.metadata
 import os
 import re
@@ -8,11 +7,15 @@ import time
 from collections import defaultdict
 from pathlib import Path
 
+import numpy as np
 from rank_bm25 import BM25Okapi
 
 from reposcope.config import RepoScopeError
 from reposcope.models import digest
-from reposcope.retrieval.vector_cache import VectorCache
+from reposcope.retrieval.corpus import chunk_evidence, limits, prepare_corpus, token_count
+from reposcope.retrieval.embedding_cache import EmbeddingCache
+from reposcope.retrieval.index_bundle import BUNDLE_VERSION, IndexBundle, snapshot_content
+from reposcope.retrieval.model_files import verify_model_files
 
 
 def tokenize(text):
@@ -62,7 +65,7 @@ class Search:
             for sid, score, sources in rrf({"identifier": exact, "bm25": sparse})[:limit]
         ]
 
-    def strong_query(self, query, models, limit=20):
+    def strong_query(self, query, models, limit=20, *, expected_artifact=None):
         """Pinned local Dense + sparse + RRF + reranker; never silently degrades."""
         started = time.perf_counter()
         if self.snapshot.status != "ready":
@@ -75,17 +78,16 @@ class Search:
             from sentence_transformers import CrossEncoder, SentenceTransformer
         except ImportError as exc:
             raise RepoScopeError("model_unavailable", "Install the models extra to run B1") from exc
-        model_key = digest(models)
+        # Recheck bytes even on a warm query: a revision string cannot detect
+        # an in-place tokenizer/config replacement in the local directory.
+        verification_started = time.perf_counter()
+        model_files = verify_model_files(models)
+        verification_seconds = time.perf_counter() - verification_started
+        model_key = digest({"models": models, "local_files": model_files})
         model_reused = self._strong_runtime is not None and self._strong_runtime["key"] == model_key
         load_started = time.perf_counter()
         if not model_reused:
             try:
-                for kind in ["embedding", "reranker"]:
-                    expected = models.get(kind + "_weights_sha256")
-                    if expected:
-                        weights = Path(models[kind]) / "model.safetensors"
-                        if hashlib.sha256(weights.read_bytes()).hexdigest() != expected:
-                            raise ValueError(f"{kind} weights do not match the pinned manifest")
                 embedding = SentenceTransformer(
                     models["embedding"],
                     revision=models["embedding_revision"],
@@ -106,86 +108,179 @@ class Search:
         model_load_seconds = time.perf_counter() - load_started
         if not self.symbols:
             return {"hits": [], "seconds": time.perf_counter() - started, "models": models, "state": "ready"}
+        budget = limits(embedding, reranker, models)
+        if (
+            token_count(embedding.tokenizer, query) > budget["embedding_max_tokens"]
+            or token_count(reranker.tokenizer, query, special=False) > budget["query_max_tokens"]
+        ):
+            raise RepoScopeError(
+                "query_budget_exceeded", "Query exceeds the declared model/token reserve; it was not truncated"
+            )
         binding = {
             "snapshot_id": self.snapshot.snapshot_id,
             "manifest_hash": self.snapshot.manifest_hash,
             "parser_version": self.snapshot.parser_version,
-            "symbol_text_hash": digest(self.texts),
-            "symbol_ids": [s.symbol_id for s in self.symbols],
+            "snapshot_content_hash": digest(snapshot_content(self.snapshot)),
+            "bundle_version": BUNDLE_VERSION,
+            "sparse_version": "identifier-regex-v1",
+            "chunk_policy": {**budget, "overlap_lines": models.get("chunk_overlap_lines", 2)},
             "embedding": models.get("embedding_repository", models["embedding"]),
             "embedding_revision": models["embedding_revision"],
             "reranker": models.get("reranker_repository", models["reranker"]),
             "reranker_revision": models["reranker_revision"],
             "embedding_weights_sha256": models.get("embedding_weights_sha256"),
             "reranker_weights_sha256": models.get("reranker_weights_sha256"),
-            "max_seq_length": embedding.max_seq_length,
+            "model_files": model_files,
             "sentence_transformers": importlib.metadata.version("sentence-transformers"),
             "transformers": importlib.metadata.version("transformers"),
             "torch": importlib.metadata.version("torch"),
             "device": models.get("device", "cpu"),
-            "vector_format": "normalized-float32-v1",
+            "vector_format": "normalized-float32-chunks-v2",
         }
-        cache = VectorCache(models.get("cache_dir", Path(os.getenv("REPOSCOPE_HOME", "artifacts/state")) / "vectors"))
+        cache = IndexBundle(models.get("cache_dir", Path(os.getenv("REPOSCOPE_HOME", "artifacts/state")) / "vectors"))
+        if expected_artifact is not None and cache.path(binding).resolve() != Path(expected_artifact).resolve():
+            raise RepoScopeError(
+                "index_profile_mismatch", "Current model/runtime identity differs from published index"
+            )
+        corpus_started = time.perf_counter()
+        cached = None
+        if "corpus" not in runtime:
+            cached = cache.load_corpus(binding, self.snapshot, budget, tokenize)
+            runtime["corpus"] = (
+                cached[0]
+                if cached is not None
+                else prepare_corpus(
+                    self.snapshot, embedding, reranker, budget, tokenize, models.get("chunk_overlap_lines", 2)
+                )
+            )
+        corpus = runtime["corpus"]
+        corpus_seconds = time.perf_counter() - corpus_started
+        chunks, texts, groups = corpus["chunks"], corpus["texts"], corpus["groups"]
+        if not chunks:
+            raise RepoScopeError(
+                "retrieval_corpus_unavailable", "No complete source chunk fits the pinned model budgets"
+            )
         index_started = time.perf_counter()
+        row_cache = EmbeddingCache(cache.root, binding)
+        reused_chunks = 0
+        encoded_chunks = 0
         if "vectors" in runtime:
             vectors, cache_state = runtime["vectors"], "memory_hit"
+        elif cached is not None:
+            vectors, cache_state = cached[1], "disk_hit"
         else:
-            cached = cache.load(binding, len(self.symbols))
-            if cached is None:
-                vectors = embedding.encode(
-                    self.texts,
+            rows = row_cache.load(texts)
+            missing = [index for index, row in enumerate(rows) if row is None]
+            reused_chunks = len(rows) - len(missing)
+            encoded_chunks = len(missing)
+            if missing:
+                encoded = embedding.encode(
+                    [texts[index] for index in missing],
                     normalize_embeddings=True,
                     batch_size=models.get("batch_size", 16),
                     show_progress_bar=False,
                 )
-                cache_state = "built"
-            else:
-                vectors, _ = cached
-                cache_state = "disk_hit"
+                if len(encoded) != len(missing):
+                    raise RepoScopeError("vector_cache_invalid", "Embedding returned incorrect row count")
+                for index, vector in zip(missing, encoded):
+                    rows[index] = vector
+            try:
+                vectors = np.stack(rows)
+            except ValueError as exc:
+                raise RepoScopeError("vector_cache_invalid", "Content embedding dimensions differ") from exc
+            cache_state = "built"
+        vectors = np.asarray(vectors, dtype=np.float32)
+        if vectors.ndim != 2 or vectors.shape[0] != len(chunks) or not np.isfinite(vectors).all():
+            raise RepoScopeError("vector_cache_invalid", "Encoded chunk vectors have invalid shape or values")
         index_seconds = time.perf_counter() - index_started
         query_started = time.perf_counter()
         q = embedding.encode([query], normalize_embeddings=True, show_progress_bar=False)[0]
         dense = vectors @ q
         pool = max(30, limit * 3)
-        ids = [self.symbols[i].symbol_id for i in sorted(range(len(dense)), key=lambda i: (-float(dense[i]), i))[:pool]]
-        sparse = [h["symbol"]["symbol_id"] for h in self.query(query, pool)]
-        fused = rrf({"dense": ids, "bm25_identifier": sparse})[:pool]
-        by_id = {s.symbol_id: (s, text) for s, text in zip(self.symbols, self.texts)}
-        scores = reranker.predict(
-            [(query, by_id[sid][1]) for sid, _, _ in fused],
-            batch_size=models.get("reranker_batch_size", 8),
-            show_progress_bar=False,
-        )
-        hits = [
-            {"symbol": by_id[sid][0].model_dump(), "score": float(score), "sources": sources + ["reranker"]}
-            for (sid, _, sources), score in zip(fused, scores)
+        dense_best = {
+            parent: max(indices, key=lambda i: (float(dense[i]), chunks[i].chunk_id))
+            for parent, indices in groups.items()
+        }
+        ids = sorted(dense_best, key=lambda parent: (-float(dense[dense_best[parent]]), parent))[:pool]
+        sparse_hits = self.query(query, pool)
+        skipped_candidates = [
+            hit["symbol"]["symbol_id"] for hit in sparse_hits if hit["symbol"]["symbol_id"] not in groups
         ]
+        sparse = [hit["symbol"]["symbol_id"] for hit in sparse_hits if hit["symbol"]["symbol_id"] in groups]
+        fused = rrf({"dense": ids, "bm25_identifier": sparse})[:pool]
+        chunk_sparse = corpus["bm25"].get_scores(tokenize(query))
+        pairs, pair_meta = [], []
+        for parent, _, sources in fused:
+            lexical = max(groups[parent], key=lambda i: (float(chunk_sparse[i]), chunks[i].chunk_id))
+            selected = [dense_best[parent]]
+            if lexical not in selected and chunk_sparse[lexical] > 0:
+                selected.append(lexical)
+            for index in selected:
+                pair_tokens = len(
+                    reranker.tokenizer(query, texts[index], add_special_tokens=True, truncation=False)["input_ids"]
+                )
+                if pair_tokens > budget["reranker_max_tokens"]:
+                    raise RepoScopeError(
+                        "retrieval_budget_mismatch",
+                        "Query/chunk pair exceeds reranker budget; refusing silent truncation",
+                    )
+                pairs.append((query, texts[index]))
+                pair_meta.append((parent, index, sources, pair_tokens))
+        scores = reranker.predict(pairs, batch_size=models.get("reranker_batch_size", 8), show_progress_bar=False)
+        if len(scores) != len(pair_meta) or not np.isfinite(scores).all():
+            raise RepoScopeError("reranker_invalid", "Reranker did not return one finite score per complete pair")
+        symbols = {symbol.symbol_id: symbol for symbol in self.symbols}
+        best = {}
+        for (parent, index, sources, pair_tokens), score in zip(pair_meta, scores):
+            hit = {
+                "symbol": symbols[parent].model_dump(),
+                "score": float(score),
+                "sources": sources + ["reranker"],
+                "chunk": chunk_evidence(chunks[index]),
+                "reranker_pair_tokens": pair_tokens,
+            }
+            if parent not in best or (hit["score"], hit["chunk"]["chunk_id"]) > (
+                best[parent]["score"],
+                best[parent]["chunk"]["chunk_id"],
+            ):
+                best[parent] = hit
+        hits = list(best.values())
         query_seconds = time.perf_counter() - query_started
         # Publish only after both embedding inference and reranking actually
         # succeed. Manifest and vectors become visible in one atomic replace.
+        if cache_state in {"built", "disk_hit"}:
+            row_cache.publish(texts, vectors)
         if cache_state == "built":
-            cache.publish(binding, vectors)
+            cache.publish_corpus(binding, self.snapshot, corpus, vectors, tokenize)
         runtime["vectors"] = vectors
         return {
             "hits": sorted(hits, key=lambda h: (-h["score"], h["symbol"]["symbol_id"]))[:limit],
             "seconds": time.perf_counter() - started,
             "models": models,
-            "state": "ready",
+            "state": corpus["stats"]["state"],
+            "corpus": corpus["stats"],
+            "skipped_unrankable_candidates": skipped_candidates,
             "timings": {
+                "model_verification_seconds": verification_seconds,
                 "model_load_seconds": model_load_seconds,
                 "index_seconds": index_seconds,
+                "corpus_seconds": corpus_seconds,
                 "query_seconds": query_seconds,
             },
             "model_memory_reused": model_reused,
             "vector_cache": {
                 "state": cache_state,
                 "artifact": str(cache.path(binding)),
+                "publication": BUNDLE_VERSION,
+                "corpus_state": corpus["stats"]["state"],
                 "snapshot_id": self.snapshot.snapshot_id,
-                "update_mode": "full-embedding-per-snapshot",
+                "update_mode": "content-reuse-per-snapshot",
+                "reused_embedding_chunks": reused_chunks,
+                "encoded_embedding_chunks": encoded_chunks,
             },
             "limits": {
-                "embedding_max_tokens": embedding.max_seq_length,
-                "reranker_max_tokens": reranker.max_length,
+                **budget,
+                "reranker_pairs": len(pairs),
                 "candidate_pool": pool,
                 "score_kind": "reranker output; not calibrated confidence",
             },

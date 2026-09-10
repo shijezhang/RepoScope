@@ -1,0 +1,20 @@
+{
+  "run_id": "6fd39bf5dafd4ab8a2aca942a9622e14",
+  "status": "completed",
+  "parser_versions": {
+    "base": "ast312-resolver-v5",
+    "head": "ast312-resolver-v5"
+  },
+  "health": {
+    "status": "ok",
+    "version": "0.2.0",
+    "docker_available": true,
+    "worker": "separate process",
+    "model_configured": true,
+    "model_status": "configured"
+  },
+  "evidence_validation": "passed",
+  "model_called": false,
+  "target_tests_called": false,
+  "impact_count": 28
+}

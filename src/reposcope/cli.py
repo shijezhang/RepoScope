@@ -6,6 +6,7 @@ import typer
 from reposcope.config import RepoScopeError, Settings
 from reposcope.graph.store import Store
 from reposcope.indexing.parser import build_snapshot, semantic_hash
+from reposcope.indexing.publication import publish_index, search_published
 from reposcope.jobs.submission import submit_tests
 from reposcope.models import TestRunInput, digest
 from reposcope.reports.render import export, validate_report
@@ -53,8 +54,29 @@ def index(repo_id: str, commit: str = "HEAD", full: bool = False):
 
 
 @app.command()
-def search(snapshot_id: str, query: str, limit: int = 20):
-    typer.echo(json.dumps(Search(store().snapshot(snapshot_id)).query(query, limit), indent=2))
+def search(
+    snapshot_id: str,
+    query: str,
+    limit: int = typer.Option(20, min=1, max=100),
+    models: Path | None = typer.Option(
+        None, exists=True, dir_okay=False, help="Pinned local model JSON manifest for strong retrieval"
+    ),
+):
+    engine = Search(store().snapshot(snapshot_id))
+    if models is None:
+        result = engine.query(query, limit)
+    else:
+        try:
+            configuration = json.loads(models.read_text())
+            if not isinstance(configuration, dict):
+                raise ValueError("Model manifest must be a JSON object")
+            result = engine.strong_query(query, configuration, limit)
+        except (OSError, ValueError, RepoScopeError) as exc:
+            typer.echo(
+                json.dumps({"error": getattr(exc, "code", "invalid_model_manifest"), "message": str(exc)}), err=True
+            )
+            raise typer.Exit(1) from exc
+    typer.echo(json.dumps(result, indent=2))
 
 
 @app.command()
@@ -66,6 +88,31 @@ def callers(snapshot_id: str, symbol_id: str):
             indent=2,
         )
     )
+
+
+@app.command("publish-index")
+def publish_index_command(repo_id: str, commit: str = "HEAD", profile: str = "default", models: Path | None = None):
+    s = store()
+    repo = s.get("repositories", repo_id)
+    snap = build_snapshot(s, repo, resolve(Path(repo["path"]), commit))
+    result = publish_index(s, snap, profile, json.loads(models.read_text()) if models else None)
+    typer.echo(json.dumps(result, indent=2))
+    if not result["activated"]:
+        raise typer.Exit(1)
+
+
+@app.command("search-published")
+def search_published_command(
+    repo_id: str,
+    query: str,
+    profile: str = "default",
+    models: Path | None = None,
+    limit: int = typer.Option(20, min=1, max=100),
+):
+    result = search_published(
+        store(), repo_id, query, profile, json.loads(models.read_text()) if models else None, limit
+    )
+    typer.echo(json.dumps(result, indent=2))
 
 
 @app.command("analyze")

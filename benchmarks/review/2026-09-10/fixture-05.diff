@@ -1,0 +1,10 @@
+diff --git a/api.py b/api.py
+index 0fd81ad..aa7510c 100644
+--- a/api.py
++++ b/api.py
+@@ -1,4 +1,5 @@
+ from calc import Base, legacy, total
++FEATURE_FLAG = True
+ 
+ 
+ def order(value):

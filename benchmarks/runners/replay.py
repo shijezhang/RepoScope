@@ -46,7 +46,10 @@ def commit(root, message):
 def main(argv=None):
     parser = argparse.ArgumentParser()
     parser.add_argument("--case", help="Replay a single case_id")
+    parser.add_argument("--output", help="Separate JSON result filename, preserving prior experiment results")
     args = parser.parse_args(argv)
+    if args.output and (Path(args.output).name != args.output or not args.output.endswith(".json")):
+        parser.error("Output must be a JSON filename")
     manifests = {
         r["repo_id"]: r
         for r in json.loads((ROOT / "benchmarks/manifests/repositories.json").read_text())["repositories"]
@@ -122,9 +125,13 @@ def main(argv=None):
         }
         results.append(item)
         print(json.dumps(item), flush=True)
-    output = ROOT / "benchmarks/results" / (f"{args.case}-index.json" if args.case else "index-consistency.json")
+    output = (
+        ROOT
+        / "benchmarks/results"
+        / (args.output or (f"{args.case}-index.json" if args.case else "index-consistency.json"))
+    )
     document = {
-        "scope": "single-run parse-cache consistency; all references re-resolved",
+        "scope": "full versus dependency-fingerprinted incremental parsing and resolution",
         "run_id": run_id,
         "cases": results,
     }
